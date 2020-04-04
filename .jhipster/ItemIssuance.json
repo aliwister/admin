@@ -1,0 +1,35 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "admin",
+    "relationships": [
+        {
+            "relationshipName": "product",
+            "otherEntityName": "product",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "itemIssuance"
+        },
+        {
+            "relationshipName": "shipmentItem",
+            "otherEntityName": "shipmentItem",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "",
+            "otherEntityRelationshipName": "itemIssuance"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "quantity",
+            "fieldType": "BigDecimal"
+        }
+    ],
+    "changelogDate": "20200330160529",
+    "dto": "mapstruct",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "item_issuance",
+    "databaseType": "sql",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "admin"
+}

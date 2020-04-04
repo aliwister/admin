@@ -1,0 +1,45 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "admin",
+    "relationships": [
+        {
+            "relationshipName": "shipment",
+            "otherEntityName": "shipment",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "pkg"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "length",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "width",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "height",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "weight",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "packageType",
+            "fieldType": "PackageType",
+            "fieldValues": "BADALS14X18BAG,DHLFLYER,DHLFLYERBIG,BOX,TUBE,NONSTANDARD"
+        }
+    ],
+    "changelogDate": "20200330155807",
+    "dto": "mapstruct",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "pkg",
+    "databaseType": "sql",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "admin"
+}

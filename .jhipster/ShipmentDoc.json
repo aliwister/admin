@@ -1,0 +1,27 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "admin",
+    "relationships": [
+        {
+            "relationshipName": "shipment",
+            "otherEntityName": "shipment",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "fileKey",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20200330164403",
+    "dto": "mapstruct",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "shipment_doc",
+    "databaseType": "sql",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "admin"
+}

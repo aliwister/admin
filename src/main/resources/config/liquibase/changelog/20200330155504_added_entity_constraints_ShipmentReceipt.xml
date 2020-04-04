@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <!--
+        Added the constraints for entity ShipmentReceipt.
+    -->
+    <changeSet id="20200330155504-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="pkg_id"
+                                 baseTableName="shipment_receipt"
+                                 constraintName="fk_shipment_receipt_pkg_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="pkg"/>
+
+        <addForeignKeyConstraint baseColumnNames="shipment_item_id"
+                                 baseTableName="shipment_receipt"
+                                 constraintName="fk_shipment_receipt_shipment_item_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="shipment_item"/>
+
+        <addForeignKeyConstraint baseColumnNames="product_id"
+                                 baseTableName="shipment_receipt"
+                                 constraintName="fk_shipment_receipt_product_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="product"/>
+
+    </changeSet>
+</databaseChangeLog>

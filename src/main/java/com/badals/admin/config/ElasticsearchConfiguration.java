@@ -18,8 +18,8 @@ import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMa
 
 import java.io.IOException;
 
-@Configuration
-@EnableConfigurationProperties(ElasticsearchProperties.class)
+//@Configuration
+//@EnableConfigurationProperties(ElasticsearchProperties.class)
 public class ElasticsearchConfiguration {
 
     private ObjectMapper mapper;

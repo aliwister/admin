@@ -1,0 +1,158 @@
+scalar Date
+scalar LocalDate
+scalar LocalDateTime
+scalar BigDecimal
+type Message {
+    value: String
+}
+enum ShipmentType {
+    PURCHASE
+    CUSTOMER
+    TRANSFER
+    PURCHASERETURN
+    CUSTOMERRETURN
+}
+enum ShipmentStatus {
+    PENDING
+    SHIPPED
+    RECEIVED
+    DELIVERED
+    CANCELED
+    FAILED
+    PROCESSING
+}
+enum PackageType {
+    BADALS14X18BAG
+    DHLFLYER
+    DHLFLYERBIG
+    BOX
+    TUBE
+    NONSTANDARD
+}
+
+type Merchant {
+    id: ID
+    name: String
+}
+type Customer {
+    id: ID!
+    firstname: String
+    lastname: String
+    email: String
+    mobile: String
+}
+
+type ShipmentItem {
+    id: ID
+    sequence: Int
+    quantity: BigDecimal
+    description: String
+    shipmentId: Long
+    productId: Long
+}
+
+type Shipment {
+    id: ID
+    estimatedShipDate: LocalDate
+    estimatedReadyDate: LocalDate
+    estimatedArrivalDate: LocalDate
+    estimatedShipCost: BigDecimal
+    actualShipCost: BigDecimal
+    latestCancelDate: LocalDate
+    handlingInstructions: String
+    reference: String
+    trackingNum: String
+    trackingLink: String
+    shipmentMethod: String
+    shipmentType: ShipmentType
+    shipmentStatus: ShipmentStatus
+    #shipmentItems: [ShipmentItem]
+    customerId: Long
+    merchantId: Long
+    pkgs: [Pkg]
+    shipmentItems: [ShipmentItem]
+}
+
+type ShipmentReceipt {
+    id: ID
+    receivedDate: LocalDate
+    accepted: BigDecimal
+    rejected: BigDecimal
+    rejectReason: String
+    productId: Long
+}
+
+input ShipmentInput {
+    reference: String
+    trackingNum: String
+    shipmentMethod: String
+    shipmentType: ShipmentType
+    shipmentStatus: ShipmentStatus
+    merchantId: Long
+}
+
+input PackagingContentInput {
+    shipmentItemId: Long
+    pkgId: Long
+    quantity: Long
+}
+
+type Pkg {
+    id: ID
+    length: BigDecimal
+    width: BigDecimal
+    height: BigDecimal
+    weight: BigDecimal
+    packageType: PackageType
+}
+input PackageInput {
+    length: BigDecimal
+    width: BigDecimal
+    height: BigDecimal
+    weight: BigDecimal
+    packageType: PackageType
+    shipmentId: Long
+}
+
+type SortQueue {
+   id: ID
+   description: String
+   quantity: BigDecimal
+   preallocated: BigDecimal
+   price: BigDecimal
+   cost: BigDecimal
+   weight: BigDecimal
+   image: String
+   url: String
+   sku: String
+   shippingInstructions: String
+   orderId: Long
+   orderItemId: Long
+   merchantId: Long
+   productId: Long
+   merchantId: Long
+}
+
+type Query {
+    shipments(status: ShipmentStatus, type: ShipmentType): [Shipment]
+    shipment(id: ID): Shipment
+    sortQueue(keyword: String): [SortQueue]
+    #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]
+    #inventory: [ShipmentItem]
+
+}
+type Mutation {
+    sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
+    acceptShipment(shipment: ShipmentInput): Shipment
+    saveShipment(shipment: ShipmentInput): Shipment
+    acceptPackage(pkg : PackageInput): Pkg
+    acceptItem(shipmentId: Long,  pkgId: Long,  purchaseItemId: Long,  productId: Long,  merchantId: Long,  description: String,  quantity: BigDecimal,  accepted: BigDecimal,  rejected: BigDecimal): Message
+    issueItem(orderItemId : Long, productId : Long, description : String, quantity : BigDecimal): Message
+    prepItem(dto: PackagingContentInput): Message
+    #printCode(shipmentId: Long): Message
+    #savePackage(pkgId: Long, shipmentItems: [Long]): Pkg
+    #scheduleShipment(id: Long, deliveryDate: LocalDate, comments: String, assignTo: String): Message
+    #unAccept(shipmentAcceptanceId: Long): Message
+    #unIssue(itemIssuanceId: Long) : Message
+
+}

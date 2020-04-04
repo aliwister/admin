@@ -1,0 +1,55 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "admin",
+    "relationships": [
+        {
+            "relationshipName": "pkg",
+            "otherEntityName": "pkg",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "shipmentReceipt"
+        },
+        {
+            "relationshipName": "shipmentItem",
+            "otherEntityName": "shipmentItem",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "shipmentReceipt"
+        },
+        {
+            "relationshipName": "product",
+            "otherEntityName": "product",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "shipmentReceipt"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "receivedDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "accepted",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "rejected",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "rejectReason",
+            "fieldType": "RejectReason",
+            "fieldValues": "SPILLED,CRACKED,BROKEN,WRONGCOLOR,WRONGSIZE,OTHER"
+        }
+    ],
+    "changelogDate": "20200330155504",
+    "dto": "mapstruct",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "shipment_receipt",
+    "databaseType": "sql",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "admin"
+}

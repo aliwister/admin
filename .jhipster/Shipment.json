@@ -1,0 +1,98 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "admin",
+    "relationships": [
+        {
+            "relationshipName": "address",
+            "otherEntityName": "address",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "shipment"
+        },
+        {
+            "relationshipName": "shipmentItem",
+            "otherEntityName": "shipmentItem",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "shipment"
+        },
+        {
+            "relationshipName": "customer",
+            "otherEntityName": "customer",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "shipment"
+        },
+        {
+            "relationshipName": "merchant",
+            "otherEntityName": "merchant",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "shipment"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "estimatedShipDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "estimatedReadyDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "estimatedArrivalDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "estimatedShipCost",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "actualShipCost",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "latestCancelDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "handlingInstructions",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "reference",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "trackingNum",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "trackingLink",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "shipmentMethod",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "shipmentType",
+            "fieldType": "ShipmentType",
+            "fieldValues": "PURCHASE,CUSTOMER,TRANSFER,PURCHASERETURN,CUSTOMERRETURN"
+        },
+        {
+            "fieldName": "shipmentStatus",
+            "fieldType": "ShipmentStatus",
+            "fieldValues": "SCHEDULED,SHIPPED,RECEIVED,DELIVERED,CANCELED,FAILED"
+        }
+    ],
+    "changelogDate": "20200330154448",
+    "dto": "mapstruct",
+    "searchEngine": "elasticsearch",
+    "service": "serviceClass",
+    "entityTableName": "shipment",
+    "databaseType": "sql",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "admin"
+}
