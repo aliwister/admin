@@ -160,7 +160,7 @@ public class ShipmentService {
         // Find customer's pending shipment
         OrderItem orderItem = orderItemRepository.findForSorting(orderItemId);
         Customer customer = orderItem.getOrder().getCustomer();
-        Long shipmentId = shipmentRepository.findCustomerShipmentIdNative(orderItemId);
+        Long shipmentId = shipmentRepository.findCustomerShipmentIdNative(orderItem.getOrder().getId());
         Shipment shipment = null;
         if (shipmentId != null)
             shipment = shipmentRepository.findById(shipmentId).orElse(null);
