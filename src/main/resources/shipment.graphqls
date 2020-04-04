@@ -141,7 +141,7 @@ type ItemIssuance {
    shipmentId: Long
 }
 type Query {
-    shipments(status: ShipmentStatus, type: ShipmentType): [Shipment]
+    shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
     sortQueue(keyword: String): [SortQueue]
     #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]

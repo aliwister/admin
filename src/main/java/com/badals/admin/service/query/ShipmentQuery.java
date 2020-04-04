@@ -19,7 +19,7 @@ public class ShipmentQuery implements GraphQLQueryResolver {
     ShipmentService shipmentService;
 
 
-    public List<ShipmentDTO> shipments(ShipmentStatus status, ShipmentType type) {
+    public List<ShipmentDTO> shipments(List<ShipmentStatus> status, ShipmentType type) {
         return shipmentService.findForShipmentList(status, type);
     }
 

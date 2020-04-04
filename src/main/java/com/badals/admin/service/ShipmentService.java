@@ -190,7 +190,7 @@ public class ShipmentService {
         return itemIssuanceMapper.toDto(issuance);
     }
 
-    public List<ShipmentDTO> findForShipmentList(ShipmentStatus status, ShipmentType type) {
+    public List<ShipmentDTO> findForShipmentList(List<ShipmentStatus> status, ShipmentType type) {
         return shipmentRepository.findForShipmentList(status, type).stream().map(shipmentMapper::toDto).collect(Collectors.toList());
     }
 
