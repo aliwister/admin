@@ -39,6 +39,6 @@
     "skipClient": true,
     "skipUserManagement": true,
     "herokuAppName": "admin-boot",
-    "herokuDeployType": "git"
+    "herokuDeployType": "jar"
   }
 }
