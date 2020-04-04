@@ -20,6 +20,7 @@ enum ShipmentStatus {
     CANCELED
     FAILED
     PROCESSING
+    ACCEPTED
 }
 enum PackageType {
     BADALS14X18BAG
@@ -71,6 +72,9 @@ type Shipment {
     merchantId: Long
     pkgs: [Pkg]
     shipmentItems: [ShipmentItem]
+    customerFirstName: String
+    customerLastName: String
+    merchantName: String
 }
 
 type ShipmentReceipt {
@@ -132,7 +136,10 @@ type SortQueue {
    productId: Long
    merchantId: Long
 }
-
+type ItemIssuance {
+   id: ID
+   shipmentId: Long
+}
 type Query {
     shipments(status: ShipmentStatus, type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
@@ -147,7 +154,7 @@ type Mutation {
     saveShipment(shipment: ShipmentInput): Shipment
     acceptPackage(pkg : PackageInput): Pkg
     acceptItem(shipmentId: Long,  pkgId: Long,  purchaseItemId: Long,  productId: Long,  merchantId: Long,  description: String,  quantity: BigDecimal,  accepted: BigDecimal,  rejected: BigDecimal): Message
-    issueItem(orderItemId : Long, productId : Long, description : String, quantity : BigDecimal): Message
+    issueItem(orderItemId : Long, productId : Long, description : String, quantity : BigDecimal): ItemIssuance
     prepItem(dto: PackagingContentInput): Message
     #printCode(shipmentId: Long): Message
     #savePackage(pkgId: Long, shipmentItems: [Long]): Pkg

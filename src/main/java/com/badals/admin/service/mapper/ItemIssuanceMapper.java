@@ -13,6 +13,7 @@ public interface ItemIssuanceMapper extends EntityMapper<ItemIssuanceDTO, ItemIs
 
     //@Mapping(source = "product.id", target = "productId")
     @Mapping(source = "shipmentItem.id", target = "shipmentItemId")
+    @Mapping(source = "shipmentItem.shipment.id", target = "shipmentId")
     ItemIssuanceDTO toDto(ItemIssuance itemIssuance);
 
     //@Mapping(source = "productId", target = "product")

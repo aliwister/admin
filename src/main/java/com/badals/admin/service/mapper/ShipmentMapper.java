@@ -13,6 +13,9 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
 
     //@Mapping(source = "address.id", target = "addressId")
     @Mapping(source = "customer.id", target = "customerId")
+    @Mapping(source = "customer.firstname", target = "customerFirstName")
+    @Mapping(source = "customer.lastname", target = "customerLastName")
+    @Mapping(source = "merchant.name", target = "merchantName")
     @Mapping(source = "merchant.id", target = "merchantId")
     ShipmentDTO toDto(Shipment shipment);
 

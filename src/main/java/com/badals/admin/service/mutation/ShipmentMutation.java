@@ -51,9 +51,9 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return new Message("Done");
     }
 
-    Message issueItem(Long orderItemId, Long productId, String description, BigDecimal quantity) {
-        shipmentService.issueItem(orderItemId, productId, description, quantity);
-        return new Message("Done");
+    ItemIssuanceDTO issueItem(Long orderItemId, Long productId, String description, BigDecimal quantity) {
+        return shipmentService.issueItem(orderItemId, productId, description, quantity);
+        //return new Message("Done");
     }
 
     Message prepItem(PackagingContentDTO dto) {

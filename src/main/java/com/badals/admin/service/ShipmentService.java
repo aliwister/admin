@@ -8,15 +8,15 @@ import com.badals.admin.domain.pojo.DetrackItem;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.repository.*;
 //import com.badals.admin.repository.search.ShipmentSearchRepository;
+import com.badals.admin.service.dto.ItemIssuanceDTO;
 import com.badals.admin.service.dto.ShipmentDTO;
-import com.badals.admin.service.dto.ShipmentItemDTO;
+import com.badals.admin.service.mapper.ItemIssuanceMapper;
 import com.badals.admin.service.mapper.ShipmentMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,25 +45,36 @@ public class ShipmentService {
 
     private final ShipmentMapper shipmentMapper;
 
-    @Autowired private PurchaseItemRepository purchaseItemRepository;
+    private final PurchaseItemRepository purchaseItemRepository;
 
-    @Autowired private PkgRepository pkgRepository;
-    @Autowired private ShipmentItemRepository shipmentItemRepository;
+    private final PkgRepository pkgRepository;
+    private final ShipmentItemRepository shipmentItemRepository;
 
-    @Autowired private PurchaseShipmentRepository purchaseShipmentRepository;
-    @Autowired private PackagingContentRepository packagingContentRepository;
-    @Autowired private ShipmentReceiptRepository shipmentReceiptRepository;
-    @Autowired private OrderItemRepository orderItemRepository;
+    private final PurchaseShipmentRepository purchaseShipmentRepository;
+    private final PackagingContentRepository packagingContentRepository;
+    private final ShipmentReceiptRepository shipmentReceiptRepository;
+    private final OrderItemRepository orderItemRepository;
 
-    @Autowired private OrderShipmentRepository orderShipmentRepository;
-    @Autowired private ItemIssuanceRepository itemIssuanceRepository;
+    private final OrderShipmentRepository orderShipmentRepository;
+    private final ItemIssuanceRepository itemIssuanceRepository;
+    private final ItemIssuanceMapper itemIssuanceMapper;
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentMapper shipmentMapper/*, ShipmentSearchRepository shipmentSearchRepository*/) {
+    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
         this.shipmentRepository = shipmentRepository;
         this.shipmentMapper = shipmentMapper;
         //this.shipmentSearchRepository = shipmentSearchRepository;
+        this.purchaseItemRepository = purchaseItemRepository;
+        this.pkgRepository = pkgRepository;
+        this.shipmentItemRepository = shipmentItemRepository;
+        this.purchaseShipmentRepository = purchaseShipmentRepository;
+        this.packagingContentRepository = packagingContentRepository;
+        this.shipmentReceiptRepository = shipmentReceiptRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.orderShipmentRepository = orderShipmentRepository;
+        this.itemIssuanceRepository = itemIssuanceRepository;
+        this.itemIssuanceMapper = itemIssuanceMapper;
     }
 
     /**
@@ -145,7 +156,7 @@ public class ShipmentService {
         shipmentReceiptRepository.save(shipmentReceipt);
     }
 
-    public void issueItem(Long orderItemId, Long productId, String description, BigDecimal quantity) {
+    public ItemIssuanceDTO issueItem(Long orderItemId, Long productId, String description, BigDecimal quantity) {
         // Find customer's pending shipment
         OrderItem orderItem = orderItemRepository.findForSorting(orderItemId);
         Customer customer = orderItem.getOrder().getCustomer();
@@ -175,7 +186,8 @@ public class ShipmentService {
 
         shipmentItemRepository.save(shipmentItem);
         orderShipmentRepository.save(orderShipment);
-        itemIssuanceRepository.save(issuance);
+        issuance = itemIssuanceRepository.save(issuance);
+        return itemIssuanceMapper.toDto(issuance);
     }
 
     public List<ShipmentDTO> findForShipmentList(ShipmentStatus status, ShipmentType type) {
