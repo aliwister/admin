@@ -227,7 +227,7 @@ public class ShipmentService {
             throw new ShipmentNotReadyException("Shipment not ready. Must prepare shipment");
 
         Double d = shipment.getShipmentItems().stream().mapToDouble(x -> x.getQuantity().doubleValue()).sum();
-        Double d2 = shipment.getPkgs().stream().mapToDouble(x -> x.getShipmentItems().stream().mapToDouble(y -> y.getQuantity().doubleValue()).sum()).sum();
+        Double d2 = shipment.getPkgs().stream().mapToDouble(x -> x.getPackagingContent().stream().mapToDouble(y -> y.getQuantity().doubleValue()).sum()).sum();
 
         if(Math.abs(d-d2) > .00001)
             throw new ShipmentNotReadyException("Shipment not ready. Must prepare shipment");

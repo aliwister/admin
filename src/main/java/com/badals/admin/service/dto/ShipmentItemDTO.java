@@ -1,4 +1,6 @@
 package com.badals.admin.service.dto;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -6,6 +8,8 @@ import java.util.Objects;
 /**
  * A DTO for the {@link com.badals.admin.domain.ShipmentItem} entity.
  */
+
+@Data
 public class ShipmentItemDTO implements Serializable {
 
     private Long id;
@@ -21,6 +25,8 @@ public class ShipmentItemDTO implements Serializable {
 
     private Long productId;
 
+    private String image;
+
     public ShipmentItemDTO(Integer sequence, BigDecimal quantity, String description, Long shipmentId, Long productId) {
         this.sequence = sequence;
         this.quantity = quantity;
@@ -32,53 +38,6 @@ public class ShipmentItemDTO implements Serializable {
     public ShipmentItemDTO() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
-    }
-
-    public BigDecimal getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getShipmentId() {
-        return shipmentId;
-    }
-
-    public void setShipmentId(Long shipmentId) {
-        this.shipmentId = shipmentId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
 
     @Override
     public boolean equals(Object o) {

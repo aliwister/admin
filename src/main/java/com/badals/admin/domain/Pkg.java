@@ -43,6 +43,17 @@ public class Pkg implements Serializable {
     @JsonIgnoreProperties("pkgs")
     private Shipment shipment;
 
+    @OneToMany(mappedBy = "pkg")
+    Set<PackagingContent> packagingContent;
+
+    public Set<PackagingContent> getPackagingContent() {
+        return packagingContent;
+    }
+
+    public void setPackagingContent(Set<PackagingContent> packagingContent) {
+        this.packagingContent = packagingContent;
+    }
+
     @OneToMany
     @JoinTable(name = "packaging_content",
         joinColumns = @JoinColumn(name = "pkg_id", referencedColumnName = "id"),

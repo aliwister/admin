@@ -50,6 +50,7 @@ type ShipmentItem {
     description: String
     shipmentId: Long
     productId: Long
+    image: String
 }
 
 type Shipment {

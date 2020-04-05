@@ -12,11 +12,12 @@ import org.mapstruct.*;
 public interface ShipmentItemMapper extends EntityMapper<ShipmentItemDTO, ShipmentItem> {
 
     @Mapping(source = "shipment.id", target = "shipmentId")
-    //@Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "product.image", target = "image")
     ShipmentItemDTO toDto(ShipmentItem shipmentItem);
 
     @Mapping(source = "shipmentId", target = "shipment")
-    //@Mapping(source = "productId", target = "product")
+    //@Mapping(source = "productId", target = "productId")
     ShipmentItem toEntity(ShipmentItemDTO shipmentItemDTO);
 
     default ShipmentItem fromId(Long id) {

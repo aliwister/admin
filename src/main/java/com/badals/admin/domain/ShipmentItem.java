@@ -35,11 +35,21 @@ public class ShipmentItem implements Serializable {
     @JsonIgnoreProperties("shipmentItems")
     private Shipment shipment;
 //
-//    @ManyToOne
-//    private Product product;
+    @ManyToOne
+    @JoinColumn(name = "product_id", updatable = false, insertable = false, referencedColumnName = "ref")
+    private Product product;
 
     @Column(name="product_id")
     private Long productId;
+
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -102,15 +112,8 @@ public class ShipmentItem implements Serializable {
         this.shipment = shipment;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    /*    public Product getProduct() {
+    public Product getProduct() {
         return product;
     }
 
@@ -121,7 +124,7 @@ public class ShipmentItem implements Serializable {
 
     public void setProduct(Product product) {
         this.product = product;
-    }*/
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
