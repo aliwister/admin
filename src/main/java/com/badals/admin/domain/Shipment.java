@@ -3,6 +3,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -89,6 +91,19 @@ public class Shipment implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("shipments")
     private Merchant merchant;
+
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "reference", referencedColumnName = "reference",insertable= false, updatable = false)
+    private ShipmentProgress shipmentProgress;
+
+    public ShipmentProgress getShipmentProgress() {
+        return shipmentProgress;
+    }
+
+    public void setShipmentProgress(ShipmentProgress shipmentProgress) {
+        this.shipmentProgress = shipmentProgress;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

@@ -8,6 +8,7 @@ import com.badals.admin.service.PurchaseShipmentService;
 import com.badals.admin.service.ShipmentService;
 import com.badals.admin.service.dto.*;
 
+import com.badals.admin.web.rest.errors.ShipmentNotReadyException;
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         packagingContentService.save(dto);
         return new Message("Done");
     }
-    public Message sendToDetrack(Long shipmentId, Long orderId, String name, String instructions, String date, String time, String assignTo) throws JsonProcessingException {
+    public Message sendToDetrack(Long shipmentId, String orderId, String name, String instructions, String date, String time, String assignTo) throws JsonProcessingException, ShipmentNotReadyException {
         String m = shipmentService.sendToDetrack(shipmentId, orderId, name, instructions, date, time, assignTo);
         return new Message(m);
     }

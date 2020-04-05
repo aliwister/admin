@@ -1,5 +1,6 @@
 package com.badals.admin.service.dto;
 
+import com.badals.admin.domain.pojo.AddressPojo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -56,9 +57,9 @@ public class AddressDTO implements Serializable {
                 '}';
     }
 
-    /*public static AddressDTO fromAddressPojo(AddressPojo pojo) {
+    public static AddressDTO fromAddressPojo(AddressPojo pojo) {
         if(pojo == null)
             return null;
         return new AddressDTO(pojo.getFirstName(),pojo.getLastName(),pojo.getLine1(),pojo.getLine2(),pojo.getCity());
-    }*/
+    }
 }

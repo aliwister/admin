@@ -57,6 +57,10 @@ public class ShipmentDTO implements Serializable {
     private Set<PkgDTO> pkgs;
     private Set<ShipmentItemDTO> shipmentItems;
 
+    private BigDecimal progressTotal;
+    private BigDecimal progressDone;
+    private BigDecimal progressTodo;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

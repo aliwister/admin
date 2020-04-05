@@ -8,15 +8,20 @@ import com.badals.admin.domain.pojo.DetrackItem;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.repository.*;
 //import com.badals.admin.repository.search.ShipmentSearchRepository;
+import com.badals.admin.service.dto.AddressDTO;
 import com.badals.admin.service.dto.ItemIssuanceDTO;
+import com.badals.admin.service.dto.OrderDTO;
 import com.badals.admin.service.dto.ShipmentDTO;
 import com.badals.admin.service.mapper.ItemIssuanceMapper;
+import com.badals.admin.service.mapper.OrderMapper;
 import com.badals.admin.service.mapper.ShipmentMapper;
+import com.badals.admin.web.rest.errors.ShipmentNotReadyException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +63,7 @@ public class ShipmentService {
     private final OrderShipmentRepository orderShipmentRepository;
     private final ItemIssuanceRepository itemIssuanceRepository;
     private final ItemIssuanceMapper itemIssuanceMapper;
+    @Autowired private OrderRepository orderRepository;
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
@@ -206,15 +212,36 @@ public class ShipmentService {
 
     }
 
-    public String sendToDetrack(Long shipmentId, Long orderId, String name, String instructions, String date, String time, String assignTo) throws JsonProcessingException {
+    @Autowired
+    OrderMapper orderMapper;
+
+    public Optional<OrderDTO> getOrderForDetrack(String orderRef) {
+        return orderRepository.findByReference(orderRef).map(orderMapper::toDto);
+    }
+
+    public String sendToDetrack(Long shipmentId, String orderRef, String name, String instructions, String date, String time, String assignTo) throws JsonProcessingException, ShipmentNotReadyException {
 
         Shipment shipment = shipmentRepository.findById(shipmentId).get();
-        //Order order = orderRepository.findById(orderId);
+
+        if(shipment.getPkgs() == null || shipment.getPkgs().size() == 0)
+            throw new ShipmentNotReadyException("Shipment not ready. Must prepare shipment");
+
+        Double d = shipment.getShipmentItems().stream().mapToDouble(x -> x.getQuantity().doubleValue()).sum();
+        Double d2 = shipment.getPkgs().stream().mapToDouble(x -> x.getShipmentItems().stream().mapToDouble(y -> y.getQuantity().doubleValue()).sum()).sum();
+
+        if(Math.abs(d-d2) > .00001)
+            throw new ShipmentNotReadyException("Shipment not ready. Must prepare shipment");
+
+        OrderDTO order = getOrderForDetrack(orderRef).get();
+        AddressDTO address = order.getDeliveryAddress();
+        //BigDecimal balance = orderRepository.getBalance(orderRef);
+
+
 
         // TODO Auto-generated method stub
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(orderId);
+        //System.out.println(orderId);
 
         //String url = "http://buyth.at/-make";
         String url = "https://app.detrack.com/api/v1/deliveries/create.json";
@@ -223,18 +250,18 @@ public class ShipmentService {
         ArrayList<DetrackItem> items = new ArrayList<DetrackItem>();
 
         delivery.setDate(date);
-        //delivery.setPhone (phone);
+        delivery.setPhone (address.getMobile());
         delivery.setInstructions (instructions);
-        delivery.set_do (orderId+"-"+shipmentId);
-        //delivery.setAddress(address);
-        delivery.setDeliver_to (name);
+        delivery.set_do (shipmentId +"-"+orderRef);
+        delivery.setAddress(address.getLine1() + " " + address.getLine2() + " " + address.getCity());
+        delivery.setDeliver_to (address.getFirstName() + " " + address.getLastName());
         delivery.setDelivery_time (time);
         delivery.setAssign_to (assignTo);
         delivery.setSales_person ("Ali");
         delivery.setNotify_url("https://admin.badals.com/trust/detrack");
 
-        //if(payAmount != null)
-        //    delivery.pay_amt = payAmount;
+        //if(balance != null)
+         //   delivery.pay_amt = balance.toString();
 
         if (shipment.getShipmentItems() != null) {
             for(ShipmentItem product: shipment.getShipmentItems()) {
@@ -254,6 +281,13 @@ public class ShipmentService {
         params.add("json", "["+json+"]");
         params.add("url", url);
         ResponseEntity<String> response = (ResponseEntity<String>) restTemplate.postForEntity(url, params, String.class);
+
+        shipment.setShipmentStatus(ShipmentStatus.SCHEDULED);
+        shipment.setTrackingNum(shipmentId +"-"+orderRef);
+
+
+        shipmentRepository.save(shipment);
+
         return response.getBody();
     }
 

@@ -2,8 +2,13 @@ package com.badals.admin.domain;
 
 import com.badals.admin.domain.enumeration.OrderState;
 
+import com.badals.admin.domain.pojo.AddressPojo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +24,10 @@ import java.util.Set;
 /**
  * A Order.
  */
+@TypeDefs({
+    @TypeDef(name = "json", typeClass = JsonStringType.class),
+    @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 @Entity
 @Table(name = "jhi_order", catalog = "shop")
 @Audited
@@ -78,10 +87,10 @@ public class Order implements Serializable {
     @JoinColumn(name = "invoice_address_id",referencedColumnName = "id_address")
     private Address invoiceAddress;
 
-//   @NotAudited
-//    @Type(type = "json")
-//    @Column(name = "delivery_address", columnDefinition = "string")
-//    private AddressPojo deliveryAddressPojo;
+   @NotAudited
+    @Type(type = "json")
+    @Column(name = "delivery_address", columnDefinition = "string")
+    private AddressPojo deliveryAddressPojo;
 
    @NotAudited
    @Column(name="confirmation_key")
@@ -110,14 +119,14 @@ public class Order implements Serializable {
     @NotAudited
    @OneToMany(mappedBy = "order")
    private Set<OrderItem> orderItems = new HashSet<>();
-//
-//    public AddressPojo getDeliveryAddressPojo() {
-//        return deliveryAddressPojo;
-//    }
-//
-//    public void setDeliveryAddressPojo(AddressPojo deliveryAddressPojo) {
-//        this.deliveryAddressPojo = deliveryAddressPojo;
-//    }
+
+    public AddressPojo getDeliveryAddressPojo() {
+        return deliveryAddressPojo;
+    }
+
+    public void setDeliveryAddressPojo(AddressPojo deliveryAddressPojo) {
+        this.deliveryAddressPojo = deliveryAddressPojo;
+    }
 
    public String getEmail() {
       return email;

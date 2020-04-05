@@ -1,6 +1,7 @@
 package com.badals.admin.service.mapper;
 
 import com.badals.admin.domain.Address;
+import com.badals.admin.domain.pojo.AddressPojo;
 import com.badals.admin.service.dto.AddressDTO;
 
 import org.mapstruct.Mapper;
