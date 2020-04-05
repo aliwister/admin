@@ -11,6 +11,13 @@ public class ShipmentDocDTO implements Serializable {
 
     private String fileKey;
 
+    public ShipmentDocDTO(String fileKey, Long shipmentId) {
+        this.fileKey = fileKey;
+        this.shipmentId = shipmentId;
+    }
+
+    public ShipmentDocDTO() {
+    }
 
     private Long shipmentId;
 

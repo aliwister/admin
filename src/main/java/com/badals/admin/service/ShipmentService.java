@@ -1,6 +1,7 @@
 package com.badals.admin.service;
 
 import com.badals.admin.domain.*;
+import com.badals.admin.domain.enumeration.OrderState;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.DetrackDelivery;
@@ -258,7 +259,7 @@ public class ShipmentService {
         delivery.setDelivery_time (time);
         delivery.setAssign_to (assignTo);
         delivery.setSales_person ("Ali");
-        delivery.setNotify_url("https://admin.badals.com/trust/detrack");
+        delivery.setNotify_url("https://admin-boot.herokuapp.com/services/admin/detrack");
 
         //if(balance != null)
          //   delivery.pay_amt = balance.toString();
@@ -289,6 +290,15 @@ public class ShipmentService {
         shipmentRepository.save(shipment);
 
         return response.getBody();
+    }
+
+    public void setStatus(Long shipmentId, ShipmentStatus status) {
+        Shipment shipment = shipmentRepository.findById(shipmentId).get();
+        shipment.setShipmentStatus(status);
+        shipmentRepository.save(shipment);
+    }
+
+    public void updateOrder(String reference, OrderState delivered) {
     }
 
     /**
