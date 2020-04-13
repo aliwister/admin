@@ -259,7 +259,7 @@ public class ShipmentService {
         delivery.setDelivery_time (time);
         delivery.setAssign_to (assignTo);
         delivery.setSales_person ("Ali");
-        delivery.setNotify_url("https://admin-boot.herokuapp.com/services/admin/detrack");
+        delivery.setNotify_url("https://api.badals.com/detrack");
 
         //if(balance != null)
          //   delivery.pay_amt = balance.toString();
