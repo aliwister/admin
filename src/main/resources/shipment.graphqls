@@ -123,6 +123,7 @@ type Inventory {
     received: BigDecimal
     issued: BigDecimal
     quantityOnHand: BigDecimal
+    image: String
 }
 
 input PackageInput {

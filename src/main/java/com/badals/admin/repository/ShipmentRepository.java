@@ -31,6 +31,6 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query(value="select * from sort_queue where description like %:keyword% ", nativeQuery=true)
     List<SortQueue> findForSorting(@Param(value = "keyword") String keyword);
 
-    @Query(value="SELECT product_id AS productId, received, issued, received-issued AS quantityOnHand, title, sku FROM inventory", nativeQuery = true)
+    @Query(value="SELECT product_id AS productId, received, issued, received-issued AS quantityOnHand, title, image, sku FROM inventory", nativeQuery = true)
     List<Inventory> getInventory();
 }

@@ -9,4 +9,5 @@ public interface Inventory {
    BigDecimal getReceived();
    BigDecimal getIssued();
    String getSku();
+   String getImage();
 }
