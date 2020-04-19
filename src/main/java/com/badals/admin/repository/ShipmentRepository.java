@@ -2,6 +2,7 @@ package com.badals.admin.repository;
 import com.badals.admin.domain.Shipment;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
+import com.badals.admin.domain.projection.Inventory;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.service.dto.ShipmentDTO;
 import org.springframework.data.jpa.repository.*;
@@ -29,4 +30,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query(value="select * from sort_queue where description like %:keyword% ", nativeQuery=true)
     List<SortQueue> findForSorting(@Param(value = "keyword") String keyword);
+
+    @Query(value="SELECT product_id AS productId, received, issued, received-issued AS quantityOnHand, title, sku FROM inventory", nativeQuery = true)
+    List<Inventory> getInventory();
 }

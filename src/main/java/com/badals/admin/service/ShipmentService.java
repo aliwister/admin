@@ -6,6 +6,7 @@ import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.DetrackDelivery;
 import com.badals.admin.domain.pojo.DetrackItem;
+import com.badals.admin.domain.projection.Inventory;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.repository.*;
 //import com.badals.admin.repository.search.ShipmentSearchRepository;
@@ -186,7 +187,7 @@ public class ShipmentService {
         OrderShipment orderShipment = new OrderShipment().quantity(quantity).shipmentItem(shipmentItem);
         orderShipment.setOrderItemId(orderItemId);
 
-        ItemIssuance issuance = new ItemIssuance().quantity(quantity).shipmentItem(shipmentItem);
+        ItemIssuance issuance = new ItemIssuance().quantity(quantity).shipmentItem(shipmentItem).productId(productId);
 
         shipmentItemRepository.save(shipmentItem);
         orderShipmentRepository.save(orderShipment);
@@ -301,6 +302,10 @@ public class ShipmentService {
     }
 
     public void updateOrder(String reference, OrderState delivered) {
+    }
+
+    public List<Inventory> getInventory() {
+        return shipmentRepository.getInventory();
     }
 
     /**

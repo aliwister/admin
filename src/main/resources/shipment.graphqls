@@ -115,6 +115,16 @@ type Pkg {
     packageType: PackageType
     shipmentItems: [ShipmentItem]
 }
+
+type Inventory {
+    productId: Long
+    title: String
+    sku: String
+    received: BigDecimal
+    issued: BigDecimal
+    quantityOnHand: BigDecimal
+}
+
 input PackageInput {
     length: BigDecimal
     width: BigDecimal
@@ -151,7 +161,7 @@ type Query {
     shipment(id: ID): Shipment
     sortQueue(keyword: String): [SortQueue]
     #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]
-    #inventory: [ShipmentItem]
+    inventory: [Inventory]
 
 }
 type Mutation {

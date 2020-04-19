@@ -34,6 +34,19 @@ public class ItemIssuance implements Serializable {
     @Column(name="product_id")
     private Long productId;
 
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public ItemIssuance productId(Long productId) {
+        this.productId = productId;
+        return this;
+    }
+
     @ManyToOne
     @JsonIgnoreProperties("itemIssuances")
     private ShipmentItem shipmentItem;
