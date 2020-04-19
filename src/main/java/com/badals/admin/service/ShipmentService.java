@@ -9,10 +9,7 @@ import com.badals.admin.domain.pojo.DetrackItem;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.repository.*;
 //import com.badals.admin.repository.search.ShipmentSearchRepository;
-import com.badals.admin.service.dto.AddressDTO;
-import com.badals.admin.service.dto.ItemIssuanceDTO;
-import com.badals.admin.service.dto.OrderDTO;
-import com.badals.admin.service.dto.ShipmentDTO;
+import com.badals.admin.service.dto.*;
 import com.badals.admin.service.mapper.ItemIssuanceMapper;
 import com.badals.admin.service.mapper.OrderMapper;
 import com.badals.admin.service.mapper.ShipmentMapper;
@@ -235,6 +232,7 @@ public class ShipmentService {
 
         OrderDTO order = getOrderForDetrack(orderRef).get();
         AddressDTO address = order.getDeliveryAddress();
+        CustomerDTO customer = order.getCustomer();
         //BigDecimal balance = orderRepository.getBalance(orderRef);
 
 
@@ -252,6 +250,10 @@ public class ShipmentService {
 
         delivery.setDate(date);
         delivery.setPhone (address.getMobile());
+
+        if(address.getMobile() == null && customer != null)
+            delivery.setPhone(customer.getMobile());
+
         delivery.setInstructions (instructions);
         delivery.set_do (shipmentId +"-"+orderRef);
         delivery.setAddress(address.getLine1() + " " + address.getLine2() + " " + address.getCity());
