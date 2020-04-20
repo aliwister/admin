@@ -7,6 +7,7 @@ import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.DetrackDelivery;
 import com.badals.admin.domain.pojo.DetrackItem;
 import com.badals.admin.domain.projection.Inventory;
+import com.badals.admin.domain.projection.OutstandingQueue;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.repository.*;
 //import com.badals.admin.repository.search.ShipmentSearchRepository;
@@ -306,6 +307,13 @@ public class ShipmentService {
 
     public List<Inventory> getInventory() {
         return shipmentRepository.getInventory();
+    }
+
+    public List<OutstandingQueue> findOutstanding(String keyword) {
+        if (keyword != null && !keyword.trim().isEmpty())
+            return this.shipmentRepository.findOutstanding(keyword);
+
+        return shipmentRepository.findOutstanding();
     }
 
     /**

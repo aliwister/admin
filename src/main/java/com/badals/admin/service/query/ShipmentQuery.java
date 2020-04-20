@@ -4,6 +4,7 @@ package com.badals.admin.service.query;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.projection.Inventory;
+import com.badals.admin.domain.projection.OutstandingQueue;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.service.ShipmentService;
 import com.badals.admin.service.dto.ShipmentDTO;
@@ -30,6 +31,10 @@ public class ShipmentQuery implements GraphQLQueryResolver {
 
     public List<SortQueue> sortQueue(String keyword) {
         return shipmentService.findForSorting(keyword);
+    }
+
+    public List<OutstandingQueue> outstandingQueue(String keyword) {
+        return shipmentService.findOutstanding(keyword);
     }
 
     public List<Inventory> inventory() {
