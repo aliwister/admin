@@ -40,4 +40,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query(value="SELECT product_id AS productId, received, issued, received-issued AS quantityOnHand, title, image, sku FROM inventory", nativeQuery = true)
     List<Inventory> getInventory();
+
+    @Query
+    List<Shipment> findAllByReference(String reference);
 }

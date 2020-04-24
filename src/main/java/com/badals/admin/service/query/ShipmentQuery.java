@@ -29,6 +29,10 @@ public class ShipmentQuery implements GraphQLQueryResolver {
         return shipmentService.findOne(id).get();
     }
 
+    public List<ShipmentDTO> shipmentsByRef(String ref) {
+        return shipmentService.findByRef(ref);
+    }
+
     public List<SortQueue> sortQueue(String keyword) {
         return shipmentService.findForSorting(keyword);
     }

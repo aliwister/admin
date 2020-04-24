@@ -173,6 +173,7 @@ type ItemIssuance {
 type Query {
     shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
+    shipmentsByRef(ref: String): [Shipment]
     sortQueue(keyword: String): [SortQueue]
     outstandingQueue(keyword: String): [OutstandingQueue]
     #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]

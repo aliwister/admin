@@ -316,6 +316,10 @@ public class ShipmentService {
         return shipmentRepository.findOutstanding();
     }
 
+    public List<ShipmentDTO> findByRef(String id) {
+        return shipmentRepository.findAllByReference(id).stream().map(shipmentMapper::toDto).collect(Collectors.toList());
+    }
+
     /**
      * Search for the shipment corresponding to the query.
      *
