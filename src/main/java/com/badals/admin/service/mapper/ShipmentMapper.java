@@ -17,9 +17,9 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(source = "customer.lastname", target = "customerLastName")
     @Mapping(source = "merchant.name", target = "merchantName")
     @Mapping(source = "merchant.id", target = "merchantId")
-    @Mapping(source = "shipmentProgress.total", target = "progressTotal")
+    /*@Mapping(source = "shipmentProgress.total", target = "progressTotal")
     @Mapping(source = "shipmentProgress.done", target = "progressDone")
-    @Mapping(source = "shipmentProgress.todo", target = "progressTodo")
+    @Mapping(source = "shipmentProgress.todo", target = "progressTodo")*/
     ShipmentDTO toDto(Shipment shipment);
 
     //@Mapping(source = "addressId", target = "address")

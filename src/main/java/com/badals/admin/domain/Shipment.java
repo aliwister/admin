@@ -92,7 +92,7 @@ public class Shipment implements Serializable {
     @JsonIgnoreProperties("shipments")
     private Merchant merchant;
 
-    @ManyToOne
+/*    @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "reference", referencedColumnName = "reference",insertable= false, updatable = false)
     private ShipmentProgress shipmentProgress;
@@ -103,7 +103,7 @@ public class Shipment implements Serializable {
 
     public void setShipmentProgress(ShipmentProgress shipmentProgress) {
         this.shipmentProgress = shipmentProgress;
-    }
+    }*/
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
