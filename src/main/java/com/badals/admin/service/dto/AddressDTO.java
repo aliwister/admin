@@ -33,13 +33,14 @@ public class AddressDTO implements Serializable {
     public AddressDTO() {
     }
 
-    public AddressDTO(String firstName, String lastName, String line1, String line2, String city) {
+    public AddressDTO(String firstName, String lastName, String line1, String line2, String city, String mobile) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.line1 = line1;
         this.line2 = line2;
         this.city = city;
-        //this.mobile = mobile;
+
+        this.mobile = mobile;
     }
 
     @Override
@@ -60,6 +61,6 @@ public class AddressDTO implements Serializable {
     public static AddressDTO fromAddressPojo(AddressPojo pojo) {
         if(pojo == null)
             return null;
-        return new AddressDTO(pojo.getFirstName(),pojo.getLastName(),pojo.getLine1(),pojo.getLine2(),pojo.getCity());
+        return new AddressDTO(pojo.getFirstName(),pojo.getLastName(),pojo.getLine1(),pojo.getLine2(),pojo.getCity(), pojo.getMobile());
     }
 }

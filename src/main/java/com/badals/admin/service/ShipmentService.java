@@ -8,6 +8,7 @@ import com.badals.admin.domain.pojo.DetrackDelivery;
 import com.badals.admin.domain.pojo.DetrackItem;
 import com.badals.admin.domain.projection.Inventory;
 import com.badals.admin.domain.projection.OutstandingQueue;
+import com.badals.admin.domain.projection.ShipQueue;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.repository.*;
 //import com.badals.admin.repository.search.ShipmentSearchRepository;
@@ -318,6 +319,10 @@ public class ShipmentService {
 
     public List<ShipmentDTO> findByRef(String id) {
         return shipmentRepository.findAllByReference(id).stream().map(shipmentMapper::toDto).collect(Collectors.toList());
+    }
+
+    public List<ShipQueue> getShipQueue() {
+        return shipmentRepository.getShipQueue();
     }
 
     /**
