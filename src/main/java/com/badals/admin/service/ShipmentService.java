@@ -198,7 +198,8 @@ public class ShipmentService {
     }
 
     public List<ShipmentDTO> findForShipmentList(List<ShipmentStatus> status, ShipmentType type) {
-        return shipmentRepository.findForShipmentList(status, type).stream().map(shipmentMapper::toDto).collect(Collectors.toList());
+        List<Shipment> shipments = shipmentRepository.findForShipmentList(status, type);
+        return shipments.stream().map(shipmentMapper::toDtoList).collect(Collectors.toList());
     }
 
     public List<SortQueue> findForSorting(String keyword) {

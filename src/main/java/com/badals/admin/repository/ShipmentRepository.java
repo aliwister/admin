@@ -27,7 +27,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query(value="Select s.id from shipment s join shop.jhi_order o on s.reference = o.reference and s.shipment_status = 'PENDING' and s.shipment_type='CUSTOMER' where o.id = :id", nativeQuery=true)
     Long findCustomerShipmentIdNative(@Param(value = "id") Long orderId);
 
-    @Query("from Shipment s where s.shipmentStatus in ?1 and s.shipmentType = ?2")
+    @Query("from Shipment s left join fetch s.merchant left join fetch s.customer where s.shipmentStatus in ?1 and s.shipmentType = ?2")
     List<Shipment> findForShipmentList(List<ShipmentStatus> status, ShipmentType type);
 
     @Query(value="select * from sort_queue where description like %:keyword% ", nativeQuery=true)
