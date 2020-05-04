@@ -24,7 +24,7 @@ spring:
     password: 4158yORAQ64ipEXobeFO385O6olo7oKp~
     hikari:
       maximumPoolSize: 8
-      
+
 jhipster:
   clientApp:
     name: 'adminApp'
