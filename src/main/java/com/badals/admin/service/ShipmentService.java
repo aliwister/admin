@@ -231,6 +231,9 @@ public class ShipmentService {
         Double d = shipment.getShipmentItems().stream().mapToDouble(x -> x.getQuantity().doubleValue()).sum();
         Double d2 = shipment.getPkgs().stream().mapToDouble(x -> x.getPackagingContent().stream().mapToDouble(y -> y.getQuantity().doubleValue()).sum()).sum();
 
+        System.out.println("shipment total = "+d);
+        System.out.println("packages total = "+d2);
+
         if(Math.abs(d-d2) > .00001)
             throw new ShipmentNotReadyException("Shipment not ready. Must prepare shipment");
 
