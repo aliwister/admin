@@ -24,8 +24,8 @@ public class ShipmentMutation implements GraphQLMutationResolver {
     @Autowired
     ShipmentService shipmentService;
 
-    @Autowired
-    TrackingService trackingService;
+/*    @Autowired
+    TrackingService trackingService;*/
 
     @Autowired
     PurchaseShipmentService purchaseShipmentService;
