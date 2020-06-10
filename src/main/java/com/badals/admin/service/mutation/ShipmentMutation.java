@@ -2,13 +2,10 @@ package com.badals.admin.service.mutation;
 
 import com.badals.admin.domain.PackagingContent;
 import com.badals.admin.domain.ShipmentItem;
-import com.badals.admin.service.PackagingContentService;
-import com.badals.admin.service.PkgService;
-import com.badals.admin.service.PurchaseShipmentService;
-import com.badals.admin.service.ShipmentService;
+import com.badals.admin.service.*;
 import com.badals.admin.service.dto.*;
 
-import com.badals.admin.web.rest.errors.ShipmentNotReadyException;
+import com.badals.admin.service.errors.ShipmentNotReadyException;
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,9 @@ import java.util.List;
 public class ShipmentMutation implements GraphQLMutationResolver {
     @Autowired
     ShipmentService shipmentService;
+
+    @Autowired
+    TrackingService trackingService;
 
     @Autowired
     PurchaseShipmentService purchaseShipmentService;
@@ -65,5 +66,9 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         String m = shipmentService.sendToDetrack(shipmentId, orderId, name, instructions, date, time, assignTo);
         return new Message(m);
     }
+/*
+    public Message processAmazonShipments() throws IOException {
+        return trackingService.processAmazonFile();
+    }*/
 }
 
