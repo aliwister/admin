@@ -365,7 +365,7 @@ public class ShipmentService {
             .collect(Collectors.toList());
     }*/
 
-    public String sendToDetrackV2(Long shipmentId, String orderRef, String name, String instructions, String date, String time, String assignTo) throws JsonProcessingException, ShipmentNotReadyException {
+/*    public String sendToDetrackV2(Long shipmentId, String orderRef, String name, String instructions, String date, String time, String assignTo) throws JsonProcessingException, ShipmentNotReadyException {
 
         Shipment shipment = shipmentRepository.findById(shipmentId).get();
 
@@ -454,5 +454,5 @@ public class ShipmentService {
         shipmentRepository.save(shipment);
 
         return response.readEntity(String.class);
-    }
+    }*/
 }
