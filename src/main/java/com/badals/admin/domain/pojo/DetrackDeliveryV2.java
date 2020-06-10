@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DetrackDelivery {
+public class DetrackDeliveryV2 {
 
    String date;
    @JsonProperty(value = "do_number")
@@ -17,7 +17,7 @@ public class DetrackDelivery {
    String type;
 
    String address;
-   ArrayList<DetrackItem> items;
+   ArrayList<DetrackItemV2> items;
    public String getPhone() {
       return phone_number;
    }

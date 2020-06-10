@@ -27,6 +27,8 @@ public class DetrackDelivery {
    public String assign_to;
    public String notify_email;
    public String notify_url;
+   public String address_lat;
+   public String att_1;
 
    String sales_person;
 
