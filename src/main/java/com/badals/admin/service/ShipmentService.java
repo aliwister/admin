@@ -5,23 +5,23 @@ import com.badals.admin.domain.enumeration.OrderState;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.DetrackDelivery;
+import com.badals.admin.domain.pojo.DetrackDeliveryV2;
 import com.badals.admin.domain.pojo.DetrackItem;
+import com.badals.admin.domain.pojo.DetrackItemV2;
 import com.badals.admin.domain.projection.Inventory;
 import com.badals.admin.domain.projection.OutstandingQueue;
 import com.badals.admin.domain.projection.ShipQueue;
 import com.badals.admin.domain.projection.SortQueue;
 import com.badals.admin.repository.*;
-//import com.badals.admin.repository.search.ShipmentSearchRepository;
 import com.badals.admin.service.dto.*;
+import com.badals.admin.service.errors.ShipmentNotReadyException;
 import com.badals.admin.service.mapper.ItemIssuanceMapper;
 import com.badals.admin.service.mapper.OrderMapper;
 import com.badals.admin.service.mapper.ShipmentMapper;
-import com.badals.admin.web.rest.errors.ShipmentNotReadyException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,13 +30,19 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
+
+//import com.badals.admin.repository.search.ShipmentSearchRepository;
 
 /**
  * Service Implementation for managing {@link Shipment}.
@@ -256,11 +262,23 @@ public class ShipmentService {
         ArrayList<DetrackItem> items = new ArrayList<DetrackItem>();
 
         delivery.setDate(date);
-        delivery.setPhone (address.getMobile());
 
-        if(address.getMobile() == null && customer != null)
-            delivery.setPhone(customer.getMobile());
+        String mobile = address.getMobile();
+        if(mobile == null && customer != null)
+            mobile = customer.getMobile();
 
+
+
+        mobile = mobile.replaceAll("[^\\d.]", "");
+
+        if(mobile.length() > 8 && mobile.startsWith("00")) {
+            mobile = mobile.substring(2);
+        }
+
+        if(!mobile.startsWith("968") || mobile.length() < 11)
+            mobile = "968"+mobile;
+
+        delivery.setPhone (mobile);
         delivery.setInstructions (instructions);
         delivery.set_do (shipmentId +"-"+orderRef);
         delivery.setAddress(address.getLine1() + " " + address.getLine2() + " " + address.getCity());
@@ -269,6 +287,7 @@ public class ShipmentService {
         delivery.setAssign_to (assignTo);
         delivery.setSales_person ("Ali");
         delivery.setNotify_url("https://api.badals.com/detrack");
+        delivery.setAtt_1("https://wa.me/"+mobile);
 
         //if(balance != null)
          //   delivery.pay_amt = balance.toString();
@@ -288,6 +307,7 @@ public class ShipmentService {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
         params.add("key", "530e610169c28ce227a9716ba28a386cedc6d2dbefef67eb");
+        log.info(json);
         params.add("json", "["+json+"]");
         params.add("url", url);
         ResponseEntity<String> response = (ResponseEntity<String>) restTemplate.postForEntity(url, params, String.class);
@@ -300,6 +320,8 @@ public class ShipmentService {
 
         return response.getBody();
     }
+
+
 
     public void setStatus(Long shipmentId, ShipmentStatus status) {
         Shipment shipment = shipmentRepository.findById(shipmentId).get();
@@ -332,7 +354,6 @@ public class ShipmentService {
     /**
      * Search for the shipment corresponding to the query.
      *
-     * @param query the query of the search.
      * @return the list of entities.
      */
 /*    @Transactional(readOnly = true)
@@ -343,4 +364,95 @@ public class ShipmentService {
             .map(shipmentMapper::toDto)
             .collect(Collectors.toList());
     }*/
+
+    public String sendToDetrackV2(Long shipmentId, String orderRef, String name, String instructions, String date, String time, String assignTo) throws JsonProcessingException, ShipmentNotReadyException {
+
+        Shipment shipment = shipmentRepository.findById(shipmentId).get();
+
+        if(shipment.getPkgs() == null || shipment.getPkgs().size() == 0)
+            throw new ShipmentNotReadyException("Shipment not ready. Must prepare shipment");
+
+        Double d = shipment.getShipmentItems().stream().mapToDouble(x -> x.getQuantity().doubleValue()).sum();
+        Double d2 = shipment.getPkgs().stream().mapToDouble(x -> x.getPackagingContent().stream().mapToDouble(y -> y.getQuantity().doubleValue()).sum()).sum();
+
+        System.out.println("shipment total = "+d);
+        System.out.println("packages total = "+d2);
+
+        if(Math.abs(d-d2) > .00001)
+            throw new ShipmentNotReadyException("Shipment not ready. Must prepare shipment");
+
+        OrderDTO order = getOrderForDetrack(orderRef).get();
+        AddressDTO address = order.getDeliveryAddress();
+        CustomerDTO customer = order.getCustomer();
+        //BigDecimal balance = orderRepository.getBalance(orderRef);
+
+
+
+
+        //System.out.println(orderId);
+
+        //String url = "http://buyth.at/-make";
+        String url = "https://app.detrack.com/api/v2/dn/jobs";
+
+        DetrackDeliveryV2 delivery = new DetrackDeliveryV2();
+        ArrayList<DetrackItemV2> items = new ArrayList<DetrackItemV2>();
+
+        delivery.setDate(date);
+
+        String mobile = address.getMobile();
+        if(mobile == null && customer != null)
+            mobile = customer.getMobile();
+
+        mobile = mobile.replaceAll("[^\\d.]", "");
+        if(!mobile.startsWith("968") || mobile.length() < 11)
+            mobile = "968"+mobile;
+
+        delivery.setPhone_number (mobile);
+        delivery.setInstructions (instructions);
+        delivery.set_do (shipmentId +"-"+orderRef);
+        delivery.setAddress(address.getLine1() + " " + address.getLine2() + " " + address.getCity());
+        delivery.setDeliver_to_collect_from (address.getFirstName() + " " + address.getLastName());
+        delivery.setDelivery_time (time);
+        delivery.setAssign_to (assignTo);
+        delivery.setSales_person ("Ali");
+        delivery.setWebhook_url("https://webhook.site/54b0464c-6035-45f2-8c8f-43806f8620c4");
+        //delivery.setNotify_url("https://api.badals.com/detrack");
+        delivery.setAttachment_url("https://wa.me/"+mobile);
+
+        LocalDateTime ldt = LocalDateTime.now();//.plusDays(1);
+        DateTimeFormatter formmat1 = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+        delivery.setDate(formmat1.format(ldt));
+        //if(balance != null)
+        //   delivery.pay_amt = balance.toString();
+
+        if (shipment.getShipmentItems() != null) {
+            for(ShipmentItem product: shipment.getShipmentItems()) {
+                DetrackItemV2 item = new DetrackItemV2();
+                item.setSku(product.getProductId());
+                item.setDescription(product.getDescription());
+                item.setQuantity(product.getQuantity().intValue());
+                items.add(item);
+            }
+            delivery.setItems(items);
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(delivery);
+
+        // TODO Auto-generated method stub
+        Client client = ClientBuilder.newClient();
+        log.info(json);
+        Entity payload = Entity.json("{  \"data\":"+json+" }");
+        //Entity payload = Entity.json("{  \"data\": {    \"id\": \"5b22055510c92b1a046ece04\",    \"type\": \"Delivery\",    \"primary_job_status\": \"dispatched\",    \"open_to_marketplace\": false,    \"marketplace_offer\": null,    \"do_number\": \"\",    \"attempt\": 1,    \"date\": \"2018-06-14\",    \"start_date\": \"2018-06-14\",    \"job_age\": 1,    \"job_release_time\": null,    \"job_time\": null,    \"time_window\": null,    \"job_received_date\": null,    \"tracking_number\": \"T0\",    \"order_number\": \"ORN12345678\",    \"job_type\": null,    \"job_sequence\": null,    \"job_fee\": null,    \"address_lat\": null,    \"address_lng\": null,    \"address\": \"Singapore 470140\",    \"company_name\": null,    \"address_1\": null,    \"address_2\": null,    \"address_3\": null,    \"postal_code\": \"470140\",    \"city\": null,    \"state\": null,    \"country\": null,    \"geocoded_lat\": 1.33668219002454,    \"geocoded_lng\": 103.910711702473,    \"billing_address\": null,    \"deliver_to_collect_from\": \"James Li\",    \"last_name\": null,    \"phone_number\": \"65432178\",    \"sender_phone_number\": null,    \"fax_number\": \"65432179\",    \"instructions\": null,    \"assign_to\": null,    \"notify_email\": \"test@example.com\",    \"webhook_url\": null,    \"zone\": null,    \"customer\": null,    \"account_number\": null,    \"job_owner\": null,    \"invoice_number\": null,    \"invoice_amount\": null,    \"payment_mode\": null,    \"payment_amount\": null,    \"group_name\": null,    \"vendor_name\": null,    \"shipper_name\": null,    \"source\": null,    \"weight\": null,    \"parcel_width\": null,    \"parcel_length\": null,    \"parcel_height\": null,    \"cubic_meter\": null,    \"boxes\": null,    \"cartons\": null,    \"pieces\": null,    \"envelopes\": null,    \"pallets\": null,    \"bins\": null,    \"trays\": null,    \"bundles\": null,    \"rolls\": null,    \"number_of_shipping_labels\": null,    \"attachment_url\": null,    \"detrack_number\": \"DET2000001\",    \"status\": \"dispatched\",    \"tracking_status\": \"Info received\",    \"reason\": null,    \"last_reason\": null,    \"received_by_sent_by\": null,    \"note\": null,    \"carrier\": null,    \"pod_lat\": \"\",    \"pod_lng\": \"\",    \"pod_address\": \"\",    \"address_tracked_at\": null,    \"arrived_lat\": null,    \"arrived_lng\": null,    \"arrived_address\": null,    \"arrived_at\": null,    \"texted_at\": null,    \"called_at\": null,    \"serial_number\": null,    \"signed_at\": null,    \"photo_1_at\": null,    \"photo_2_at\": null,    \"photo_3_at\": null,    \"photo_4_at\": null,    \"photo_5_at\": null,    \"signature_file_url\": null,    \"photo_1_file_url\": null,    \"photo_2_file_url\": null,    \"photo_3_file_url\": null,    \"photo_4_file_url\": null,    \"photo_5_file_url\": null,    \"actual_weight\": null,    \"temperature\": null,    \"hold_time\": null,    \"payment_collected\": null,    \"auto_reschedule\": null,    \"actual_crates\": null,    \"actual_pallets\": null,    \"actual_utilization\": null,    \"goods_service_rating\": null,    \"driver_rating\": null,    \"customer_feedback\": null,    \"eta_time\": null,    \"live_eta\": null,    \"depot\": null,    \"depot_contact\": null,    \"department\": null,    \"sales_person\": null,    \"identification_number\": null,    \"bank_prefix\": null,    \"run_number\": null,    \"pick_up_from\": null,    \"pick_up_time\": null,    \"pick_up_lat\": null,    \"pick_up_lng\": null,    \"pick_up_address\": null,    \"pick_up_address_1\": null,    \"pick_up_address_2\": null,    \"pick_up_address_3\": null,    \"pick_up_city\": null,    \"pick_up_state\": null,    \"pick_up_country\": null,    \"pick_up_postal_code\": null,    \"pick_up_zone\": null,    \"pick_up_assign_to\": null,    \"pick_up_reason\": null,    \"info_received_at\": \"2018-06-14T06:04:06.017Z\",    \"pick_up_at\": null,    \"scheduled_at\": null,    \"at_warehouse_at\": null,    \"out_for_delivery_at\": null,    \"head_to_pick_up_at\": null,    \"head_to_delivery_at\": null,    \"cancelled_at\": null,    \"pod_at\": null,    \"pick_up_failed_count\": null,    \"deliver_failed_count\": null,    \"job_price\": null,    \"insurance_price\": null,    \"insurance_coverage\": false,    \"total_price\": null,    \"payer_type\": null,    \"remarks\": null,    \"items_count\": 2,    \"service_type\": null,    \"warehouse_address\": null,    \"destination_time_window\": null,    \"door\": null,    \"time_zone\": null,    \"vehicle_type\": null,    \"created_at\": \"2018-06-14T06:04:06.017Z\",    \"items\": [      {        \"id\": \"5b22055510c92b1a046ece05\",        \"sku\": \"12345678\",        \"purchase_order_number\": null,        \"batch_number\": null,        \"expiry_date\": null,        \"description\": null,        \"comments\": null,        \"quantity\": 10,        \"unit_of_measure\": null,        \"checked\": false,        \"actual_quantity\": null,        \"inbound_quantity\": null,        \"unload_time_estimate\": null,        \"unload_time_actual\": null,        \"follow_up_quantity\": null,        \"follow_up_reason\": null,        \"rework_quantity\": null,        \"rework_reason\": null,        \"reject_quantity\": 0,        \"reject_reason\": null,        \"weight\": null,        \"serial_numbers\": [],        \"photo_url\": null      },      {        \"id\": \"5b22055510c92b1a046ece06\",        \"sku\": \"12387654\",        \"purchase_order_number\": null,        \"batch_number\": null,        \"expiry_date\": null,        \"description\": null,        \"comments\": null,        \"quantity\": 5,        \"unit_of_measure\": null,        \"checked\": false,        \"actual_quantity\": null,        \"inbound_quantity\": null,        \"unload_time_estimate\": null,        \"unload_time_actual\": null,        \"follow_up_quantity\": null,        \"follow_up_reason\": null,        \"rework_quantity\": null,        \"rework_reason\": null,        \"reject_quantity\": 0,        \"reject_reason\": null,        \"weight\": null,        \"serial_numbers\": [],        \"photo_url\": null      }    ]  }}");
+        Response response = client.target("https://app.detrack.com/api/v2/dn/jobs").request(MediaType.APPLICATION_JSON_TYPE)
+            .header("X-API-KEY", "530e610169c28ce227a9716ba28a386cedc6d2dbefef67eb")
+            .post(payload);
+        shipment.setShipmentStatus(ShipmentStatus.SCHEDULED);
+        shipment.setTrackingNum(shipmentId +"-"+orderRef);
+
+
+        shipmentRepository.save(shipment);
+
+        return response.readEntity(String.class);
+    }
 }
