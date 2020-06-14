@@ -376,6 +376,21 @@ public class ShipmentService {
         return shipmentMapper.toDto(shipment);
     }
 
+    public String addItem(Long shipmentId, Long productId, Long purchaseItemId, String description, BigDecimal quantity) {
+        // Shipment Item
+        Shipment shipment = shipmentRepository.findById(shipmentId).get();
+        ShipmentItem shipmentItem = new ShipmentItem().shipment(shipment).sequence(shipment.getShipmentItems().size()+1).description(description).quantity(quantity);
+        shipmentItem.setProductId(productId);
+
+        // Purchase Shipment
+        PurchaseItem purchaseItem = purchaseItemRepository.getOne(purchaseItemId);
+        PurchaseShipment purchaseShipment = new PurchaseShipment().quantity(quantity).shipmentItem(shipmentItem).purchaseItem(purchaseItem);
+
+        shipmentItemRepository.save(shipmentItem);
+        purchaseShipmentRepository.save(purchaseShipment);
+        return "Done";
+    }
+
     /**
      * Search for the shipment corresponding to the query.
      *

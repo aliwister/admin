@@ -56,6 +56,17 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         packagingContentService.save(dto);
         return new Message("Done");
     }
+
+    Message addItem(Long shipmentId, Long productId, Long purchaseItemId, String description, BigDecimal quantity)
+     {
+        String m = shipmentService.addItem(shipmentId,
+            productId,
+            purchaseItemId,
+            description,
+            quantity);
+        return new Message("Done");
+    }
+
     public Message sendToDetrack(Long shipmentId, String orderId, String name, String instructions, String date, String time, String assignTo) throws JsonProcessingException, ShipmentNotReadyException {
         String m = shipmentService.sendToDetrack(shipmentId, orderId, name, instructions, date, time, assignTo);
         return new Message(m);

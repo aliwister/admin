@@ -251,4 +251,5 @@ type Mutation {
     #unAccept(shipmentAcceptanceId: Long): Message
     #unIssue(itemIssuanceId: Long) : Message
     createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput]): Shipment
+    addItem(shipmentId: Long,  productId: Long, purchaseItemId: Long, description: String, quantity: BigDecimal): Message
 }

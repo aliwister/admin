@@ -274,18 +274,19 @@ public class TrackingService {
 
     public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems) throws Exception {
         Shipment s = shipmentMapper.toEntity(shipment);
-        for (ShipmentItemDTO shipmentItem : shipmentItems) {
-            ShipmentItem from = shipmentItemRepository.getOne(shipmentItem.getFrom());
-            if (from == null) {
-                throw new Exception ("From shouldn't be null");
+        if (shipmentItems != null)
+            for (ShipmentItemDTO shipmentItem : shipmentItems) {
+                ShipmentItem from = shipmentItemRepository.getOne(shipmentItem.getFrom());
+                if (from == null) {
+                    throw new Exception ("From shouldn't be null");
+                }
+                ShipmentItem si = shipmentItemMapper.toEntity(shipmentItem);
+                for (PurchaseShipmentDTO purchaseShipment: shipmentItem.getPurchaseShipments()) {
+                    PurchaseShipment ps = purchaseShipmentMapper.toEntity(purchaseShipment);
+                    si.addPurchaseShipment(ps);
+                }
+                s.addShipmentItem(si);
             }
-            ShipmentItem si = shipmentItemMapper.toEntity(shipmentItem);
-            for (PurchaseShipmentDTO purchaseShipment: shipmentItem.getPurchaseShipments()) {
-                PurchaseShipment ps = purchaseShipmentMapper.toEntity(purchaseShipment);
-                si.addPurchaseShipment(ps);
-            }
-            s.addShipmentItem(si);
-        }
         s = shipmentRepository.save(s);
         return shipmentMapper.toDto(s);
     }
