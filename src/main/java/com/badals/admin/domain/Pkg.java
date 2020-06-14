@@ -15,7 +15,7 @@ import com.badals.admin.domain.enumeration.PackageType;
  */
 @Entity
 @Table(name = "pkg")
-public class Pkg implements Serializable {
+public class Pkg extends Auditable implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,6 +58,7 @@ public class Pkg implements Serializable {
     @JoinTable(name = "packaging_content",
         joinColumns = @JoinColumn(name = "pkg_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "shipment_item_id", referencedColumnName = "id"))
+    @OrderBy("sequence")
     Set<ShipmentItem> shipmentItems;
 
     public Set<ShipmentItem> getShipmentItems() {

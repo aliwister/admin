@@ -22,7 +22,7 @@ import com.badals.admin.domain.enumeration.ShipmentStatus;
 @Entity
 @Table(name = "shipment")
 //@org.springframework.data.elasticsearch.annotations.Document(indexName = "shipment")
-public class Shipment implements Serializable {
+public class Shipment extends Auditable implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -77,7 +77,8 @@ public class Shipment implements Serializable {
     @JoinColumn(name = "address_id",referencedColumnName = "id_address")
     private Address address;
 
-    @OneToMany(mappedBy = "shipment")
+    @OneToMany(mappedBy = "shipment", cascade=CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("sequence")
     private Set<ShipmentItem> shipmentItems = new HashSet<>();
 
     @OneToMany(mappedBy = "shipment")

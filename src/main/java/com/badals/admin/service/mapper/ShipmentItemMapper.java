@@ -8,15 +8,16 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link ShipmentItem} and its DTO {@link ShipmentItemDTO}.
  */
-@Mapper(componentModel = "spring", uses = {ShipmentMapper.class/*, ProductMapper.class*/})
+@Mapper(componentModel = "spring", uses = {ShipmentMapper.class, PurchaseShipmentMapper.class})
 public interface ShipmentItemMapper extends EntityMapper<ShipmentItemDTO, ShipmentItem> {
 
     @Mapping(source = "shipment.id", target = "shipmentId")
-    @Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "product.ref", target = "productId")
     @Mapping(source = "product.image", target = "image")
     ShipmentItemDTO toDto(ShipmentItem shipmentItem);
 
     @Mapping(source = "shipmentId", target = "shipment")
+    @Mapping(target = "purchaseShipments", ignore = true)
     //@Mapping(source = "productId", target = "productId")
     ShipmentItem toEntity(ShipmentItemDTO shipmentItemDTO);
 

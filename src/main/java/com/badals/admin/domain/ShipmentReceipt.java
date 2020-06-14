@@ -14,7 +14,7 @@ import com.badals.admin.domain.enumeration.RejectReason;
  */
 @Entity
 @Table(name = "shipment_receipt")
-public class ShipmentReceipt implements Serializable {
+public class ShipmentReceipt extends Auditable implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,6 +30,10 @@ public class ShipmentReceipt implements Serializable {
 
     @Column(name = "rejected", precision = 21, scale = 2)
     private BigDecimal rejected;
+
+    @Column
+    private String sku;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reject_reason")
@@ -112,6 +116,19 @@ public class ShipmentReceipt implements Serializable {
 
     public ShipmentReceipt rejectReason(RejectReason rejectReason) {
         this.rejectReason = rejectReason;
+        return this;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public ShipmentReceipt sku(String sku) {
+        this.sku = sku;
         return this;
     }
 

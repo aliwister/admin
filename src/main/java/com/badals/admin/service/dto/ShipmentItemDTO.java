@@ -4,6 +4,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A DTO for the {@link com.badals.admin.domain.ShipmentItem} entity.
@@ -24,8 +25,13 @@ public class ShipmentItemDTO implements Serializable {
     private Long shipmentId;
 
     private Long productId;
+    private Long productRef;
 
     private String image;
+
+    private Long from;
+
+    private Set<PurchaseShipmentDTO> purchaseShipments;
 
     public ShipmentItemDTO(Integer sequence, BigDecimal quantity, String description, Long shipmentId, Long productId) {
         this.sequence = sequence;

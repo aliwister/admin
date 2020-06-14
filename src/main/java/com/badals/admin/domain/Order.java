@@ -82,7 +82,7 @@ public class Order implements Serializable {
     private Address deliveryAddress;
 
    @NotAudited
-    @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("orders")
     @JoinColumn(name = "invoice_address_id",referencedColumnName = "id_address")
     private Address invoiceAddress;

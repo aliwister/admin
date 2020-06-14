@@ -13,6 +13,7 @@ import lombok.Data;
  * A DTO for the {@link com.badals.admin.domain.Shipment} entity.
  */
 @Data
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "shipment")
 public class ShipmentDTO implements Serializable {
 
     private Long id;
@@ -57,9 +58,6 @@ public class ShipmentDTO implements Serializable {
     private Set<PkgDTO> pkgs;
     private Set<ShipmentItemDTO> shipmentItems;
 
-    private BigDecimal progressTotal;
-    private BigDecimal progressDone;
-    private BigDecimal progressTodo;
 
     @Override
     public boolean equals(Object o) {

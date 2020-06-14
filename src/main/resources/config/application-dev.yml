@@ -65,10 +65,16 @@ spring:
       hibernate.generate_statistics: false
       hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   data:
-    elasticsearch:
-      properties:
-        path:
-          home: target/elasticsearch
+    jest:
+      uri: https://d68af11bb6364c90b56a8215597289b1.eu-central-1.aws.cloud.es.io:9243
+      username: elastic
+      password: U4s3g1aeygWkZbbeK8urU7KM
+  # see https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-nosql.html#boot-features-connecting-to-elasticsearch-jest
+  elasticsearch:
+    rest:
+      uris: https://d68af11bb6364c90b56a8215597289b1.eu-central-1.aws.cloud.es.io:9243
+      username: elastic
+      password: U4s3g1aeygWkZbbeK8urU7KM
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev, faker
@@ -118,7 +124,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: YzNiYTI2ZjRiYWI5NTEwOWU4ZTkyZTU2YTQ4MjFkNGMxYmUxOTg2M2I2MmE5MDRiZmYxOWQwZjg1ZmZmNGJiZTU0MTUyZWYyNzE3YTJkYzIzMTZmMjljMGQyYzBjMjYxOGJkOGIwNmU5M2NjMjI3MDVhNTI2ZWE2YjI2NGI0YTI=
+        base64-secret: NzQwMjdjZTQyZTJkMWJlNTEzOTU4ZDFhZWU1OGNkZmI5YTg5ZGEzNjkzZjU0M2U5OWY3MWI2NGJjNTVkNzM5ZTBlYWYwMWZhZmUwMmE5MDNlZjJiN2E2MWNlMDg0YTU0MjRjNTkwOTVmZWE3NGI2NTRkZjE2NzllM2ZjOTMyYjM=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000

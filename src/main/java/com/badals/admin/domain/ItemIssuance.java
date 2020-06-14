@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "item_issuance")
 //@org.springframework.data.elasticsearch.annotations.Document(indexName = "itemissuance")
-public class ItemIssuance implements Serializable {
+public class ItemIssuance extends Auditable implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

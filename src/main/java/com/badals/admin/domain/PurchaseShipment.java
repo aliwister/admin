@@ -28,7 +28,7 @@ public class PurchaseShipment implements Serializable {
     @ManyToOne
     private ShipmentItem shipmentItem;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private PurchaseItem purchaseItem;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

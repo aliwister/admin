@@ -5,14 +5,10 @@ import com.badals.admin.domain.enumeration.OrderState;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.DetrackDelivery;
-import com.badals.admin.domain.pojo.DetrackDeliveryV2;
 import com.badals.admin.domain.pojo.DetrackItem;
-import com.badals.admin.domain.pojo.DetrackItemV2;
-import com.badals.admin.domain.projection.Inventory;
-import com.badals.admin.domain.projection.OutstandingQueue;
-import com.badals.admin.domain.projection.ShipQueue;
-import com.badals.admin.domain.projection.SortQueue;
+import com.badals.admin.domain.projection.*;
 import com.badals.admin.repository.*;
+import com.badals.admin.repository.search.ShipmentSearchRepository;
 import com.badals.admin.service.dto.*;
 import com.badals.admin.service.errors.ShipmentNotReadyException;
 import com.badals.admin.service.mapper.ItemIssuanceMapper;
@@ -48,6 +44,7 @@ public class ShipmentService {
     private final Logger log = LoggerFactory.getLogger(ShipmentService.class);
 
     private final ShipmentRepository shipmentRepository;
+    private final ShipmentSearchRepository shipmentSearchRepository;
 
     private final ShipmentMapper shipmentMapper;
 
@@ -68,8 +65,9 @@ public class ShipmentService {
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
+    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
         this.shipmentRepository = shipmentRepository;
+        this.shipmentSearchRepository = shipmentSearchRepository;
         this.shipmentMapper = shipmentMapper;
         //this.shipmentSearchRepository = shipmentSearchRepository;
         this.purchaseItemRepository = purchaseItemRepository;
@@ -95,7 +93,7 @@ public class ShipmentService {
         Shipment shipment = shipmentMapper.toEntity(shipmentDTO);
         shipment = shipmentRepository.save(shipment);
         ShipmentDTO result = shipmentMapper.toDto(shipment);
-        //shipmentSearchRepository.save(shipment);
+        shipmentSearchRepository.save(result);
         return result;
     }
 
@@ -137,7 +135,22 @@ public class ShipmentService {
         //shipmentSearchRepository.deleteById(id);
     }
 
-    public void acceptItem(Long shipmentId, Long pkgId, Long purchaseItemId, Long productId, Long merchantId, String description, BigDecimal quantity, BigDecimal accepted, BigDecimal rejected) {
+    public void acceptItem(Long shipmentItemId, Long packageId, BigDecimal accepted, BigDecimal rejected) {
+        Pkg pkg = prepItem(shipmentItemId, packageId, accepted.add(rejected));
+        ShipmentItem shipmentItem = shipmentItemRepository.findById(shipmentItemId).get();
+        ShipmentReceipt shipmentReceipt = new ShipmentReceipt().accepted(accepted).receivedDate(Instant.now()).pkg(pkg).rejected(rejected).shipmentItem(shipmentItem);
+        shipmentReceipt.setProductId(shipmentItem.getProductId());
+        shipmentReceiptRepository.save(shipmentReceipt);
+
+    }
+
+    public void manualAccept(Long packageId, String sku, BigDecimal accepted, BigDecimal rejected) {
+        Pkg pkg = pkgRepository.findById(packageId).get();
+        ShipmentReceipt shipmentReceipt = new ShipmentReceipt().accepted(accepted).receivedDate(Instant.now()).pkg(pkg).rejected(rejected).sku(sku);
+        shipmentReceiptRepository.save(shipmentReceipt);
+    }
+
+    public void acceptItemOld(Long shipmentId, Long pkgId, Long purchaseItemId, Long productId, Long merchantId, String description, BigDecimal quantity, BigDecimal accepted, BigDecimal rejected) {
         Shipment shipment = shipmentRepository.getOne(shipmentId);
         PurchaseItem purchaseItem = purchaseItemRepository.getOne(purchaseItemId);
         Pkg pkg = pkgRepository.getOne(pkgId);
@@ -163,9 +176,15 @@ public class ShipmentService {
         shipmentReceiptRepository.save(shipmentReceipt);
     }
 
-    public ItemIssuanceDTO issueItem(Long orderItemId, Long productId, String description, BigDecimal quantity) {
+    public ItemIssuanceDTO issueItem(Long orderItemId, Long productId, String description, BigDecimal quantity) throws Exception {
+        // Is filled?
+        if(orderItemRepository.checkFilled(orderItemId, quantity) > 0)
+            throw new Exception("This item is already filled");
+
+
         // Find customer's pending shipment
         OrderItem orderItem = orderItemRepository.findForSorting(orderItemId);
+
         Customer customer = orderItem.getOrder().getCustomer();
         Long shipmentId = shipmentRepository.findCustomerShipmentIdNative(orderItem.getOrder().getId());
         Shipment shipment = null;
@@ -180,6 +199,7 @@ public class ShipmentService {
             shipment.setReference(orderItem.getOrder().getReference());
             shipment.setShipmentType(ShipmentType.CUSTOMER);
             shipmentRepository.save(shipment);
+            shipmentSearchRepository.save(shipmentMapper.toDto(shipment));
         }
 
         ShipmentItem shipmentItem = new ShipmentItem().shipment(shipment).sequence(shipment.getShipmentItems().size()+1).description(description).quantity(quantity);
@@ -206,12 +226,12 @@ public class ShipmentService {
         return shipmentRepository.findForSorting(keyword);
     }
 
-    public void prepItem(Long shipmentItemId, Long packageId, BigDecimal quantity) {
+    public Pkg prepItem(Long shipmentItemId, Long packageId, BigDecimal quantity) {
         ShipmentItem item = shipmentItemRepository.findById(shipmentItemId).get();
         Pkg pkg = pkgRepository.findById(packageId).get();
-        PackagingContent packagingContent = new PackagingContent();
-        packagingContent.setShipmentItem(item);
-
+        PackagingContent packagingContent = new PackagingContent().shipmentItem(item).pkg(pkg).quantity(quantity);
+        packagingContentRepository.save(packagingContent);
+        return pkg;
     }
 
     @Autowired
@@ -343,6 +363,17 @@ public class ShipmentService {
 
     public List<ShipQueue> getShipQueue() {
         return shipmentRepository.getShipQueue();
+    }
+
+    public List<PrepQueue> getPrepQueue(Long shipmentId, String keyword) {
+        return shipmentRepository.getPrepQueue(shipmentId, keyword);
+    }
+
+    public ShipmentDTO acceptShipment(String trackingNum) {
+        Shipment shipment = shipmentRepository.findByTrackingNum(trackingNum).get();
+        shipment.setShipmentStatus(ShipmentStatus.ACCEPTED);
+        shipmentRepository.save(shipment);
+        return shipmentMapper.toDto(shipment);
     }
 
     /**

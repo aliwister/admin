@@ -5,7 +5,8 @@ import java.math.BigDecimal;
 public interface SortQueue {
    Long getId();
    String getDescription();
-   BigDecimal getQuantity();   BigDecimal preallocated();
+   BigDecimal getQuantity();
+   BigDecimal getPreallocated();
    BigDecimal getPrice();
    BigDecimal getCost();
    String getImage();

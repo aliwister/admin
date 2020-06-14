@@ -6,6 +6,8 @@ import javax.persistence.*;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A ShipmentItem.
@@ -31,17 +33,44 @@ public class ShipmentItem implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("shipmentItems")
     private Shipment shipment;
 //
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", updatable = false, insertable = false, referencedColumnName = "ref")
     private Product product;
 
     @Column(name="product_id")
     private Long productId;
 
+    @Column(name="_from")
+    private Long from;
+
+    public Long getFrom() {
+        return from;
+    }
+
+    public void setFrom(Long from) {
+        this.from = from;
+    }
+
+    @OneToMany(mappedBy = "shipmentItem", cascade=CascadeType.ALL, orphanRemoval = true)
+    private Set<PurchaseShipment> purchaseShipments = new HashSet<>();
+
+    public Set<PurchaseShipment> getPurchaseShipments() {
+        return purchaseShipments;
+    }
+
+    public void setPurchaseShipments(Set<PurchaseShipment> purchaseShipments) {
+        this.purchaseShipments = purchaseShipments;
+    }
+
+    public ShipmentItem addPurchaseShipment(PurchaseShipment purchaseShipment) {
+        this.purchaseShipments.add(purchaseShipment);
+        purchaseShipment.setShipmentItem(this);
+        return this;
+    }
 
     public Long getProductId() {
         return productId;

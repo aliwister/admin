@@ -32,6 +32,18 @@ enum PackageType {
     NONSTANDARD
 }
 
+type PurchaseShipment {
+    shipmentItemId: Int
+    purchaseItemId: Int
+    quantity: Int
+}
+input PurchaseShipmentInput {
+    shipmentItemId: Int
+    purchaseItemId: Int
+    quantity: Int
+    __typename: String
+}
+
 type Merchant {
     id: ID
     name: String
@@ -52,6 +64,8 @@ type ShipmentItem {
     shipmentId: Long
     productId: Long
     image: String
+    purchaseShipments: [PurchaseShipment]
+    from: Long
 }
 
 type Shipment {
@@ -77,9 +91,6 @@ type Shipment {
     customerFirstName: String
     customerLastName: String
     merchantName: String
-    progressTotal: BigDecimal
-    progressDone: BigDecimal
-    progressTodo: BigDecimal
 }
 
 type ShipmentReceipt {
@@ -98,12 +109,24 @@ input ShipmentInput {
     shipmentType: ShipmentType
     shipmentStatus: ShipmentStatus
     merchantId: Long
+
+}
+
+input ShipmentItemInput {
+    sequence: Int
+    quantity: BigDecimal
+    description: String
+    shipmentId: Long
+    productId: Long
+    image: String
+    purchaseShipments: [PurchaseShipmentInput]
+    from: Long
 }
 
 input PackagingContentInput {
     shipmentItemId: Long
     pkgId: Long
-    quantity: Long
+    quantity: BigDecimal
 }
 
 type Pkg {
@@ -153,6 +176,19 @@ type SortQueue {
    productId: Long
    merchantId: Long
 }
+
+type PrepQueue {
+   id: ID
+   description: String
+   quantity: BigDecimal
+   unpacked: BigDecimal
+   image: String
+   shipmentId: Long
+   productId: Long
+   orderItemId: Long
+   orderId: Long
+}
+
 type OutstandingQueue {
    id: ID
    description: String
@@ -181,6 +217,10 @@ type ItemIssuance {
    id: ID
    shipmentId: Long
 }
+type ShipmentItemCount {
+    trackingNum: String
+    count: Long
+}
 type Query {
     shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
@@ -190,20 +230,25 @@ type Query {
     #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]
     inventory: [Inventory]
     shipQueue: [ShipQueue]
-
+    prepQueue(shipmentId: Long, keyword: String = ""): [PrepQueue]
+    shipmentItemsByTrackingNums(trackingNums: [String]): [ShipmentItem]
+    shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemCount]
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
-    acceptShipment(shipment: ShipmentInput): Shipment
+    createShipment(shipment: ShipmentInput): Shipment
+    acceptShipment(trackingNum: String): Shipment
     saveShipment(shipment: ShipmentInput): Shipment
     acceptPackage(pkg : PackageInput): Pkg
-    acceptItem(shipmentId: Long,  pkgId: Long,  purchaseItemId: Long,  productId: Long,  merchantId: Long,  description: String,  quantity: BigDecimal,  accepted: BigDecimal,  rejected: BigDecimal): Message
+    #acceptItem(shipmentId: Long,  pkgId: Long,  purchaseItemId: Long,  productId: Long,  merchantId: Long,  description: String,  quantity: BigDecimal,  accepted: BigDecimal,  rejected: BigDecimal): Message
+    acceptItem (shipmentItemId: Long,  packageId: Long, accepted: BigDecimal, rejected: BigDecimal): Message
     issueItem(orderItemId : Long, productId : Long, description : String, quantity : BigDecimal): ItemIssuance
     prepItem(dto: PackagingContentInput): Message
+    processAmazonShipments: Message
     #printCode(shipmentId: Long): Message
     #savePackage(pkgId: Long, shipmentItems: [Long]): Pkg
     #scheduleShipment(id: Long, deliveryDate: LocalDate, comments: String, assignTo: String): Message
     #unAccept(shipmentAcceptanceId: Long): Message
     #unIssue(itemIssuanceId: Long) : Message
-
+    createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput]): Shipment
 }
