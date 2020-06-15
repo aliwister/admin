@@ -3,8 +3,8 @@ package com.badals.admin.service.query;
 
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
-import com.badals.admin.domain.pojo.ShipmentItemCountImpl;
-import com.badals.admin.domain.projection.ShipmentItemCount;
+
+import com.badals.admin.domain.pojo.ShipmentItemSummaryImpl;
 import com.badals.admin.domain.projection.*;
 import com.badals.admin.service.ShipmentService;
 import com.badals.admin.service.TrackingService;
@@ -59,7 +59,7 @@ public class ShipmentQuery implements GraphQLQueryResolver {
         return trackingService.findByTrackingNums(trackingNums);
     }
 
-    public List<ShipmentItemCountImpl> shipmentItemsCountByTrackingNums(List<String> trackingNums) {
+    public List<ShipmentItemSummaryImpl> shipmentItemsCountByTrackingNums(List<String> trackingNums) {
         return trackingService.findCountByTrackingNums(trackingNums);
     }
 }

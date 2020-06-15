@@ -217,9 +217,11 @@ type ItemIssuance {
    id: ID
    shipmentId: Long
 }
-type ShipmentItemCount {
+type ShipmentItemSummary {
     trackingNum: String
-    count: Long
+    total: Long
+    status: String
+    processed: Long
 }
 type Query {
     shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
@@ -232,7 +234,7 @@ type Query {
     shipQueue: [ShipQueue]
     prepQueue(shipmentId: Long, keyword: String = ""): [PrepQueue]
     shipmentItemsByTrackingNums(trackingNums: [String]): [ShipmentItem]
-    shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemCount]
+    shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
@@ -250,6 +252,6 @@ type Mutation {
     #scheduleShipment(id: Long, deliveryDate: LocalDate, comments: String, assignTo: String): Message
     #unAccept(shipmentAcceptanceId: Long): Message
     #unIssue(itemIssuanceId: Long) : Message
-    createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput]): Shipment
+    createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput], trackingNums: [String] = []): Shipment
     addItem(shipmentId: Long,  productId: Long, purchaseItemId: Long, description: String, quantity: BigDecimal): Message
 }

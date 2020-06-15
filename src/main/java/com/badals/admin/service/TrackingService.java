@@ -5,12 +5,10 @@ import com.badals.admin.domain.enumeration.OrderState;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.AmazonShipmentItem;
-import com.badals.admin.domain.pojo.ShipmentItemCountImpl;
-import com.badals.admin.domain.projection.ShipmentItemCount;
-import com.badals.admin.domain.projection.Inventory;
-import com.badals.admin.domain.projection.OutstandingQueue;
-import com.badals.admin.domain.projection.ShipQueue;
-import com.badals.admin.domain.projection.SortQueue;
+
+import com.badals.admin.domain.pojo.ShipmentItemSummaryImpl;
+import com.badals.admin.domain.projection.*;
+
 import com.badals.admin.repository.*;
 import com.badals.admin.repository.search.ShipmentSearchRepository;
 import com.badals.admin.service.dto.*;
@@ -243,7 +241,7 @@ public class TrackingService {
             String key = item.getAsin();
             Double itemQty = Double.parseDouble(item.getQuantity());
             CRC32 checksum = new CRC32();
-            checksum.update(key.getBytes());
+            checksum.update(key.getBytes(),0,key.getBytes().length);
             long ref = checksum.getValue();
 
             ShipmentItem shipmentItem = new ShipmentItem().sequence(shipmentItems.size()+1).description(item.getTitle().substring(0,Math.min(255,item.getTitle().length()))).quantity(BigDecimal.valueOf(itemQty));
@@ -269,10 +267,10 @@ public class TrackingService {
     }
 
     public List<ShipmentItemDTO> findByTrackingNums(List<String> trackingNums) {
-        return shipmentRepository.findByTrackingNums(trackingNums).stream().map(shipmentItemMapper::toDto).collect(Collectors.toList());
+        return shipmentRepository.findByTrackingNums(trackingNums, Arrays.asList(new ShipmentStatus[]{ShipmentStatus.CLOSED})).stream().map(shipmentItemMapper::toDto).collect(Collectors.toList());
     }
 
-    public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems) throws Exception {
+    public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems, List<String> trackingNums) throws Exception {
         Shipment s = shipmentMapper.toEntity(shipment);
         if (shipmentItems != null)
             for (ShipmentItemDTO shipmentItem : shipmentItems) {
@@ -287,16 +285,18 @@ public class TrackingService {
                 }
                 s.addShipmentItem(si);
             }
+        if(trackingNums != null && trackingNums.size() > 0)
+            shipmentRepository.setStatusMulti(ShipmentStatus.CLOSED, trackingNums);
         s = shipmentRepository.save(s);
         return shipmentMapper.toDto(s);
     }
 
-    public List<ShipmentItemCountImpl> findCountByTrackingNums(List<String> trackingNums) {
-        List<ShipmentItemCount> counts = shipmentRepository.findCountByTrackingNums(trackingNums);
-        List<ShipmentItemCountImpl> ret = trackingNums.stream().map(x -> new ShipmentItemCountImpl(x,0L)).collect(Collectors.toList());
+    public List<ShipmentItemSummaryImpl> findCountByTrackingNums(List<String> trackingNums) {
+        List<ShipmentItemSummary> counts = shipmentRepository.findCountByTrackingNums(trackingNums);
+        List<ShipmentItemSummaryImpl> ret = trackingNums.stream().map(x -> new ShipmentItemSummaryImpl(x,0L)).collect(Collectors.toList());
 
-        for(ShipmentItemCount x: counts) {
-            ret.get(trackingNums.indexOf(x.getTrackingNum())).setCount(x.getCount());
+        for(ShipmentItemSummary x: counts) {
+            ret.get(trackingNums.indexOf(x.getTrackingNum())).total(x.getTotal()).status(x.getStatus()).processed(x.getProcessed());
         }
         return ret;
     }

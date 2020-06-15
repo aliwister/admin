@@ -3,11 +3,11 @@ import com.badals.admin.domain.Shipment;
 import com.badals.admin.domain.ShipmentItem;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
-import com.badals.admin.domain.projection.ShipmentItemCount;
 import com.badals.admin.domain.projection.*;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -65,9 +65,22 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query("from Shipment s left join fetch s.shipmentItems where s.trackingNum = ?1 ")
     Optional<Shipment> findByTrackingNum(String trackingNum);
 
-    @Query("from ShipmentItem si join si.shipment s join fetch si.product where s.trackingNum in ?1")
-    List<ShipmentItem> findByTrackingNums(List<String> trackingNums);
+    @Query("from ShipmentItem si join si.shipment s join fetch si.product where s.trackingNum in ?1 and s.shipmentStatus not in ?2")
+    List<ShipmentItem> findByTrackingNums(List<String> trackingNums, List<ShipmentStatus> exclude);
 
-    @Query("select s.trackingNum as trackingNum, count(si) as count from Shipment s left join s.shipmentItems si where s.trackingNum in ?1 group by s.trackingNum")
-    List<ShipmentItemCount> findCountByTrackingNums(List<String> trackingNums);
+    //@Query("select s.trackingNum as trackingNum, s.shipmentStatus as status, count(si) as count, count(si2) as processed from Shipment s left join s.shipmentItems si left join s.shipmentItems si2 where si2.from" +
+    //    " = si.id and s.trackingNum in ?1 group by s.trackingNum")
+
+    @Query(value="select s.tracking_num as trackingNum, s.shipment_status as status, " +
+        "count(si.id) as total, " +
+        "count(si2.id) as processed " +
+        "from shipment s left join shipment_item si ON s.id = si.shipment_id " +
+        "left join shipment_item si2 ON si2._from = si.id where s.tracking_num in :trackingNums " +
+        "group by trackingNum", nativeQuery = true)
+    List<ShipmentItemSummary> findCountByTrackingNums(@Param(value = "trackingNums")  List<String> trackingNums);
+
+    @Modifying(clearAutomatically=true)
+    @Transactional
+    @Query("update Shipment s set s.shipmentStatus = ?1 where s.trackingNum in ?2")
+    void setStatusMulti(ShipmentStatus status, List<String> trackingNums);
 }

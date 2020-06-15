@@ -75,8 +75,8 @@ public class ShipmentMutation implements GraphQLMutationResolver {
     public Message processAmazonShipments() throws IOException {
         return trackingService.processAmazonFile();
     }
-    public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems) throws Exception {
-        return trackingService.createShipment(shipment, shipmentItems);
+    public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems, List<String> trackingNums) throws Exception {
+        return trackingService.createShipment(shipment, shipmentItems, trackingNums);
     }
 
     public ShipmentDTO acceptShipment(String trackingNum) throws IOException {
