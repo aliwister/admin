@@ -14,7 +14,7 @@ enum ShipmentType {
 }
 enum ShipmentStatus {
     PENDING
-    SHIPPED
+    IN_TRANSIT
     RECEIVED
     DELIVERED
     CANCELED
@@ -223,6 +223,41 @@ type ShipmentItemSummary {
     status: String
     processed: Long
 }
+
+type Item {
+    image: String
+    description: String
+    quantity: Long
+}
+
+type TrackingEventItem {
+    status: String
+    shipmentEventId: Int
+    shipmentEventDescription: String
+    createdDate: String
+    details: String
+}
+
+type ShipmentTracking {
+    content: [Item]
+    progress: [TrackingEventItem]
+    status: String
+    type: String
+    date: String
+    trackingNum: String
+    carrier: String
+}
+
+type ShipmentTrackingMap {
+    id: Long
+    shipment: ShipmentTracking
+}
+
+type TrackingEvent {
+    id: Long
+    name: String
+}
+
 type Query {
     shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
@@ -235,6 +270,8 @@ type Query {
     prepQueue(shipmentId: Long, keyword: String = ""): [PrepQueue]
     shipmentItemsByTrackingNums(trackingNums: [String]): [ShipmentItem]
     shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]
+    track(ref: String): [ShipmentTrackingMap]
+    trackingEvents: [TrackingEvent]
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
@@ -254,4 +291,7 @@ type Mutation {
     #unIssue(itemIssuanceId: Long) : Message
     createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput], trackingNums: [String] = []): Shipment
     addItem(shipmentId: Long,  productId: Long, purchaseItemId: Long, description: String, quantity: BigDecimal): Message
+
+    addTrackingEvent(trackingNums: [String], shipmentStatus: ShipmentStatus, trackingEvent: Int, details: String): Message
+
 }

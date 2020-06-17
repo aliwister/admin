@@ -1,6 +1,7 @@
 package com.badals.admin.repository;
 import com.badals.admin.domain.Shipment;
 import com.badals.admin.domain.ShipmentItem;
+import com.badals.admin.domain.ShipmentTracking;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.projection.*;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Spring Data  repository for the Shipment entity.
@@ -68,6 +70,10 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query("from ShipmentItem si join si.shipment s join fetch si.product where s.trackingNum in ?1 and s.shipmentStatus not in ?2")
     List<ShipmentItem> findByTrackingNums(List<String> trackingNums, List<ShipmentStatus> exclude);
 
+
+    @Query
+    List<Shipment> findAllByTrackingNumIn(List<String> trackingNums);
+
     //@Query("select s.trackingNum as trackingNum, s.shipmentStatus as status, count(si) as count, count(si2) as processed from Shipment s left join s.shipmentItems si left join s.shipmentItems si2 where si2.from" +
     //    " = si.id and s.trackingNum in ?1 group by s.trackingNum")
 
@@ -83,4 +89,26 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Transactional
     @Query("update Shipment s set s.shipmentStatus = ?1 where s.trackingNum in ?2")
     void setStatusMulti(ShipmentStatus status, List<String> trackingNums);
+
+    @Query(value="SELECT si.description, oi.image, si.quantity, s.id, s.shipment_type AS type, s.shipment_status AS status, s.last_modified_date AS date, s.tracking_num as trackingNum, s.shipment_method as carrier FROM shipment s " +
+        "JOIN shipment_item si ON s.id = si.shipment_id " +
+        "JOIN purchase_shipment ps ON ps.shipment_item_id = si.id " +
+        "JOIN shop.purchase_item_order_item pioi ON pioi.purchase_item_id = ps.purchase_item_id " +
+        "JOIN shop.order_item oi ON pioi.order_item_id = oi.id " +
+        "JOIN shop.jhi_order o ON oi.order_id = o.id " +
+        "WHERE o.reference = :ref AND NOT EXISTS ( " +
+        " SELECT 1  " +
+        " FROM order_shipment os " +
+        " WHERE os.order_item_id = oi.id and s.shipment_status != 'CLOSED'" +
+        ")  " +
+        "UNION  " +
+        "SELECT si.description, oi.image, si.quantity, s.id, s.shipment_type AS type, s.shipment_status AS status, s.last_modified_date AS date, s.tracking_num as trackingNum, s.shipment_method as carrier FROM shipment s " +
+        "JOIN shipment_item si ON s.id = si.shipment_id " +
+        "JOIN order_shipment os ON si.id = os.shipment_item_id " +
+        "JOIN shop.order_item oi ON oi.id = os.order_item_id " +
+        "WHERE s.reference = :ref  ", nativeQuery = true)
+    List<Tracking> trackByRef(@Param("ref") String ref);
+
+    @Query("from ShipmentTracking ste join fetch ste.shipmentEvent join fetch ste.shipment s where s.id in ?1")
+    List<ShipmentTracking> trackingProgress(Set<Long> shipmentIds);
 }

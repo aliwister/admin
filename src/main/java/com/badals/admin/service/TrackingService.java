@@ -4,18 +4,14 @@ import com.badals.admin.domain.*;
 import com.badals.admin.domain.enumeration.OrderState;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
-import com.badals.admin.domain.pojo.AmazonShipmentItem;
+import com.badals.admin.domain.pojo.*;
 
-import com.badals.admin.domain.pojo.ShipmentItemSummaryImpl;
 import com.badals.admin.domain.projection.*;
 
 import com.badals.admin.repository.*;
 import com.badals.admin.repository.search.ShipmentSearchRepository;
 import com.badals.admin.service.dto.*;
-import com.badals.admin.service.mapper.ItemIssuanceMapper;
-import com.badals.admin.service.mapper.PurchaseShipmentMapper;
-import com.badals.admin.service.mapper.ShipmentItemMapper;
-import com.badals.admin.service.mapper.ShipmentMapper;
+import com.badals.admin.service.mapper.*;
 
 import com.badals.admin.service.mutation.Message;
 import com.univocity.parsers.csv.CsvRoutines;
@@ -44,10 +40,13 @@ public class TrackingService {
 
     private final ShipmentRepository shipmentRepository;
     private final ShipmentSearchRepository shipmentSearchRepository;
+    private final ShipmentTrackingRepository shipmentTrackingRepository;
+    private final ShipmentEventRepository shipmentEventRepository;
 
     private final ShipmentMapper shipmentMapper;
     private final ShipmentItemMapper shipmentItemMapper;
     private final PurchaseShipmentMapper purchaseShipmentMapper;
+    private final ShipmentTrackingMapper shipmentTrackingMapper;
 
     private final PurchaseItemRepository purchaseItemRepository;
 
@@ -66,12 +65,15 @@ public class TrackingService {
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public TrackingService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentItemMapper shipmentItemMapper, PurchaseShipmentMapper purchaseShipmentMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
+    public TrackingService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentTrackingRepository shipmentTrackingRepository, ShipmentEventRepository shipmentEventRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentItemMapper shipmentItemMapper, PurchaseShipmentMapper purchaseShipmentMapper, ShipmentTrackingMapper shipmentTrackingMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
         this.shipmentRepository = shipmentRepository;
         this.shipmentSearchRepository = shipmentSearchRepository;
+        this.shipmentTrackingRepository = shipmentTrackingRepository;
+        this.shipmentEventRepository = shipmentEventRepository;
         this.shipmentMapper = shipmentMapper;
         this.shipmentItemMapper = shipmentItemMapper;
         this.purchaseShipmentMapper = purchaseShipmentMapper;
+        this.shipmentTrackingMapper = shipmentTrackingMapper;
         //this.shipmentSearchRepository = shipmentSearchRepository;
         this.purchaseItemRepository = purchaseItemRepository;
         this.pkgRepository = pkgRepository;
@@ -138,6 +140,8 @@ public class TrackingService {
         //shipmentSearchRepository.deleteById(id);
     }
 
+
+
     public List<ShipmentDTO> findForShipmentList(List<ShipmentStatus> status, ShipmentType type) {
         List<Shipment> shipments = shipmentRepository.findForShipmentList(status, type);
         return shipments.stream().map(shipmentMapper::toDtoList).collect(Collectors.toList());
@@ -180,12 +184,20 @@ public class TrackingService {
             .collect(Collectors.toList());
     }*/
 
-    private Shipment saveAndReset(Shipment shipment, Set<ShipmentItem> shipmentItems) {
+    private void addTracking(Shipment shipment, ShipmentStatus status, Integer event, String details) {
+        shipmentTrackingRepository.save(new ShipmentTracking().shipment(shipment).status(status).shipmentEventId(event).details(details));
+    }
+
+    private Shipment saveAndReset(Shipment shipment, Set<ShipmentItem> shipmentItems, int trackingEvent) {
         if (shipment != null) {
 
             shipment.getShipmentItems().clear();
             shipmentItems.forEach(x -> shipment.addShipmentItem(x));
+
             shipmentRepository.save(shipment);
+            addTracking(shipment, ShipmentStatus.IN_TRANSIT, trackingEvent, null);
+
+
             //shipmentSearchRepository.save(shipmentMapper.toDto(shipment));
         }
         return null;
@@ -193,11 +205,12 @@ public class TrackingService {
 
     private Shipment createShipment(String trackingNum, String orderId, String carrier) {
         Shipment shipment = new Shipment();
-        shipment.setShipmentStatus(ShipmentStatus.PENDING);
+        shipment.setShipmentStatus(ShipmentStatus.IN_TRANSIT);
         shipment.setShipmentType(ShipmentType.TRANSIT);
         shipment.setReference(orderId);
         shipment.setTrackingNum(trackingNum);
         shipment.setShipmentMethod(carrier);
+
         return shipment;
     }
 
@@ -212,11 +225,13 @@ public class TrackingService {
         Shipment shipment = null;
         Set shipmentItems = null;
         List purchaseShipments = null;
+        int trackingEvent = 1001;
 
         for(AmazonShipmentItem item : beans) {
             String trackingNum = item.getTrackingNum();
             if (trackingNum == null || trackingNum.equals("N/A")) {
-                shipment = saveAndReset(shipment, shipmentItems);
+                shipment = saveAndReset(shipment, shipmentItems, trackingEvent);
+                trackingEvent = 1001;
                 continue;
             }
             if (shipment == null) {
@@ -224,16 +239,18 @@ public class TrackingService {
                 shipmentItems = new HashSet();
             }
             else if (shipment != null && shipment.getTrackingNum() != null && !shipment.getTrackingNum().equals(trackingNum)) {
-                shipment = saveAndReset(shipment, shipmentItems);
+                shipment = saveAndReset(shipment, shipmentItems, trackingEvent);
+                trackingEvent = 1001;
                 shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier()));
-                if(shipment.getShipmentStatus() == ShipmentStatus.SHIPPED ||
-                    shipment.getShipmentStatus() == ShipmentStatus.DELIVERED ||
+                if(shipment.getShipmentStatus() == ShipmentStatus.PROCESSING ||
+                    shipment.getShipmentStatus() == ShipmentStatus.CLOSED ||
                     shipment.getShipmentStatus() == ShipmentStatus.RECEIVED
                 )
                     continue;
 
                 if(item.getShipmentStatus().equals("Closed")) {
-                    shipment.setShipmentStatus(ShipmentStatus.SHIPPED);
+                    shipment.setShipmentStatus(ShipmentStatus.PROCESSING);
+                    trackingEvent = 1002;
                 }
                 shipmentItems = new HashSet();
                 //purchaseShipments = new ArrayList();
@@ -261,7 +278,8 @@ public class TrackingService {
         }
 
         if(shipment != null) {
-            shipment = saveAndReset(shipment, shipmentItems);
+            shipment = saveAndReset(shipment, shipmentItems, trackingEvent);
+
         }
         return new Message("fuck amazon");
     }
@@ -300,4 +318,68 @@ public class TrackingService {
         }
         return ret;
     }
+
+    public List<ShipmentTrackingMap> track(String ref) {
+        List<Tracking> tracking = shipmentRepository.trackByRef(ref);
+
+        Map<Long, ShipmentTrackingPojo> map = new HashMap<Long, ShipmentTrackingPojo>();
+        tracking.forEach( x -> {
+            ItemPojo item = new ItemPojo(x.getDescription(), x.getImage(), x.getQuantity());
+            if (map.containsKey(x.getId())) {
+                map.get(x.getId()).addItem(item);
+            } else {
+                map.put(x.getId(), new ShipmentTrackingPojo(x.getId(), x.getStatus(), x.getDate(), x.getType(), x.getTrackingNum(), x.getCarrier(), item));
+            }
+        });
+        Set<Long> shipmentIds = tracking.stream().map(Tracking::getId).collect(Collectors.toSet());
+
+        if(shipmentIds.size() < 1)
+            return null;
+
+        List<ShipmentTracking> progress = shipmentRepository.trackingProgress(shipmentIds);
+
+        progress.forEach(x -> map.get(x.getShipment().getId()).addProgress(shipmentTrackingMapper.toDto(x)));
+
+        List<ShipmentTrackingMap> track =  map.entrySet().stream().map(x -> new ShipmentTrackingMap(x.getKey(), x.getValue())).collect(Collectors.toList());
+        return track;
+    }
+
+    public List<TrackingEvent> trackingEvents() {
+        List<ShipmentEvent> e = shipmentEventRepository.findAll();
+        List<TrackingEvent> ret = e.stream().map(x -> new TrackingEvent(x.getRef(), x.getDescription())).collect(Collectors.toList());
+        return ret;
+    }
+
+    public Message addTrackingMulti(List<String> trackingNums, ShipmentStatus shipmentStatus, Integer trackingEvent, String details) {
+        List<Shipment> shipments = shipmentRepository.findAllByTrackingNumIn(trackingNums);
+        for (Shipment shipment : shipments) {
+            shipment.setShipmentStatus(shipmentStatus);
+            addTracking(shipment, shipmentStatus, trackingEvent, details);
+            shipmentRepository.save(shipment);
+        }
+
+        return new Message("Success");
+    }
 }
+/*
+
+SELECT oi. *, si.*, s.* FROM shipment s
+JOIN shipment_item si ON s.id = si.shipment_id
+JOIN purchase_shipment ps ON ps.shipment_item_id = si.id
+JOIN shop.purchase_item_order_item pioi ON pioi.purchase_item_id = ps.purchase_item_id
+JOIN shop.order_item oi ON pioi.order_item_id = oi.id
+JOIN shop.jhi_order o ON oi.order_id = o.id
+WHERE o.reference = 7270143 AND NOT EXISTS (
+	SELECT 1
+	FROM order_shipment os
+	WHERE os.order_item_id = oi.id
+)
+UNION
+SELECT oi.`*`, si.*, s.* FROM shipment s
+JOIN shipment_item si ON s.id = si.shipment_id
+JOIN order_shipment os ON si.id = os.shipment_item_id
+JOIN shop.order_item oi ON oi.id = os.order_item_id
+WHERE s.reference = 9471072
+
+
+ */
