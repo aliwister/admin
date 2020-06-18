@@ -199,6 +199,7 @@ public class ShipmentService {
             shipment.setCustomer(customer);
             shipment.setReference(orderItem.getOrder().getReference());
             shipment.setShipmentType(ShipmentType.CUSTOMER);
+            shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(3001).eventDate(LocalDateTime.now()));
             shipmentRepository.save(shipment);
             shipmentSearchRepository.save(shipmentMapper.toDto(shipment));
         }
@@ -330,7 +331,7 @@ public class ShipmentService {
         shipment.setShipmentStatus(ShipmentStatus.SCHEDULED);
         shipment.setTrackingNum(shipmentId +"-"+orderRef);
 
-
+        shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(3002).eventDate(LocalDateTime.now()));
         shipmentRepository.save(shipment);
 
         return response.getBody();
