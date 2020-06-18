@@ -24,7 +24,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query("from Shipment s where s.customer.id = ?1 and s.shipmentStatus = ?2")
     Long findCustomerShipment(Long customerId, ShipmentStatus s);
 
-    @Query(value="Select s.id from shipment s join shop.jhi_order o on s.reference = o.reference and s.shipment_status = 'PENDING' and s.shipment_type='CUSTOMER' where o.id = :id", nativeQuery=true)
+    @Query(value="Select s.id from shipment s join shop.jhi_order o on s.reference = o.reference and s.shipment_status = 'ARRIVED' and s.shipment_type='CUSTOMER' where o.id = :id", nativeQuery=true)
     Long findCustomerShipmentIdNative(@Param(value = "id") Long orderId);
 
     @Query("from Shipment s left join fetch s.merchant left join fetch s.customer where s.shipmentStatus in ?1 and s.shipmentType = ?2")

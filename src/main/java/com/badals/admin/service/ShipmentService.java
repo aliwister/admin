@@ -195,7 +195,7 @@ public class ShipmentService {
         if(shipment == null) {
             shipment = new Shipment();
             //shipment = shipmentRepository.findById(shipmentId).orElse(new Shipment());
-            shipment.setShipmentStatus(ShipmentStatus.PENDING);
+            shipment.setShipmentStatus(ShipmentStatus.ARRIVED);
             shipment.setCustomer(customer);
             shipment.setReference(orderItem.getOrder().getReference());
             shipment.setShipmentType(ShipmentType.CUSTOMER);
