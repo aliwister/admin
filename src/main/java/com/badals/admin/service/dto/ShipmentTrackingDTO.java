@@ -23,7 +23,7 @@ public class ShipmentTrackingDTO implements Serializable {
 
     private Long shipmentId;
 
-    private LocalDateTime shipmentEventDate;
+    private LocalDateTime eventDate;
     private Long shipmentEventId;
     private String shipmentEventDescription;
 

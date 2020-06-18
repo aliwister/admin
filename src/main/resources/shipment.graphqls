@@ -236,6 +236,7 @@ type TrackingEventItem {
     shipmentEventDescription: String
     createdDate: String
     details: String
+    eventDate: LocalDateTime
 }
 
 type ShipmentTracking {

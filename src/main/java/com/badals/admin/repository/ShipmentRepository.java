@@ -96,10 +96,10 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
         "JOIN shop.purchase_item_order_item pioi ON pioi.purchase_item_id = ps.purchase_item_id " +
         "JOIN shop.order_item oi ON pioi.order_item_id = oi.id " +
         "JOIN shop.jhi_order o ON oi.order_id = o.id " +
-        "WHERE o.reference = :ref AND NOT EXISTS ( " +
+        "WHERE o.reference = :ref and s.shipment_status != 'CLOSED' AND NOT EXISTS ( " +
         " SELECT 1  " +
         " FROM order_shipment os " +
-        " WHERE os.order_item_id = oi.id and s.shipment_status != 'CLOSED'" +
+        " WHERE os.order_item_id = oi.id " +
         ")  " +
         "UNION  " +
         "SELECT si.description, oi.image, si.quantity, s.id, s.shipment_type AS type, s.shipment_status AS status, s.last_modified_date AS date, s.tracking_num as trackingNum, s.shipment_method as carrier FROM shipment s " +
