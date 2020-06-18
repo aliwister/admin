@@ -284,9 +284,9 @@ public class TrackingService {
                 //purchaseShipments = new ArrayList();
             }
 
-            if(item.getOrderStatus().equals("Closed")) {
+            if(item.getOrderStatus().equals("Closed") && shipment.getShipmentStatus() != ShipmentStatus.PROCESSING) {
                 shipment.setShipmentStatus(ShipmentStatus.PROCESSING);
-                shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1002).eventDate(LocalDateTime.now()));
+                shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.PROCESSING).shipmentEventId(1002).eventDate(LocalDateTime.now()));
             }
 
             String key = item.getAsin();
