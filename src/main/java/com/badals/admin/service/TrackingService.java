@@ -15,6 +15,7 @@ import com.badals.admin.service.mapper.*;
 
 import com.badals.admin.service.mutation.Message;
 import com.univocity.parsers.csv.CsvRoutines;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
@@ -184,32 +188,44 @@ public class TrackingService {
             .collect(Collectors.toList());
     }*/
 
-    private void addTracking(Shipment shipment, ShipmentStatus status, Integer event, String details) {
-        shipmentTrackingRepository.save(new ShipmentTracking().shipment(shipment).status(status).shipmentEventId(event).details(details));
+    private ShipmentTracking addTracking(Shipment shipment, ShipmentStatus status, Integer event, String details, LocalDateTime eventDate) {
+        ShipmentTracking tracking = new ShipmentTracking().shipment(shipment).status(status).shipmentEventId(event).details(details).eventDate(eventDate);
+
+        if(eventDate == null)
+            tracking.setEventDate(LocalDateTime.now());
+
+        if(event == 1001 && shipment.getActualShipDate() != null)
+            tracking.setEventDate(shipment.getActualShipDate());
+
+        shipmentTrackingRepository.save(tracking);
+        return tracking;
     }
 
-    private Shipment saveAndReset(Shipment shipment, Set<ShipmentItem> shipmentItems, int trackingEvent) {
+    private Shipment saveAndReset(Shipment shipment, Set<ShipmentItem> shipmentItems) {
         if (shipment != null) {
 
             shipment.getShipmentItems().clear();
             shipmentItems.forEach(x -> shipment.addShipmentItem(x));
 
             shipmentRepository.save(shipment);
-            addTracking(shipment, ShipmentStatus.IN_TRANSIT, trackingEvent, null);
-
-
-            //shipmentSearchRepository.save(shipmentMapper.toDto(shipment));
         }
         return null;
     }
 
-    private Shipment createShipment(String trackingNum, String orderId, String carrier) {
+    private Shipment createShipment(String trackingNum, String orderId, String carrier, String shipDate) {
         Shipment shipment = new Shipment();
         shipment.setShipmentStatus(ShipmentStatus.IN_TRANSIT);
         shipment.setShipmentType(ShipmentType.TRANSIT);
         shipment.setReference(orderId);
         shipment.setTrackingNum(trackingNum);
+
+
         shipment.setShipmentMethod(carrier);
+
+        LocalDate dateTime = LocalDate.parse(shipDate,
+            DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        shipment.setActualShipDate(dateTime.atStartOfDay());
+        shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1001).eventDate(dateTime.atStartOfDay()));
 
         return shipment;
     }
@@ -225,36 +241,54 @@ public class TrackingService {
         Shipment shipment = null;
         Set shipmentItems = null;
         List purchaseShipments = null;
-        int trackingEvent = 1001;
 
         for(AmazonShipmentItem item : beans) {
             String trackingNum = item.getTrackingNum();
+
             if (trackingNum == null || trackingNum.equals("N/A")) {
-                shipment = saveAndReset(shipment, shipmentItems, trackingEvent);
-                trackingEvent = 1001;
+                shipment = saveAndReset(shipment, shipmentItems);
+
                 continue;
             }
-            if (shipment == null) {
-                shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier()));
-                shipmentItems = new HashSet();
+
+            if(trackingNum.length() < 6) {
+                trackingNum = item.getOrderId();
             }
-            else if (shipment != null && shipment.getTrackingNum() != null && !shipment.getTrackingNum().equals(trackingNum)) {
-                shipment = saveAndReset(shipment, shipmentItems, trackingEvent);
-                trackingEvent = 1001;
-                shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier()));
+
+            if (shipment == null) {
+                shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier(), item.getShipmentDate()));
                 if(shipment.getShipmentStatus() == ShipmentStatus.PROCESSING ||
                     shipment.getShipmentStatus() == ShipmentStatus.CLOSED ||
                     shipment.getShipmentStatus() == ShipmentStatus.RECEIVED
-                )
+                ) {
+                    shipment = null;
                     continue;
-
-                if(item.getShipmentStatus().equals("Closed")) {
-                    shipment.setShipmentStatus(ShipmentStatus.PROCESSING);
-                    trackingEvent = 1002;
                 }
+
+
+                shipmentItems = new HashSet();
+            }
+            else if (shipment != null && shipment.getTrackingNum() != null && !shipment.getTrackingNum().equals(trackingNum)) {
+                shipment = saveAndReset(shipment, shipmentItems);
+                shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier(), item.getShipmentDate()));
+                if(shipment.getShipmentStatus() == ShipmentStatus.PROCESSING ||
+                    shipment.getShipmentStatus() == ShipmentStatus.CLOSED ||
+                    shipment.getShipmentStatus() == ShipmentStatus.RECEIVED
+                ) {
+                    shipment = null;
+                    continue;
+                }
+
+
                 shipmentItems = new HashSet();
                 //purchaseShipments = new ArrayList();
             }
+
+            if(item.getOrderStatus().equals("Closed")) {
+                shipment.setShipmentStatus(ShipmentStatus.PROCESSING);
+                shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1002).eventDate(LocalDateTime.now()));
+            }
+
             String key = item.getAsin();
             Double itemQty = Double.parseDouble(item.getQuantity());
             CRC32 checksum = new CRC32();
@@ -278,10 +312,10 @@ public class TrackingService {
         }
 
         if(shipment != null) {
-            shipment = saveAndReset(shipment, shipmentItems, trackingEvent);
+            shipment = saveAndReset(shipment, shipmentItems);
 
         }
-        return new Message("fuck amazon");
+        return new Message("DONE");
     }
 
     public List<ShipmentItemDTO> findByTrackingNums(List<String> trackingNums) {
@@ -350,11 +384,11 @@ public class TrackingService {
         return ret;
     }
 
-    public Message addTrackingMulti(List<String> trackingNums, ShipmentStatus shipmentStatus, Integer trackingEvent, String details) {
+    public Message addTrackingMulti(List<String> trackingNums, ShipmentStatus shipmentStatus, Integer trackingEvent, LocalDateTime eventDate, String details) {
         List<Shipment> shipments = shipmentRepository.findAllByTrackingNumIn(trackingNums);
         for (Shipment shipment : shipments) {
             shipment.setShipmentStatus(shipmentStatus);
-            addTracking(shipment, shipmentStatus, trackingEvent, details);
+            addTracking(shipment, shipmentStatus, trackingEvent, details, eventDate);
             shipmentRepository.save(shipment);
         }
 

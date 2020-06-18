@@ -1,11 +1,13 @@
 package com.badals.admin.domain;
 
 import com.badals.admin.domain.enumeration.ShipmentStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * A ShipmentStatus.
@@ -20,6 +22,9 @@ public class ShipmentTracking extends Auditable implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="event_date")
+    private LocalDateTime eventDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ShipmentStatus status;
@@ -27,8 +32,8 @@ public class ShipmentTracking extends Auditable implements Serializable {
     @Column(name = "details")
     private String details;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("shipmentTrackings")
     private Shipment shipment;
 
     @ManyToOne(optional = false)
@@ -39,6 +44,15 @@ public class ShipmentTracking extends Auditable implements Serializable {
     @Column(name = "shipment_event_id")
     @NotNull
     private Integer shipmentEventId;
+
+
+    public LocalDateTime getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(LocalDateTime eventDate) {
+        this.eventDate = eventDate;
+    }
 
     public Integer getShipmentEventId() {
         return shipmentEventId;
@@ -66,6 +80,11 @@ public class ShipmentTracking extends Auditable implements Serializable {
 
     public ShipmentTracking status(ShipmentStatus status) {
         this.status = status;
+        return this;
+    }
+
+    public ShipmentTracking eventDate(LocalDateTime eventDate) {
+        this.eventDate = eventDate;
         return this;
     }
 

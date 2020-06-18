@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -22,15 +23,14 @@ public class ShipmentMutation implements GraphQLMutationResolver {
     private final TrackingService trackingService;
     private final PurchaseShipmentService purchaseShipmentService;
     private final PkgService pkgService;
+    private final PackagingContentService packagingContentService;
 
-
-    PackagingContentService packagingContentService;
-
-    public ShipmentMutation(ShipmentService shipmentService, TrackingService trackingService, PurchaseShipmentService purchaseShipmentService, PkgService pkgService) {
+    public ShipmentMutation(ShipmentService shipmentService, TrackingService trackingService, PurchaseShipmentService purchaseShipmentService, PkgService pkgService, PackagingContentService packagingContentService) {
         this.shipmentService = shipmentService;
         this.trackingService = trackingService;
         this.purchaseShipmentService = purchaseShipmentService;
         this.pkgService = pkgService;
+        this.packagingContentService = packagingContentService;
     }
 
 
@@ -97,9 +97,9 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return shipmentService.acceptShipment(trackingNum);
     }
 
-    public Message addTrackingEvent(List<String> trackingNums, ShipmentStatus shipmentStatus, Integer trackingEvent, String details) throws IllegalAccessException {
+    public Message addTrackingEvent(List<String> trackingNums, ShipmentStatus shipmentStatus, Integer trackingEvent, LocalDateTime eventDate, String details) throws IllegalAccessException {
         authorizeUser();
-        return trackingService.addTrackingMulti(trackingNums, shipmentStatus, trackingEvent, details);
+        return trackingService.addTrackingMulti(trackingNums, shipmentStatus, trackingEvent, eventDate, details);
     }
     public void authorizeUser() throws IllegalAccessException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

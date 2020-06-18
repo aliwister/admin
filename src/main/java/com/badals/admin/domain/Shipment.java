@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,6 +34,17 @@ public class Shipment extends Auditable implements Serializable {
 
     @Column(name = "estimated_ship_date")
     private LocalDate estimatedShipDate;
+
+    public LocalDateTime getActualShipDate() {
+        return actualShipDate;
+    }
+
+    public void setActualShipDate(LocalDateTime actualShipDate) {
+        this.actualShipDate = actualShipDate;
+    }
+
+    @Column(name = "actual_ship_date")
+    private LocalDateTime actualShipDate;
 
     @Column(name = "estimated_ready_date")
     private LocalDate estimatedReadyDate;
@@ -80,6 +92,18 @@ public class Shipment extends Auditable implements Serializable {
     @OneToMany(mappedBy = "shipment", cascade=CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sequence")
     private Set<ShipmentItem> shipmentItems = new HashSet<>();
+
+    @OneToMany(mappedBy = "shipment", cascade=CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("eventDate")
+    private Set<ShipmentTracking> shipmentTrackings = new HashSet<>();
+
+    public Set<ShipmentTracking> getShipmentTrackings() {
+        return shipmentTrackings;
+    }
+
+    public void setShipmentTrackings(Set<ShipmentTracking> shipmentTrackings) {
+        this.shipmentTrackings = shipmentTrackings;
+    }
 
     @OneToMany(mappedBy = "shipment")
     private Set<Pkg> pkgs = new HashSet<>();
@@ -317,6 +341,12 @@ public class Shipment extends Auditable implements Serializable {
     public Shipment addShipmentItem(ShipmentItem shipmentItem) {
         this.shipmentItems.add(shipmentItem);
         shipmentItem.setShipment(this);
+        return this;
+    }
+
+    public Shipment addShipmentTracking(ShipmentTracking t) {
+        this.shipmentTrackings.add(t);
+        t.setShipment(this);
         return this;
     }
 

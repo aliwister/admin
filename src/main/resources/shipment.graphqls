@@ -292,6 +292,6 @@ type Mutation {
     createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput], trackingNums: [String] = []): Shipment
     addItem(shipmentId: Long,  productId: Long, purchaseItemId: Long, description: String, quantity: BigDecimal): Message
 
-    addTrackingEvent(trackingNums: [String], shipmentStatus: ShipmentStatus, trackingEvent: Int, details: String): Message
+    addTrackingEvent(trackingNums: [String], shipmentStatus: ShipmentStatus,  trackingEvent: Int, eventDate: LocalDateTime, details: String): Message
 
 }

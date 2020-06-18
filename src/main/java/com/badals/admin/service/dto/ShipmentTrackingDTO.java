@@ -3,6 +3,8 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -21,6 +23,7 @@ public class ShipmentTrackingDTO implements Serializable {
 
     private Long shipmentId;
 
+    private LocalDateTime shipmentEventDate;
     private Long shipmentEventId;
     private String shipmentEventDescription;
 
