@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -372,6 +373,7 @@ public class ShipmentService {
     public ShipmentDTO acceptShipment(String trackingNum) {
         Shipment shipment = shipmentRepository.findByTrackingNum(trackingNum).get();
         shipment.setShipmentStatus(ShipmentStatus.ACCEPTED);
+        shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(1102).eventDate(LocalDateTime.now()));
         shipmentRepository.save(shipment);
         return shipmentMapper.toDto(shipment);
     }
