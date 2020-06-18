@@ -22,6 +22,7 @@ enum ShipmentStatus {
     PROCESSING
     ACCEPTED
     SCHEDULED
+    CLOSED
 }
 enum PackageType {
     BADALS14X18BAG
