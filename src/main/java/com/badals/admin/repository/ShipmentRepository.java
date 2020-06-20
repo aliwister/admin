@@ -90,7 +90,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query("update Shipment s set s.shipmentStatus = ?1 where s.trackingNum in ?2")
     void setStatusMulti(ShipmentStatus status, List<String> trackingNums);
 
-    @Query(value="SELECT si.description, oi.image, si.quantity, s.id, s.shipment_type AS type, s.shipment_status AS status, s.last_modified_date AS date, s.tracking_num as trackingNum, s.shipment_method as carrier FROM shipment s " +
+    @Query(value="SELECT si.id, si.description, oi.image, si.quantity, s.id, s.shipment_type AS type, s.shipment_status AS status, s.last_modified_date AS date, s.tracking_num as trackingNum, s.shipment_method as carrier FROM shipment s " +
         "JOIN shipment_item si ON s.id = si.shipment_id " +
         "JOIN purchase_shipment ps ON ps.shipment_item_id = si.id " +
         "JOIN shop.purchase_item_order_item pioi ON pioi.purchase_item_id = ps.purchase_item_id " +
@@ -102,7 +102,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
         " WHERE os.order_item_id = oi.id " +
         ")  " +
         "UNION  " +
-        "SELECT si.description, oi.image, si.quantity, s.id, s.shipment_type AS type, s.shipment_status AS status, s.last_modified_date AS date, s.tracking_num as trackingNum, s.shipment_method as carrier FROM shipment s " +
+        "SELECT si.id, si.description, oi.image, si.quantity, s.id, s.shipment_type AS type, s.shipment_status AS status, s.last_modified_date AS date, s.tracking_num as trackingNum, s.shipment_method as carrier FROM shipment s " +
         "JOIN shipment_item si ON s.id = si.shipment_id " +
         "JOIN order_shipment os ON si.id = os.shipment_item_id " +
         "JOIN shop.order_item oi ON oi.id = os.order_item_id " +

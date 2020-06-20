@@ -230,7 +230,7 @@ public class TrackingService {
         return shipment;
     }
 
-    public Message processAmazonFile() throws IOException {
+    public synchronized Message processAmazonFile() throws IOException {
         final String fileName = "export.csv";
         //List<AmazonShipmentItem> beans = new CsvToBeanBuilder(new InputStreamReader(TrackingService.class.getClassLoader().getResourceAsStream(fileName))).withType(AmazonShipmentItem.class).build().parse();
         List<AmazonShipmentItem> beans = new CsvRoutines().parseAll(AmazonShipmentItem.class, TrackingService.class.getClassLoader().getResourceAsStream(fileName));
