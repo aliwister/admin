@@ -76,6 +76,17 @@ public class Shipment extends Auditable implements Serializable {
     @Column(name = "shipment_method")
     private String shipmentMethod;
 
+    @Column(name = "pkg_count")
+    private Integer pkgCount;
+
+    public Integer getPkgCount() {
+        return pkgCount;
+    }
+
+    public void setPkgCount(Integer pkgCount) {
+        this.pkgCount = pkgCount;
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "shipment_type")
     private ShipmentType shipmentType;

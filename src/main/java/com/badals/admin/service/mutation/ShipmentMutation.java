@@ -107,5 +107,11 @@ public class ShipmentMutation implements GraphQLMutationResolver {
             return;
         throw new IllegalAccessException("Not Authorized");
     }
+
+    public Message setShipmentStatus(Long shipmentId, ShipmentStatus status) throws IllegalAccessException {
+        authorizeUser();
+        shipmentService.setStatus(shipmentId, status);
+        return new Message("Success");
+    }
 }
 

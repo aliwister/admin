@@ -44,6 +44,7 @@ public class ShipmentDTO implements Serializable {
 
     private ShipmentStatus shipmentStatus;
 
+    private Integer pkgCount;
 
     private Long addressId;
 
@@ -57,6 +58,8 @@ public class ShipmentDTO implements Serializable {
 
     private Set<PkgDTO> pkgs;
     private Set<ShipmentItemDTO> shipmentItems;
+
+
 
 
     @Override
