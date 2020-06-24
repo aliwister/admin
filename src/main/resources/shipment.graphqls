@@ -69,6 +69,7 @@ type ShipmentItem {
     image: String
     purchaseShipments: [PurchaseShipment]
     from: Long
+    price: BigDecimal
 }
 
 type Shipment {

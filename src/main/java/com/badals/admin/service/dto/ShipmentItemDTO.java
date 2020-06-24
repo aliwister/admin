@@ -18,6 +18,7 @@ public class ShipmentItemDTO implements Serializable {
     private Integer sequence;
 
     private BigDecimal quantity;
+    private BigDecimal price;
 
     private String description;
 
