@@ -126,6 +126,7 @@ input ShipmentItemInput {
     image: String
     purchaseShipments: [PurchaseShipmentInput]
     from: Long
+    price: BigDecimal
 }
 
 input PackagingContentInput {
