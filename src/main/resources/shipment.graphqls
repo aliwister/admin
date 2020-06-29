@@ -265,6 +265,16 @@ type TrackingEvent {
     name: String
 }
 
+type IncomingShipmentQueue {
+    id: Long
+    createdDate: String
+    shipmentMethod: String
+    trackingNum: String
+    pkgCount: Int
+    arrivedPkgs: Int
+    status: String
+}
+
 type Query {
     shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
@@ -274,6 +284,7 @@ type Query {
     #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]
     inventory: [Inventory]
     shipQueue: [ShipQueue]
+    incomingShipmentQueue: [IncomingShipmentQueue]
     prepQueue(shipmentId: Long, keyword: String = ""): [PrepQueue]
     shipmentItemsByTrackingNums(trackingNums: [String]): [ShipmentItem]
     shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]

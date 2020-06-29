@@ -28,5 +28,10 @@ public class TrackingQuery extends AdminQuery implements GraphQLQueryResolver {
     public List<ShipmentTrackingMap> track(String ref) {
         return trackingService.track(ref);
     }
+
+    public List<IncomingShipmentQueue> incomingShipmentQueue() {
+        return trackingService.incomingShipmentQueue();
+    }
+
 }
 

@@ -111,4 +111,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query("from ShipmentTracking ste join fetch ste.shipmentEvent join fetch ste.shipment s where s.id in ?1")
     List<ShipmentTracking> trackingProgress(Set<Long> shipmentIds);
+
+    @Query(value="select * from incoming_shipment_queue", nativeQuery = true)
+    List<IncomingShipmentQueue> incomingShipments();
 }

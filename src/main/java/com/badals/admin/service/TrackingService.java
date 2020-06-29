@@ -394,6 +394,10 @@ public class TrackingService {
 
         return new Message("Success");
     }
+
+    public List<IncomingShipmentQueue> incomingShipmentQueue() {
+        return shipmentRepository.incomingShipments();
+    }
 }
 /*
 
