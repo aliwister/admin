@@ -38,12 +38,12 @@ enum PackageType {
 type PurchaseShipment {
     shipmentItemId: Int
     purchaseItemId: Int
-    quantity: Int
+    quantity: BigDecimal
 }
 input PurchaseShipmentInput {
     shipmentItemId: Int
     purchaseItemId: Int
-    quantity: Int
+    quantity: BigDecimal
     __typename: String
 }
 
