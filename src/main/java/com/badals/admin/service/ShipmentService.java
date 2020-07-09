@@ -394,6 +394,24 @@ public class ShipmentService {
         return "Done";
     }
 
+    public void removeItem(Long shipmentItemId) {
+        ShipmentItem shipmentItem= shipmentItemRepository.findById(shipmentItemId).get();
+
+        packagingContentRepository.deleteByShipmentItem(shipmentItem);
+        orderShipmentRepository.deleteByShipmentItem(shipmentItem);
+        purchaseShipmentRepository.deleteByShipmentItem(shipmentItem);
+
+        itemIssuanceRepository.deleteByShipmentItem(shipmentItem);
+        shipmentReceiptRepository.deleteByShipmentItem(shipmentItem);
+
+        shipmentItemRepository.delete(shipmentItem);
+    }
+
+    public void unpackItem(Long shipmentItemId) {
+        ShipmentItem shipmentItem = shipmentItemRepository.findById(shipmentItemId).get();
+        packagingContentRepository.deleteByShipmentItem(shipmentItem);
+    }
+
     /**
      * Search for the shipment corresponding to the query.
      *

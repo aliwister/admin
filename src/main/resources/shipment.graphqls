@@ -309,6 +309,8 @@ type Mutation {
     #unIssue(itemIssuanceId: Long) : Message
     createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput], trackingNums: [String] = []): Shipment
     addItem(shipmentId: Long,  productId: Long, purchaseItemId: Long, description: String, quantity: BigDecimal): Message
+    removeItem(shipmentItemId: Long): Message
+    unpackItem(shipmentItemId: Long): Message
     addTrackingEvent(trackingNums: [String], shipmentStatus: ShipmentStatus,  trackingEvent: Int, eventDate: LocalDateTime, details: String): Message
     setShipmentStatus(id: Long, status:ShipmentStatus): Message
 }

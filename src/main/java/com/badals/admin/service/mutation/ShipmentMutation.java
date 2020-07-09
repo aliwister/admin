@@ -113,5 +113,14 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         shipmentService.setStatus(shipmentId, status);
         return new Message("Success");
     }
+
+    public Message removeItem(Long shipmentItemId) {
+        shipmentService.removeItem(shipmentItemId);
+        return new Message("Success");
+    }
+    public Message unpackItem(Long shipmentItemId) {
+        shipmentService.unpackItem(shipmentItemId);
+        return new Message("Success");
+    }
 }
 
