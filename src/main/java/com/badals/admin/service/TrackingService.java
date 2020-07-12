@@ -273,7 +273,10 @@ public class TrackingService {
                 shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier(), item.getShipmentDate()));
                 if(shipment.getShipmentStatus() == ShipmentStatus.PROCESSING ||
                     shipment.getShipmentStatus() == ShipmentStatus.CLOSED ||
-                    shipment.getShipmentStatus() == ShipmentStatus.RECEIVED
+                    shipment.getShipmentStatus() == ShipmentStatus.RECEIVED ||
+                    shipment.getShipmentStatus() == ShipmentStatus.ACCEPTED ||
+                    shipment.getShipmentStatus() == ShipmentStatus.CANCELED
+
                 ) {
                     shipment = null;
                     continue;
