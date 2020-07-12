@@ -13,6 +13,7 @@ public interface PurchaseShipmentMapper extends EntityMapper<PurchaseShipmentDTO
 
     @Mapping(source = "shipmentItem.id", target = "shipmentItemId")
     @Mapping(source = "purchaseItem.id", target = "purchaseItemId")
+    @Mapping(source = "purchaseItem.purchase.id", target = "purchaseId")
     PurchaseShipmentDTO toDto(PurchaseShipment purchaseShipment);
 
     @Mapping(source = "shipmentItemId", target = "shipmentItem")

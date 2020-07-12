@@ -38,6 +38,7 @@ enum PackageType {
 type PurchaseShipment {
     shipmentItemId: Int
     purchaseItemId: Int
+    purchaseId: Int
     quantity: BigDecimal
 }
 input PurchaseShipmentInput {
@@ -224,6 +225,7 @@ type ItemIssuance {
    shipmentId: Long
 }
 type ShipmentItemSummary {
+    id: Int
     trackingNum: String
     total: Long
     status: String

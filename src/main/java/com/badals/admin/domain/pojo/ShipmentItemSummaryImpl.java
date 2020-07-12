@@ -10,13 +10,16 @@ public class ShipmentItemSummaryImpl implements ShipmentItemSummary {
         this.trackingNum = trackingNum;
         this.total = total;
     }
-
+    Integer id;
     String trackingNum;
     Long total;
     String status;
     Long processed;
 
-
+    public ShipmentItemSummaryImpl id(Integer id) {
+        this.id = id;
+        return this;
+    }
 
     public ShipmentItemSummaryImpl total(Long total) {
         this.total = total;

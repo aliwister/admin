@@ -19,6 +19,8 @@ public class PurchaseShipmentDTO implements Serializable {
     private Long shipmentItemId;
 
     private Long purchaseItemId;
+    private Long purchaseId;
+
 
     public PurchaseShipmentDTO() {
     }
