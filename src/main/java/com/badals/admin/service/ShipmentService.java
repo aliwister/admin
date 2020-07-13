@@ -200,8 +200,7 @@ public class ShipmentService {
             shipment.setReference(orderItem.getOrder().getReference());
             shipment.setShipmentType(ShipmentType.CUSTOMER);
             shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(3001).eventDate(LocalDateTime.now()));
-            shipmentRepository.save(shipment);
-            shipmentSearchRepository.save(shipmentMapper.toDto(shipment));
+
         }
 
         ShipmentItem shipmentItem = new ShipmentItem().shipment(shipment).sequence(shipment.getShipmentItems().size()+1).description(description).quantity(quantity);
@@ -212,7 +211,11 @@ public class ShipmentService {
         orderShipment.setOrderItemId(orderItemId);
 
         ItemIssuance issuance = new ItemIssuance().quantity(quantity).shipmentItem(shipmentItem).productId(productId);
+        String details = (shipmentItem.getDescription()!= null && shipmentItem.getDescription().length() > 50)?shipmentItem.getDescription().substring(0, 50):shipmentItem.getDescription();
+        shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(3001).details(details).eventDate(LocalDateTime.now()));
 
+        shipmentRepository.save(shipment);
+        shipmentSearchRepository.save(shipmentMapper.toDto(shipment));
         shipmentItemRepository.save(shipmentItem);
         orderShipmentRepository.save(orderShipment);
         issuance = itemIssuanceRepository.save(issuance);

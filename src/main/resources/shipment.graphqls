@@ -45,6 +45,7 @@ input PurchaseShipmentInput {
     shipmentItemId: Int
     purchaseItemId: Int
     quantity: BigDecimal
+    purchaseId: Long
     __typename: String
 }
 
