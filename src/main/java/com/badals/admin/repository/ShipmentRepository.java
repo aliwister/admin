@@ -77,7 +77,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     //@Query("select s.trackingNum as trackingNum, s.shipmentStatus as status, count(si) as count, count(si2) as processed from Shipment s left join s.shipmentItems si left join s.shipmentItems si2 where si2.from" +
     //    " = si.id and s.trackingNum in ?1 group by s.trackingNum")
 
-    @Query(value="select s.id as id, s.tracking_num as trackingNum, s.shipment_status as status, " +
+    @Query(value="select s.id as id, s.tracking_num as trackingNum, s.shipment_status as status, s.reference as reference, " +
         "count(si.id) as total, " +
         "count(si2.id) as processed " +
         "from shipment s left join shipment_item si ON s.id = si.shipment_id " +

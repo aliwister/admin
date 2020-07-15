@@ -8,4 +8,5 @@ public interface ShipmentItemSummary {
     Long getTotal();
     String getStatus();
     Long getProcessed();
+    String getReference();
 }

@@ -231,6 +231,7 @@ type ShipmentItemSummary {
     total: Long
     status: String
     processed: Long
+    reference: String
 }
 
 type Item {
