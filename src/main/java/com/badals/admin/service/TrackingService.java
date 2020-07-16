@@ -351,7 +351,7 @@ public class TrackingService {
         List<ShipmentItemSummaryImpl> ret = trackingNums.stream().map(x -> new ShipmentItemSummaryImpl(x,0L)).collect(Collectors.toList());
 
         for(ShipmentItemSummary x: counts) {
-            ret.get(trackingNums.indexOf(x.getTrackingNum())).total(x.getTotal()).status(x.getStatus()).processed(x.getProcessed()).id(x.getId());
+            ret.get(trackingNums.indexOf(x.getTrackingNum())).total(x.getTotal()).status(x.getStatus()).processed(x.getProcessed()).id(x.getId()).reference(x.getReference());
         }
         return ret;
     }

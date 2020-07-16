@@ -15,6 +15,7 @@ public class ShipmentItemSummaryImpl implements ShipmentItemSummary {
     Long total;
     String status;
     Long processed;
+    String reference;
 
     public ShipmentItemSummaryImpl id(Integer id) {
         this.id = id;
@@ -32,6 +33,11 @@ public class ShipmentItemSummaryImpl implements ShipmentItemSummary {
 
     public ShipmentItemSummaryImpl status(String status) {
         this.status = status;
+        return this;
+    }
+
+    public ShipmentItemSummaryImpl reference(String reference) {
+        this.reference = reference;
         return this;
     }
 }
