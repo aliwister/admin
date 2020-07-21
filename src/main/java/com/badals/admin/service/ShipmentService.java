@@ -6,6 +6,7 @@ import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.DetrackDelivery;
 import com.badals.admin.domain.pojo.DetrackItem;
+import com.badals.admin.domain.pojo.PaymentPojo;
 import com.badals.admin.domain.projection.*;
 import com.badals.admin.repository.*;
 import com.badals.admin.repository.search.ShipmentSearchRepository;
@@ -46,6 +47,7 @@ public class ShipmentService {
 
     private final ShipmentRepository shipmentRepository;
     private final ShipmentSearchRepository shipmentSearchRepository;
+    private final ShipmentDocRepository shipmentDocRepository;
 
     private final ShipmentMapper shipmentMapper;
 
@@ -66,9 +68,10 @@ public class ShipmentService {
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
+    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentDocRepository shipmentDocRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
         this.shipmentRepository = shipmentRepository;
         this.shipmentSearchRepository = shipmentSearchRepository;
+        this.shipmentDocRepository = shipmentDocRepository;
         this.shipmentMapper = shipmentMapper;
         //this.shipmentSearchRepository = shipmentSearchRepository;
         this.purchaseItemRepository = purchaseItemRepository;
@@ -374,10 +377,20 @@ public class ShipmentService {
         return shipmentRepository.getPrepQueue(shipmentId, keyword);
     }
 
-    public ShipmentDTO acceptShipment(String trackingNum) {
+    public ShipmentDTO acceptShipment(String trackingNum, PaymentPojo payment, String invoiceLink) {
         Shipment shipment = shipmentRepository.findByTrackingNum(trackingNum).get();
         shipment.setShipmentStatus(ShipmentStatus.ACCEPTED);
         shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(1102).eventDate(LocalDateTime.now()));
+        if(payment.getPrice() != null) {
+            shipment.setDutiesTotal(payment.getPrice());
+            shipmentRepository.addPayment(payment.getUserId(), payment.getInvoiceNum(), XeroAccount.CUSTOMS, payment.getPrice().getAmount());
+        }
+        if(invoiceLink != null) {
+            ShipmentDoc doc = new ShipmentDoc();
+            doc.setFileKey(invoiceLink);
+            doc.setShipment(shipment);
+            shipmentDocRepository.save(doc);
+        }
         shipmentRepository.save(shipment);
         return shipmentMapper.toDto(shipment);
     }

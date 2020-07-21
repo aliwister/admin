@@ -46,7 +46,6 @@ input PurchaseShipmentInput {
     purchaseItemId: Int
     quantity: BigDecimal
     purchaseId: Long
-    __typename: String
 }
 
 type Merchant {
@@ -279,6 +278,17 @@ type IncomingShipmentQueue {
     status: String
 }
 
+input PriceInput {
+    amount: BigDecimal
+    currency: String
+}
+
+input PaymentInput {
+    price: PriceInput
+    invoiceNum: String
+    userId: Long
+}
+
 type Query {
     shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
@@ -298,7 +308,7 @@ type Query {
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
     createShipment(shipment: ShipmentInput): Shipment
-    acceptShipment(trackingNum: String): Shipment
+    acceptShipment(trackingNum: String, payment: PaymentInput, invoiceLink: String): Shipment
     saveShipment(shipment: ShipmentInput): Shipment
     acceptPackage(pkg : PackageInput): Pkg
     #acceptItem(shipmentId: Long,  pkgId: Long,  purchaseItemId: Long,  productId: Long,  merchantId: Long,  description: String,  quantity: BigDecimal,  accepted: BigDecimal,  rejected: BigDecimal): Message

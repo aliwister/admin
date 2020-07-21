@@ -1,6 +1,7 @@
 package com.badals.admin.service.mutation;
 
 import com.badals.admin.domain.enumeration.ShipmentStatus;
+import com.badals.admin.domain.pojo.PaymentPojo;
 import com.badals.admin.service.*;
 import com.badals.admin.service.dto.*;
 
@@ -92,9 +93,9 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return trackingService.createShipment(shipment, shipmentItems, trackingNums);
     }
 
-    public ShipmentDTO acceptShipment(String trackingNum) throws IOException, IllegalAccessException {
+    public ShipmentDTO acceptShipment(String trackingNum, PaymentPojo payment, String invoiceLink) throws IOException, IllegalAccessException {
         authorizeUser();
-        return shipmentService.acceptShipment(trackingNum);
+        return shipmentService.acceptShipment(trackingNum, payment, invoiceLink);
     }
 
     public Message addTrackingEvent(List<String> trackingNums, ShipmentStatus shipmentStatus, Integer trackingEvent, LocalDateTime eventDate, String details) throws IllegalAccessException {

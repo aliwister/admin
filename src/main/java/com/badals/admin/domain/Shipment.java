@@ -1,10 +1,13 @@
 package com.badals.admin.domain;
+import com.badals.admin.domain.pojo.PaymentPojo;
+import com.badals.admin.domain.pojo.Price;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -128,7 +131,19 @@ public class Shipment extends Auditable implements Serializable {
     @JsonIgnoreProperties("shipments")
     private Merchant merchant;
 
-/*    @ManyToOne
+    @Type(type = "json")
+    @Column(name = "duties_total", columnDefinition = "string")
+    private Price dutiesTotal;
+
+    public Price getDutiesTotal() {
+        return dutiesTotal;
+    }
+
+    public void setDutiesTotal(Price dutiesTotal) {
+        this.dutiesTotal = dutiesTotal;
+    }
+
+    /*    @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "reference", referencedColumnName = "reference",insertable= false, updatable = false)
     private ShipmentProgress shipmentProgress;

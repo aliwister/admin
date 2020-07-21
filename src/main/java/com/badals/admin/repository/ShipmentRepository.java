@@ -4,12 +4,14 @@ import com.badals.admin.domain.ShipmentItem;
 import com.badals.admin.domain.ShipmentTracking;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
+import com.badals.admin.domain.pojo.PaymentPojo;
 import com.badals.admin.domain.projection.*;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -114,4 +116,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query(value="select * from incoming_shipment_queue", nativeQuery = true)
     List<IncomingShipmentQueue> incomingShipments();
+
+    @Modifying @Query(value="insert into shop.payment(payment_method, amount, customer_id, ref, account) values ('CASH', :amount, :user_id, :invoiceNum, :account)", nativeQuery = true)
+    void addPayment(@Param("user_id") Long userId, @Param("invoiceNum") String invoiceNum, @Param("account") String account, @Param("amount") BigDecimal amount);
 }
