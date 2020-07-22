@@ -41,6 +41,7 @@ type PurchaseShipment {
     purchaseId: Int
     quantity: BigDecimal
 }
+
 input PurchaseShipmentInput {
     shipmentItemId: Int
     purchaseItemId: Int
