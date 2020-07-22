@@ -46,6 +46,7 @@ input PurchaseShipmentInput {
     purchaseItemId: Int
     quantity: BigDecimal
     purchaseId: Long
+    __typename: String
 }
 
 type Merchant {
