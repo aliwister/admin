@@ -377,13 +377,19 @@ public class ShipmentService {
         return shipmentRepository.getPrepQueue(shipmentId, keyword);
     }
 
-    public ShipmentDTO acceptShipment(String trackingNum, PaymentPojo payment, String invoiceLink) {
-        Shipment shipment = shipmentRepository.findByTrackingNum(trackingNum).get();
-        shipment.setShipmentStatus(ShipmentStatus.ACCEPTED);
-        shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(1102).eventDate(LocalDateTime.now()));
+    public ShipmentDTO acceptShipment(String trackingNum, PaymentPojo payment, String invoiceLink) throws Exception {
+        Optional<Shipment> shipmentOptional = shipmentRepository.findByTrackingNum(trackingNum);
+        if(!shipmentOptional.isPresent()) {
+            throw new Exception("No shipment found");
+        }
+        Shipment shipment = shipmentOptional.get();
+        if(shipment.getShipmentStatus() != ShipmentStatus.ACCEPTED) {
+            shipment.setShipmentStatus(ShipmentStatus.ACCEPTED);
+            shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(1102).eventDate(LocalDateTime.now()));
+        }
         if(payment.getPrice() != null) {
             shipment.setDutiesTotal(payment.getPrice());
-            shipmentRepository.addPayment(payment.getUserId(), payment.getInvoiceNum(), XeroAccount.CUSTOMS, payment.getPrice().getAmount());
+            shipmentRepository.addPayment(payment.getUserId(), trackingNum, shipment.getShipmentMethod()+"-"+payment.getInvoiceNum(), XeroAccount.CUSTOMS, payment.getPrice().getAmount());
         }
         if(invoiceLink != null) {
             ShipmentDoc doc = new ShipmentDoc();

@@ -93,7 +93,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return trackingService.createShipment(shipment, shipmentItems, trackingNums);
     }
 
-    public ShipmentDTO acceptShipment(String trackingNum, PaymentPojo payment, String invoiceLink) throws IOException, IllegalAccessException {
+    public ShipmentDTO acceptShipment(String trackingNum, PaymentPojo payment, String invoiceLink) throws Exception {
         authorizeUser();
         return shipmentService.acceptShipment(trackingNum, payment, invoiceLink);
     }
