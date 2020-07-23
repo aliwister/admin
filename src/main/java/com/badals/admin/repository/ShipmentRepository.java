@@ -117,6 +117,6 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query(value="select * from incoming_shipment_queue", nativeQuery = true)
     List<IncomingShipmentQueue> incomingShipments();
 
-    @Modifying @Query(value="insert into shop.payment(payment_method, amount, customer_id, ref, invoiceNum , account) values ('CASH', :amount, :user_id, :ref, :invoiceNum, :account) ON DUPLICATE KEY UPDATE amount = :amount", nativeQuery = true)
+    @Modifying @Query(value="insert into shop.payment(payment_method, amount, customer_id, ref, invoice_num , account) values ('CASH', :amount, :user_id, :ref, :invoiceNum, :account) ON DUPLICATE KEY UPDATE amount = :amount", nativeQuery = true)
     void addPayment(@Param("user_id") Long userId, @Param("ref") String ref, @Param("invoiceNum") String invoiceNum, @Param("account") String account, @Param("amount") BigDecimal amount);
 }
