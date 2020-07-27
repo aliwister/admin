@@ -2,6 +2,7 @@ package com.badals.admin.service;
 
 import com.badals.admin.domain.*;
 import com.badals.admin.domain.enumeration.OrderState;
+import com.badals.admin.domain.enumeration.ShipmentListView;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.*;
@@ -398,8 +399,24 @@ public class TrackingService {
         return new Message("Success");
     }
 
-    public List<IncomingShipmentQueue> incomingShipmentQueue() {
-        return shipmentRepository.incomingShipments();
+    public List<ShipmentList> shipmentList(ShipmentListView listName) {
+        switch(listName) {
+            case INCOMING:
+                return shipmentRepository.incomingShipments();
+            case ALL_PURCHASE:
+                return shipmentRepository.unclosedPurchase();
+            case UNCLOSED_TRANSIT:
+                return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT, ShipmentStatus.CLOSED);
+            case CANCELLED_TRANSIT:
+                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.TRANSIT, ShipmentStatus.CANCELED);
+            case ALL_TRANSIT:
+                return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT, ShipmentStatus.CANCELED);
+            case CUSTOMER_SCHEDULED:
+                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER, ShipmentStatus.SCHEDULED);
+            case CUSTOMER_FAILED:
+                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER, ShipmentStatus.FAILED);
+        }
+        return shipmentRepository.shipQByTypeAndStatus(ShipmentType.PURCHASE, ShipmentStatus.ACCEPTED);
     }
 }
 /*

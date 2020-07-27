@@ -34,7 +34,15 @@ enum PackageType {
     TUBE
     NONSTANDARD
 }
-
+enum ShipmentListView {
+    INCOMING,
+    ALL_PURCHASE,
+    UNCLOSED_TRANSIT,
+    CANCELLED_TRANSIT,
+    ALL_TRANSIT,
+    CUSTOMER_SCHEDULED,
+    CUSTOMER_FAILED
+}
 type PurchaseShipment {
     shipmentItemId: Int
     purchaseItemId: Int
@@ -270,7 +278,7 @@ type TrackingEvent {
     name: String
 }
 
-type IncomingShipmentQueue {
+type ShipmentList {
     id: Long
     createdDate: String
     shipmentMethod: String
@@ -300,7 +308,7 @@ type Query {
     #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]
     inventory: [Inventory]
     shipQueue: [ShipQueue]
-    incomingShipmentQueue: [IncomingShipmentQueue]
+    shipmentList(viewName: ShipmentListView): [ShipmentList]
     prepQueue(shipmentId: Long, keyword: String = ""): [PrepQueue]
     shipmentItemsByTrackingNums(trackingNums: [String]): [ShipmentItem]
     shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]

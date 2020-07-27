@@ -115,8 +115,18 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     List<ShipmentTracking> trackingProgress(Set<Long> shipmentIds);
 
     @Query(value="select * from incoming_shipment_queue", nativeQuery = true)
-    List<IncomingShipmentQueue> incomingShipments();
+    List<ShipmentList> unclosedPurchase();
 
     @Modifying @Query(value="insert into shop.payment(payment_method, amount, customer_id, ref, invoice_num , account) values ('CASH', :amount, :user_id, :ref, :invoiceNum, :account) ON DUPLICATE KEY UPDATE amount = :amount", nativeQuery = true)
     void addPayment(@Param("user_id") Long userId, @Param("ref") String ref, @Param("invoiceNum") String invoiceNum, @Param("account") String account, @Param("amount") BigDecimal amount);
+
+    @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum,s.pkg_count AS pkgCount,count(p.id) AS arrivedPkgs,s.shipment_status AS status from  shipment s left join pkg p on p.shipment_id = s.id  where s.shipment_type = 'PURCHASE' group by s.id having  s.pkg_count > arrivedPkgs", nativeQuery = true)
+    List<ShipmentList> incomingShipments();
+
+    @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s where s.shipment_type = :shipmentType AND s.shipment_status <> :shipmentStatus", nativeQuery = true)
+    List<ShipmentList> shipQByTypeAndStatusNot(@Param("shipmentType") ShipmentType shipmentType, @Param("shipmentStatus") ShipmentStatus shipmentStatus);
+
+    @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s where s.shipment_type = :shipmentType AND s.shipment_status = :shipmentStatus", nativeQuery = true)
+    List<ShipmentList> shipQByTypeAndStatus(@Param("shipmentType") ShipmentType shipmentType, @Param("shipmentStatus") ShipmentStatus shipmentStatus);
+
 }

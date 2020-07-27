@@ -93,5 +93,8 @@ public class ShipmentQuery extends AdminQuery implements GraphQLQueryResolver {
             return;
         throw new IllegalAccessException("Not Authorized");
     }
+
+
+
 }
 
