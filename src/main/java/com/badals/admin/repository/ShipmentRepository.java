@@ -124,9 +124,9 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     List<ShipmentList> incomingShipments();
 
     @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s where s.shipment_type = :shipmentType AND s.shipment_status <> :shipmentStatus", nativeQuery = true)
-    List<ShipmentList> shipQByTypeAndStatusNot(@Param("shipmentType") ShipmentType shipmentType, @Param("shipmentStatus") ShipmentStatus shipmentStatus);
+    List<ShipmentList> shipQByTypeAndStatusNot(@Param("shipmentType") String shipmentType, @Param("shipmentStatus") String shipmentStatus);
 
     @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s where s.shipment_type = :shipmentType AND s.shipment_status = :shipmentStatus", nativeQuery = true)
-    List<ShipmentList> shipQByTypeAndStatus(@Param("shipmentType") ShipmentType shipmentType, @Param("shipmentStatus") ShipmentStatus shipmentStatus);
+    List<ShipmentList> shipQByTypeAndStatus(@Param("shipmentType") String shipmentType, @Param("shipmentStatus") String shipmentStatus);
 
 }

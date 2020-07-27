@@ -406,17 +406,17 @@ public class TrackingService {
             case ALL_PURCHASE:
                 return shipmentRepository.unclosedPurchase();
             case UNCLOSED_TRANSIT:
-                return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT, ShipmentStatus.CLOSED);
+                return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT.name(), ShipmentStatus.CLOSED.name());
             case CANCELLED_TRANSIT:
-                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.TRANSIT, ShipmentStatus.CANCELED);
+                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.TRANSIT.name(), ShipmentStatus.CANCELED.name());
             case ALL_TRANSIT:
-                return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT, ShipmentStatus.CANCELED);
+                return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT.name(), ShipmentStatus.CANCELED.name());
             case CUSTOMER_SCHEDULED:
-                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER, ShipmentStatus.SCHEDULED);
+                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.SCHEDULED.name());
             case CUSTOMER_FAILED:
-                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER, ShipmentStatus.FAILED);
+                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.FAILED.name());
         }
-        return shipmentRepository.shipQByTypeAndStatus(ShipmentType.PURCHASE, ShipmentStatus.ACCEPTED);
+        return shipmentRepository.shipQByTypeAndStatus(ShipmentType.PURCHASE.name(), ShipmentStatus.ACCEPTED.name());
     }
 }
 /*
