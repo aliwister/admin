@@ -6,6 +6,7 @@ import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.DetrackDelivery;
 import com.badals.admin.domain.pojo.DetrackItem;
+import com.badals.admin.domain.pojo.DetrackSearch;
 import com.badals.admin.domain.pojo.PaymentPojo;
 import com.badals.admin.domain.projection.*;
 import com.badals.admin.repository.*;
@@ -28,6 +29,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -64,11 +66,12 @@ public class ShipmentService {
     private final OrderShipmentRepository orderShipmentRepository;
     private final ItemIssuanceRepository itemIssuanceRepository;
     private final ItemIssuanceMapper itemIssuanceMapper;
-    @Autowired private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentDocRepository shipmentDocRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
+    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentDocRepository shipmentDocRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, OrderService orderService) {
         this.shipmentRepository = shipmentRepository;
         this.shipmentSearchRepository = shipmentSearchRepository;
         this.shipmentDocRepository = shipmentDocRepository;
@@ -84,6 +87,8 @@ public class ShipmentService {
         this.orderShipmentRepository = orderShipmentRepository;
         this.itemIssuanceRepository = itemIssuanceRepository;
         this.itemIssuanceMapper = itemIssuanceMapper;
+        this.orderRepository = orderRepository;
+        this.orderService = orderService;
     }
 
     /**
@@ -434,6 +439,36 @@ public class ShipmentService {
         packagingContentRepository.deleteByShipmentItem(shipmentItem);
     }
 
+    public void updateFromDetrack(String id) throws IOException { //String id) {
+        //String id = "12852-3434295";
+        Long shipmentId = Long.parseLong(id.split("-")[0]);
+        String url = "https://app.detrack.com/api/v1/jobs/search.json";
+
+        DetrackDelivery delivery = new DetrackDelivery();
+        ArrayList<DetrackItem> items = new ArrayList<DetrackItem>();
+
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("key", "530e610169c28ce227a9716ba28a386cedc6d2dbefef67eb");
+
+        params.add("json", "{\"q\": {\"do\": \"" + id + "\"}}");
+        params.add("url", url);
+        ResponseEntity<String> response = (ResponseEntity<String>) restTemplate.postForEntity(url, params, String.class);
+        System.out.println(response.getBody());
+        DetrackSearch search = mapper.readValue(response.getBody(), DetrackSearch.class);
+        //System.out.println(search.getJobs().)
+        System.out.println(search.getJobs().get(0).getStatus());
+
+        if(search.getJobs().get(0).getStatus().equalsIgnoreCase(ShipmentStatus.DELIVERED.name())) {
+            Shipment shipment = shipmentRepository.findById(shipmentId).get();
+            shipment.setShipmentStatus(ShipmentStatus.DELIVERED);
+            shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(4000).eventDate(LocalDateTime.now()));
+            orderService.setStatus(shipment.getReference(), OrderState.DELIVERED);
+            shipmentRepository.save(shipment);
+        }
+    }
     /**
      * Search for the shipment corresponding to the query.
      *

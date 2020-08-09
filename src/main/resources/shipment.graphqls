@@ -337,4 +337,5 @@ type Mutation {
     unpackItem(shipmentItemId: Long): Message
     addTrackingEvent(trackingNums: [String], shipmentStatus: ShipmentStatus,  trackingEvent: Int, eventDate: LocalDateTime, details: String): Message
     setShipmentStatus(id: Long, status:ShipmentStatus): Message
+    updateFromDetrack(id: String): Message
 }

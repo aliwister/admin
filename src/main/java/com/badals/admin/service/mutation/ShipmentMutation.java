@@ -115,12 +115,18 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return new Message("Success");
     }
 
-    public Message removeItem(Long shipmentItemId) {
+    public Message removeItem(Long shipmentItemId) throws IllegalAccessException {
+        authorizeUser();
         shipmentService.removeItem(shipmentItemId);
         return new Message("Success");
     }
-    public Message unpackItem(Long shipmentItemId) {
+    public Message unpackItem(Long shipmentItemId) throws IllegalAccessException {
+        authorizeUser();
         shipmentService.unpackItem(shipmentItemId);
+        return new Message("Success");
+    }
+    public Message updateFromDetrack(String id) throws IOException {
+        shipmentService.updateFromDetrack(id);
         return new Message("Success");
     }
 }
