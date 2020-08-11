@@ -469,6 +469,10 @@ public class ShipmentService {
             shipmentRepository.save(shipment);
         }
     }
+
+    public List<UnshippedQueue> findUnshipped() {
+        return shipmentRepository.findUnshipped();
+    }
     /**
      * Search for the shipment corresponding to the query.
      *

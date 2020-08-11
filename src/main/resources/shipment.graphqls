@@ -218,6 +218,19 @@ type OutstandingQueue {
    orderId: Long
    orderItemId: Long
    productId: Long
+   wait: Int
+}
+
+type UnshippedQueue {
+   id: ID
+   description: String
+   quantity: BigDecimal
+   date: LocalDate
+   price: BigDecimal
+   weight: BigDecimal
+   image: String
+   sku: String
+   po: Long
 }
 
 type ShipQueue {
@@ -305,6 +318,7 @@ type Query {
     shipmentsByRef(ref: String): [Shipment]
     sortQueue(keyword: String): [SortQueue]
     outstandingQueue(keyword: String): [OutstandingQueue]
+    unshippedQueue: [UnshippedQueue]
     #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]
     inventory: [Inventory]
     shipQueue: [ShipQueue]

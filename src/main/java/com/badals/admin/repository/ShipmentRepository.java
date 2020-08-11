@@ -129,4 +129,6 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s where s.shipment_type = :shipmentType AND s.shipment_status = :shipmentStatus", nativeQuery = true)
     List<ShipmentList> shipQByTypeAndStatus(@Param("shipmentType") String shipmentType, @Param("shipmentStatus") String shipmentStatus);
 
+    @Query(value="select * from unshipped_queue ", nativeQuery=true)
+    List<UnshippedQueue> findUnshipped();
 }

@@ -2,17 +2,14 @@ package com.badals.admin.domain.projection;
 
 import java.math.BigDecimal;
 
-public interface OutstandingQueue {
+public interface UnshippedQueue {
    Long getId();
    String getDescription();
    BigDecimal getQuantity();
-   BigDecimal getAllocated();
+   BigDecimal getDate();
    BigDecimal getPrice();
    String getImage();
    BigDecimal getWeight();
    String getSku();
-   Long getOrderId();
-   Long getOrderItemId();
-   Long getProductId();
-   Integer getWait();
+   Long getPo();
 }

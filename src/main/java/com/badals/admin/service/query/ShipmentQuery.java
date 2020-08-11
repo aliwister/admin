@@ -54,7 +54,10 @@ public class ShipmentQuery extends AdminQuery implements GraphQLQueryResolver {
         authorizeUser();
         return shipmentService.findOutstanding(keyword);
     }
-
+    public List<UnshippedQueue> unshippedQueue() throws IllegalAccessException {
+        //authorizeUser();
+        return shipmentService.findUnshipped();
+    }
     public List<Inventory> inventory() throws IllegalAccessException {
         authorizeUser();
         return shipmentService.getInventory();
