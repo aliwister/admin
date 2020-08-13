@@ -328,7 +328,7 @@ type Query {
     shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]
     track(ref: String): [ShipmentTrackingMap]
     trackingEvents: [TrackingEvent]
-    shipQueueByCustomerId(customerId: Long): [PrepQueue]
+    shipQueueByCustomerId(customerId: Long): [ShipQueue]
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
