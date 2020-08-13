@@ -473,6 +473,10 @@ public class ShipmentService {
     public List<UnshippedQueue> findUnshipped() {
         return shipmentRepository.findUnshipped();
     }
+
+    public List<ShipQueue> getShipQueueByCustomerId(Long customerId) {
+        return shipmentRepository.getShipQueueByCustomerId(customerId);
+    }
     /**
      * Search for the shipment corresponding to the query.
      *

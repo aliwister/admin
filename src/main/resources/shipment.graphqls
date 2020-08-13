@@ -225,7 +225,7 @@ type UnshippedQueue {
    id: ID
    description: String
    quantity: BigDecimal
-   date: LocalDate
+   date: String
    price: BigDecimal
    weight: BigDecimal
    image: String
@@ -328,6 +328,7 @@ type Query {
     shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]
     track(ref: String): [ShipmentTrackingMap]
     trackingEvents: [TrackingEvent]
+    shipQueueByCustomerId(customerId: Long): [PrepQueue]
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message

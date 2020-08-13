@@ -68,6 +68,11 @@ public class ShipmentQuery extends AdminQuery implements GraphQLQueryResolver {
         return shipmentService.getShipQueue();
     }
 
+    public List<ShipQueue> getShipQueueByCustomerId(Long customerId) throws IllegalAccessException {
+        //authorizeUser();
+        return shipmentService.getShipQueueByCustomerId(customerId);
+    }
+
     public List<PrepQueue> prepQueue(Long shipmentId, String keyword) throws IllegalAccessException {
         authorizeUser();
         return shipmentService.getPrepQueue(shipmentId, keyword);
