@@ -74,7 +74,10 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     Optional<Shipment> findByTrackingNum(String trackingNum);
 
     @Query("from ShipmentItem si join si.shipment s left join fetch si.product where s.trackingNum in ?1 and s.shipmentStatus not in ?2")
-    List<ShipmentItem> findByTrackingNums(List<String> trackingNums, List<ShipmentStatus> exclude);
+    List<ShipmentItem> findByTrackingNumsExclude(List<String> trackingNums, List<ShipmentStatus> exclude);
+
+    @Query("from ShipmentItem si join si.shipment s left join fetch si.product where s.trackingNum in ?1")
+    List<ShipmentItem> findByTrackingNums(List<String> trackingNums);
 
 
     @Query

@@ -324,7 +324,7 @@ type Query {
     shipQueue: [ShipQueue]
     shipmentList(viewName: ShipmentListView): [ShipmentList]
     prepQueue(shipmentId: Long, keyword: String = ""): [PrepQueue]
-    shipmentItemsByTrackingNums(trackingNums: [String]): [ShipmentItem]
+    shipmentItemsByTrackingNums(trackingNums: [String], showClosed: Boolean): [ShipmentItem]
     shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]
     track(ref: String): [ShipmentTrackingMap]
     trackingEvents: [TrackingEvent]

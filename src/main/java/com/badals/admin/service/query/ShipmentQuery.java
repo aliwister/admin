@@ -79,9 +79,9 @@ public class ShipmentQuery extends AdminQuery implements GraphQLQueryResolver {
     }
 
 
-    public List<ShipmentItemDTO> shipmentItemsByTrackingNums(List<String> trackingNums) throws IllegalAccessException {
+    public List<ShipmentItemDTO> shipmentItemsByTrackingNums(List<String> trackingNums, boolean isClosed) throws IllegalAccessException {
         authorizeUser();
-        return trackingService.findByTrackingNums(trackingNums);
+        return trackingService.findByTrackingNums(trackingNums, isClosed);
     }
 
 

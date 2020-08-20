@@ -327,8 +327,12 @@ public class TrackingService {
         return new Message("DONE");
     }
 
-    public List<ShipmentItemDTO> findByTrackingNums(List<String> trackingNums) {
-        return shipmentRepository.findByTrackingNums(trackingNums, Arrays.asList(new ShipmentStatus[]{ShipmentStatus.CLOSED})).stream().map(shipmentItemMapper::toDto).collect(Collectors.toList());
+    public List<ShipmentItemDTO> findByTrackingNums(List<String> trackingNums, boolean showClosed) {
+        if(!showClosed)
+            return shipmentRepository.findByTrackingNumsExclude(trackingNums, Arrays.asList(new ShipmentStatus[]{ShipmentStatus.CLOSED})).stream().map(shipmentItemMapper::toDto).collect(Collectors.toList());
+        else
+            return shipmentRepository.findByTrackingNums(trackingNums).stream().map(shipmentItemMapper::toDto).collect(Collectors.toList());
+
     }
 
     public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems, List<String> trackingNums) throws Exception {
