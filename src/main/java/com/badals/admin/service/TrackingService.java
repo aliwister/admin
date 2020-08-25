@@ -218,20 +218,22 @@ public class TrackingService {
         return null;
     }
 
-    private Shipment createShipment(String trackingNum, String orderId, String carrier, String shipDate) {
+    private Shipment createShipment(String trackingNum, String orderId, String carrier, String shipDate, String shippingAddress) {
         Shipment shipment = new Shipment();
         shipment.setShipmentStatus(ShipmentStatus.IN_TRANSIT);
-        shipment.setShipmentType(ShipmentType.TRANSIT);
+        if(shippingAddress.endsWith("Muscat, OM"))
+            shipment.setShipmentType(ShipmentType.PURCHASE);
+        else
+            shipment.setShipmentType(ShipmentType.TRANSIT);
+
         shipment.setReference(orderId);
         shipment.setTrackingNum(trackingNum);
-
-
         shipment.setShipmentMethod(carrier);
 
         LocalDate dateTime = LocalDate.parse(shipDate,
             DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         shipment.setActualShipDate(dateTime.atStartOfDay());
-        shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1001).eventDate(dateTime.atStartOfDay()));
+        shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1001).eventDate(dateTime.atStartOfDay()).details("Sent to "+shippingAddress.substring(shippingAddress.length()-10) + " via "+carrier));
 
         return shipment;
     }
@@ -262,7 +264,7 @@ public class TrackingService {
             }
 
             if (shipment == null) {
-                shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier(), item.getShipmentDate()));
+                shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier(), item.getShipmentDate(), item.getShippingAddress()));
                 if(shipment.getShipmentStatus() == ShipmentStatus.PROCESSING ||
                     shipment.getShipmentStatus() == ShipmentStatus.CLOSED ||
                     shipment.getShipmentStatus() == ShipmentStatus.RECEIVED
@@ -276,7 +278,7 @@ public class TrackingService {
             }
             else if (shipment != null && shipment.getTrackingNum() != null && !shipment.getTrackingNum().equals(trackingNum)) {
                 shipment = saveAndReset(shipment, shipmentItems);
-                shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier(), item.getShipmentDate()));
+                shipment = shipmentRepository.findByTrackingNum(trackingNum).orElse(createShipment(item.getTrackingNum(), item.getOrderId(), item.getCarrier(), item.getShipmentDate(), item.getShippingAddress()));
                 if(shipment.getShipmentStatus() == ShipmentStatus.PROCESSING ||
                     shipment.getShipmentStatus() == ShipmentStatus.CLOSED ||
                     shipment.getShipmentStatus() == ShipmentStatus.RECEIVED ||
