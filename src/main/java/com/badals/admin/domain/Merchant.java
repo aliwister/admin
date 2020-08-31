@@ -23,6 +23,13 @@ public class Merchant implements Serializable {
     @Column(name = "added")
     private Instant added;
 
+    public Merchant(Long l) {
+        this.id = l;
+    }
+
+    public Merchant() {
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

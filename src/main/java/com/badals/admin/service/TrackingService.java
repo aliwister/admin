@@ -221,11 +221,12 @@ public class TrackingService {
     private Shipment createShipment(String trackingNum, String orderId, String carrier, String shipDate, String shippingAddress) {
         Shipment shipment = new Shipment();
         shipment.setShipmentStatus(ShipmentStatus.IN_TRANSIT);
-        if(shippingAddress.endsWith("Muscat, OM"))
+        if(shippingAddress.endsWith(", OM"))
             shipment.setShipmentType(ShipmentType.PURCHASE);
         else
             shipment.setShipmentType(ShipmentType.TRANSIT);
 
+        shipment.setMerchant(new Merchant(1L));
         shipment.setReference(orderId);
         shipment.setTrackingNum(trackingNum);
         shipment.setShipmentMethod(carrier);
