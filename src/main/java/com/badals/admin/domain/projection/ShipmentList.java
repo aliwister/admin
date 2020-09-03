@@ -8,4 +8,5 @@ public interface ShipmentList {
     String getStatus();
     Integer getPkgCount();
     Integer getArrivedPkgs();
+    String getSender();
 }

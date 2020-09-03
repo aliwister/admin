@@ -299,6 +299,7 @@ type ShipmentList {
     pkgCount: Int
     arrivedPkgs: Int
     status: String
+    sender: String
 }
 
 input PriceInput {

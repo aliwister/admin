@@ -129,7 +129,8 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum,s.pkg_count AS pkgCount,count(p.id) AS arrivedPkgs,s.shipment_status AS STATUS, " +
         "(SELECT sum(si.quantity) from shipment_item si where s.id = si.shipment_id) AS sent, " +
-        "(select SUM(sr.accepted + sr.rejected) FROM shipment_receipt sr join shipment_item si ON sr.shipment_item_id= si.id WHERE s.id = si.shipment_id) AS received " +
+        "(select SUM(sr.accepted + sr.rejected) FROM shipment_receipt sr join shipment_item si ON sr.shipment_item_id= si.id WHERE s.id = si.shipment_id) AS received, " +
+        "(select m2.name from shop.merchant m2 where s.merchant_id = m2.id) AS sender " +
         "from  shipment s " +
         "left join pkg p on p.shipment_id = s.id  " +
         "where s.shipment_type = 'PURCHASE' AND s.shipment_status != 'CLOSED'" +
