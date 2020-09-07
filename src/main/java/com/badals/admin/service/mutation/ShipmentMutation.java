@@ -50,7 +50,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return pkgService.save(dto);
     }
 
-    Message acceptItem(Long shipmentItemId, Long packageId, BigDecimal accepted, BigDecimal rejected) throws IllegalAccessException {
+    Message acceptItem(Long shipmentItemId, Long packageId, BigDecimal accepted, BigDecimal rejected) throws IllegalAccessException, ShipmentNotReadyException {
         authorizeUser();
         shipmentService.acceptItem(shipmentItemId, packageId, accepted, rejected);
         return new Message("Done");

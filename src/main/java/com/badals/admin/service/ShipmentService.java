@@ -144,9 +144,14 @@ public class ShipmentService {
         //shipmentSearchRepository.deleteById(id);
     }
 
-    public void acceptItem(Long shipmentItemId, Long packageId, BigDecimal accepted, BigDecimal rejected) {
-        Pkg pkg = prepItem(shipmentItemId, packageId, accepted.add(rejected));
+    public void acceptItem(Long shipmentItemId, Long packageId, BigDecimal accepted, BigDecimal rejected) throws ShipmentNotReadyException {
         ShipmentItem shipmentItem = shipmentItemRepository.findById(shipmentItemId).get();
+        Shipment shipment = shipmentItem.getShipment();
+        if(shipment.getShipmentStatus() != ShipmentStatus.ACCEPTED)
+            throw new ShipmentNotReadyException("Must accept shipment first");
+
+        Pkg pkg = prepItem(shipmentItemId, packageId, accepted.add(rejected));
+
         ShipmentReceipt shipmentReceipt = new ShipmentReceipt().accepted(accepted).receivedDate(Instant.now()).pkg(pkg).rejected(rejected).shipmentItem(shipmentItem);
         shipmentReceipt.setProductId(shipmentItem.getProductId());
         shipmentReceiptRepository.save(shipmentReceipt);
