@@ -1,5 +1,6 @@
 package com.badals.admin.domain.pojo;
 
+import com.badals.admin.service.dto.ShipmentDocDTO;
 import com.badals.admin.service.dto.ShipmentTrackingDTO;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class ShipmentTrackingPojo {
     String carrier;
     List<ItemPojo> content = new ArrayList<>();
     List<ShipmentTrackingDTO> progress = new ArrayList<>();
+    List<ShipmentDocDTO> docs = new ArrayList<>();
 
     public void addItem(ItemPojo item) {
         content.add(item);
@@ -36,4 +38,9 @@ public class ShipmentTrackingPojo {
     public void addProgress(ShipmentTrackingDTO x) {
         progress.add(x);
     }
+
+    public void addDoc(ShipmentDocDTO x) {
+        docs.add(x);
+    }
+
 }

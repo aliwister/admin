@@ -271,9 +271,15 @@ type TrackingEventItem {
     eventDate: LocalDateTime
 }
 
+type ShipmentDoc {
+    id: ID
+    fileKey: String
+}
+
 type ShipmentTracking {
     content: [Item]
     progress: [TrackingEventItem]
+    docs: [ShipmentDoc]
     status: String
     type: String
     date: String

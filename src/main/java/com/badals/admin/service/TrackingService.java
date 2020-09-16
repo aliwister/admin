@@ -15,17 +15,11 @@ import com.badals.admin.service.dto.*;
 import com.badals.admin.service.mapper.*;
 
 import com.badals.admin.service.mutation.Message;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.univocity.parsers.csv.CsvRoutines;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -71,11 +65,13 @@ public class TrackingService {
     private final OrderShipmentRepository orderShipmentRepository;
     private final ItemIssuanceRepository itemIssuanceRepository;
     private final ItemIssuanceMapper itemIssuanceMapper;
-    @Autowired private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final ShipmentDocRepository shipmentDocRepository;
+    private final ShipmentDocMapper shipmentDocMapper;
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public TrackingService( ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentTrackingRepository shipmentTrackingRepository, ShipmentEventRepository shipmentEventRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentItemMapper shipmentItemMapper, PurchaseShipmentMapper purchaseShipmentMapper, ShipmentTrackingMapper shipmentTrackingMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper) {
+    public TrackingService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentTrackingRepository shipmentTrackingRepository, ShipmentEventRepository shipmentEventRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentItemMapper shipmentItemMapper, PurchaseShipmentMapper purchaseShipmentMapper, ShipmentTrackingMapper shipmentTrackingMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, ShipmentDocRepository shipmentDocRepository, ShipmentDocMapper shipmentDocMapper) {
         this.shipmentRepository = shipmentRepository;
         this.shipmentSearchRepository = shipmentSearchRepository;
         this.shipmentTrackingRepository = shipmentTrackingRepository;
@@ -95,6 +91,9 @@ public class TrackingService {
         this.orderShipmentRepository = orderShipmentRepository;
         this.itemIssuanceRepository = itemIssuanceRepository;
         this.itemIssuanceMapper = itemIssuanceMapper;
+        this.orderRepository = orderRepository;
+        this.shipmentDocRepository = shipmentDocRepository;
+        this.shipmentDocMapper = shipmentDocMapper;
     }
 
     /**
@@ -387,8 +386,12 @@ public class TrackingService {
             return null;
 
         List<ShipmentTracking> progress = shipmentRepository.trackingProgress(shipmentIds);
+        List<ShipmentDoc> docs = shipmentDocRepository.findByShipmentIdIn(shipmentIds);
 
         progress.forEach(x -> map.get(x.getShipment().getId()).addProgress(shipmentTrackingMapper.toDto(x)));
+        docs.forEach(x -> map.get(x.getShipment().getId()).addDoc(shipmentDocMapper.toDto(x)));
+
+
 
         List<ShipmentTrackingMap> track =  map.entrySet().stream().map(x -> new ShipmentTrackingMap(x.getKey(), x.getValue())).collect(Collectors.toList());
         return track;
