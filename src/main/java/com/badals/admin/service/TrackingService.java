@@ -220,20 +220,28 @@ public class TrackingService {
     private Shipment createShipment(String trackingNum, String orderId, String carrier, String shipDate, String shippingAddress) {
         Shipment shipment = new Shipment();
         shipment.setShipmentStatus(ShipmentStatus.IN_TRANSIT);
-        if(shippingAddress.endsWith(", OM"))
-            shipment.setShipmentType(ShipmentType.PURCHASE);
-        else
-            shipment.setShipmentType(ShipmentType.TRANSIT);
-
-        shipment.setMerchant(new Merchant(1L));
-        shipment.setReference(orderId);
-        shipment.setTrackingNum(trackingNum);
-        shipment.setShipmentMethod(carrier);
 
         LocalDate dateTime = LocalDate.parse(shipDate,
             DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        if(shippingAddress.endsWith(", OM")) {
+            shipment.setShipmentType(ShipmentType.PURCHASE);
+            shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1101).eventDate(dateTime.atStartOfDay()).details("Sent to " + shippingAddress.substring(shippingAddress.length() - 10) + " via " + carrier));
+        }
+        else {
+            shipment.setShipmentType(ShipmentType.TRANSIT);
+            shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1001).eventDate(dateTime.atStartOfDay()).details("Sent to " + shippingAddress.substring(shippingAddress.length() - 10) + " via " + carrier));
+        }
+
+            shipment.setMerchant(new Merchant(1L));
+        shipment.setReference(orderId);
+        shipment.setTrackingNum(trackingNum);
+        shipment.setShipmentMethod(carrier);
+        shipment.setPkgCount(1);
+
+
         shipment.setActualShipDate(dateTime.atStartOfDay());
-        shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1001).eventDate(dateTime.atStartOfDay()).details("Sent to "+shippingAddress.substring(shippingAddress.length()-10) + " via "+carrier));
+
 
         return shipment;
     }
