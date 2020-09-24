@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -278,7 +279,7 @@ public class ShipmentService {
         OrderDTO order = getOrderForDetrack(orderRef).get();
         AddressDTO address = order.getDeliveryAddress();
         CustomerDTO customer = order.getCustomer();
-        //BigDecimal balance = orderRepository.getBalance(orderRef);
+        BigDecimal balance = orderRepository.getBalance(orderRef);
 
 
 
@@ -320,7 +321,7 @@ public class ShipmentService {
         delivery.setSales_person ("Ali");
         delivery.setNotify_url("https://api.badals.com/detrack");
         delivery.setAtt_1("https://wa.me/"+mobile);
-
+        delivery.setPay_amt(balance.setScale(2, RoundingMode.HALF_UP).toString());
         //if(balance != null)
          //   delivery.pay_amt = balance.toString();
 
