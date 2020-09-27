@@ -317,7 +317,10 @@ public class ShipmentService {
         delivery.setAddress(address.getLine1() + " " + address.getLine2() + " " + address.getCity());
         delivery.setDeliver_to (address.getFirstName() + " " + address.getLastName());
         delivery.setDelivery_time (time);
-        delivery.setAssign_to (assignTo);
+
+        //delivery.setAssign_to (assignTo); //Disable assign to
+
+
         delivery.setSales_person ("Ali");
         delivery.setNotify_url("https://api.badals.com/detrack");
         delivery.setAtt_1("https://wa.me/"+mobile);
@@ -443,6 +446,22 @@ public class ShipmentService {
     public void unpackItem(Long shipmentItemId) {
         ShipmentItem shipmentItem = shipmentItemRepository.findById(shipmentItemId).get();
         packagingContentRepository.deleteByShipmentItem(shipmentItem);
+    }
+
+    public byte[] downloadLabel(String _do) {
+        String url = "https://app.detrack.com/api/v1/deliveries/label.pdf";
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("key", "530e610169c28ce227a9716ba28a386cedc6d2dbefef67eb");
+
+        //String date = "2017-05-02", _do = "43784-7468";
+        String json = "{\"do\":\""+ _do +"\"}";
+
+        params.add("json", json);
+        params.add("url", url);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<byte[]> response = restTemplate.postForEntity(url, params, byte[].class);
+
+        return response.getBody();
     }
 
     public void updateFromDetrack(String id) throws IOException { //String id) {

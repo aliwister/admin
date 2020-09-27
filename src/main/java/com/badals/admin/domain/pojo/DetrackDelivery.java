@@ -32,7 +32,7 @@ public class DetrackDelivery {
 
    String sales_person;
 
-   public Object pay_amt;
+   public String pay_amt;
 
    String view_image_url;
    String view_signature_url;
