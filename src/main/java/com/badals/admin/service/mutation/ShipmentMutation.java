@@ -84,10 +84,10 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return new Message(m);
     }
 
-    public Message processAmazonShipments() throws IOException, IllegalAccessException {
+/*    public Message processAmazonShipments() throws IOException, IllegalAccessException {
         authorizeUser();
-        return trackingService.processAmazonFile();
-    }
+        return trackingService.processAmazonFile(file);
+    }*/
     public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems, List<String> trackingNums) throws Exception {
         authorizeUser();
         return trackingService.createShipment(shipment, shipmentItems, trackingNums);

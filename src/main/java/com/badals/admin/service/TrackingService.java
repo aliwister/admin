@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -246,10 +247,10 @@ public class TrackingService {
         return shipment;
     }
 
-    public synchronized Message processAmazonFile() throws IOException {
+    public synchronized Message processAmazonFile(MultipartFile file) throws IOException {
         final String fileName = "export.csv";
         //List<AmazonShipmentItem> beans = new CsvToBeanBuilder(new InputStreamReader(TrackingService.class.getClassLoader().getResourceAsStream(fileName))).withType(AmazonShipmentItem.class).build().parse();
-        List<AmazonShipmentItem> beans = new CsvRoutines().parseAll(AmazonShipmentItem.class, TrackingService.class.getClassLoader().getResourceAsStream(fileName));
+        List<AmazonShipmentItem> beans = new CsvRoutines().parseAll(AmazonShipmentItem.class, file.getInputStream());
         beans.sort(Comparator.comparing(AmazonShipmentItem::getTrackingNum,Comparator.nullsLast(Comparator.naturalOrder())));
         beans.forEach(x -> System.out.println(x.getAsin() + " " + x.getPo() + " " + x.getCarrier() + " " + x.getTrackingNum()));
 

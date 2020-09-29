@@ -347,7 +347,7 @@ type Mutation {
     acceptItem (shipmentItemId: Long,  packageId: Long, accepted: BigDecimal, rejected: BigDecimal): Message
     issueItem(orderItemId : Long, productId : Long, description : String, quantity : BigDecimal): ItemIssuance
     prepItem(dto: PackagingContentInput): Message
-    processAmazonShipments: Message
+    #processAmazonShipments: Message
     #printCode(shipmentId: Long): Message
     #savePackage(pkgId: Long, shipmentItems: [Long]): Pkg
     #scheduleShipment(id: Long, deliveryDate: LocalDate, comments: String, assignTo: String): Message
