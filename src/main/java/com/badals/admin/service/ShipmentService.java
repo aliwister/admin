@@ -133,6 +133,12 @@ public class ShipmentService {
         return shipmentRepository.findById(id)
             .map(shipmentMapper::toDto);
     }
+    @Transactional(readOnly = true)
+    public Optional<ShipmentDTO> findOneForDetails(Long id) {
+        log.debug("Request to get Shipment : {}", id);
+        return shipmentRepository.findById(id)
+            .map(shipmentMapper::toDtoDetails);
+    }
 
     /**
      * Delete the shipment by id.
@@ -502,6 +508,15 @@ public class ShipmentService {
     public List<ShipQueue> getShipQueueByCustomerId(Long customerId) {
         return shipmentRepository.getShipQueueByCustomerId(customerId);
     }
+
+     public List<ShipmentItemDetails> findItemsForShipmentDetails(Long id) {
+        return shipmentRepository.findItemsForShipmentDetails(id);
+    }
+
+     public List<ShipmentItemDetails> findItemsInPkgForShipmentDetails(Long id) {
+        return shipmentRepository.findItemsInPkgForShipmentDetails(id);
+    }
+
     /**
      * Search for the shipment corresponding to the query.
      *

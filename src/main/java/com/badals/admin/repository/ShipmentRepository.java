@@ -6,6 +6,7 @@ import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
 import com.badals.admin.domain.pojo.PaymentPojo;
 import com.badals.admin.domain.projection.*;
+import com.badals.admin.service.dto.ShipmentDTO;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -145,4 +146,33 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query(value="select * from unshipped_queue ", nativeQuery=true)
     List<UnshippedQueue> findUnshipped();
+
+
+    @Query(value="select  " +
+        "          si.id, " +
+        "          si.sequence, " +
+        "          si.quantity, " +
+        "          si.description, " +
+        "          si.shipment_id as shipmentId, " +
+        "          si.product_id as productId, " +
+        "          p.image as image " +
+        "from shipment_item si left join shop.product p on p.ref = si.product_id  " +
+        "where si.shipment_id = :id", nativeQuery = true)
+    List<ShipmentItemDetails> findItemsForShipmentDetails(@Param("id") Long id);
+
+
+    @Query(value="select  " +
+        "          si.id, " +
+        "          si.sequence, " +
+        "          si.quantity, " +
+        "          si.description, " +
+        "          si.shipment_id as shipmentId, " +
+        "          si.product_id as productId, " +
+        "          p.image as image " +
+        "from shipment_item si  " +
+        "left join shop.product p on p.ref = si.product_id  " +
+        "left join packaging_content pc on pc.shipment_item_id = si.id  " +
+        "where pc.pkg_id = :id", nativeQuery = true)
+    List<ShipmentItemDetails> findItemsInPkgForShipmentDetails(@Param("id") Long id);
+
 }

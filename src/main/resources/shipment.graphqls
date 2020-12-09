@@ -308,6 +308,16 @@ type ShipmentList {
     sender: String
 }
 
+type ShipmentItemDetails {
+    id: ID
+    sequence: Int
+    quantity: BigDecimal
+    description: String
+    shipmentId: Long
+    productId: Long
+    image: String
+}
+
 input PriceInput {
     amount: BigDecimal
     currency: String
@@ -322,11 +332,12 @@ input PaymentInput {
 type Query {
     shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
+    shipmentItemDetails(id: ID): [ShipmentItemDetails]
+    pkgItemDetails(id: ID): [ShipmentItemDetails]
     shipmentsByRef(ref: String): [Shipment]
     sortQueue(keyword: String): [SortQueue]
     outstandingQueue(keyword: String): [OutstandingQueue]
     unshippedQueue: [UnshippedQueue]
-    #shipmentItems(shipmentId: Long, isPackaged: boolean): [ShipmentItem]
     inventory: [Inventory]
     shipQueue: [ShipQueue]
     shipmentList(viewName: ShipmentListView): [ShipmentList]

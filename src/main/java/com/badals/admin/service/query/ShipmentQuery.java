@@ -37,7 +37,18 @@ public class ShipmentQuery extends AdminQuery implements GraphQLQueryResolver {
 
     public ShipmentDTO shipment(Long id) throws IllegalAccessException {
         authorizeUser();
-        return shipmentService.findOne(id).get();
+        return shipmentService.findOneForDetails(id).get();
+    }
+
+
+    public List<ShipmentItemDetails> shipmentItemDetails(Long id) throws IllegalAccessException {
+        authorizeUser();
+        return shipmentService.findItemsForShipmentDetails(id);
+    }
+
+    public List<ShipmentItemDetails> pkgItemDetails(Long id) throws IllegalAccessException {
+        authorizeUser();
+        return shipmentService.findItemsInPkgForShipmentDetails(id);
     }
 
     public List<ShipmentDTO> shipmentsByRef(String ref) throws IllegalAccessException {
@@ -69,7 +80,7 @@ public class ShipmentQuery extends AdminQuery implements GraphQLQueryResolver {
     }
 
     public List<ShipQueue> getShipQueueByCustomerId(Long customerId) throws IllegalAccessException {
-        //authorizeUser();
+        authorizeUser();
         return shipmentService.getShipQueueByCustomerId(customerId);
     }
 

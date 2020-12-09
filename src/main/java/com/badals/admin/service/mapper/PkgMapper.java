@@ -12,6 +12,7 @@ import org.mapstruct.*;
 public interface PkgMapper extends EntityMapper<PkgDTO, Pkg> {
 
     @Mapping(source = "shipment.id", target = "shipmentId")
+    @Mapping(target = "shipmentItems", ignore = true)
     PkgDTO toDto(Pkg pkg);
 
     @Mapping(source = "shipmentId", target = "shipment")
