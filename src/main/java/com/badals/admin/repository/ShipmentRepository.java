@@ -147,6 +147,9 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query(value="select * from unshipped_queue ", nativeQuery=true)
     List<UnshippedQueue> findUnshipped();
 
+    @Query(value="select count(1) + 1 as sequence from shipment s where s.id = :id",nativeQuery = true)
+    Integer nextSeq(@Param("id") Long id);
+
 
     @Query(value="select  " +
         "          si.id, " +

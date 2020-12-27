@@ -8,14 +8,23 @@ import com.badals.admin.service.dto.*;
 import com.badals.admin.service.errors.ShipmentNotReadyException;
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import java.util.Date;
 import java.util.List;
+
+
+/*import static org.jeasy.flows.workflow.ParallelFlow.Builder.aNewParallelFlow;
+import static org.jeasy.flows.workflow.RepeatFlow.Builder.aNewRepeatFlow;*/
 
 @Component
 public class ShipmentMutation implements GraphQLMutationResolver {
@@ -42,7 +51,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
 
     ShipmentDTO saveShipment(ShipmentDTO dto) throws IllegalAccessException {
         authorizeUser();
-    return shipmentService.save(dto);
+        return shipmentService.save(dto);
     }
 
     PkgDTO acceptPackage(PkgDTO dto) throws IllegalAccessException {
@@ -69,7 +78,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
     }
 
     Message addItem(Long shipmentId, Long productId, Long purchaseItemId, String description, BigDecimal quantity) throws IllegalAccessException {
-         authorizeUser();
+        authorizeUser();
         String m = shipmentService.addItem(shipmentId,
             productId,
             purchaseItemId,
@@ -84,10 +93,10 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return new Message(m);
     }
 
-/*    public Message processAmazonShipments() throws IOException, IllegalAccessException {
-        authorizeUser();
-        return trackingService.processAmazonFile(file);
-    }*/
+    /*    public Message processAmazonShipments() throws IOException, IllegalAccessException {
+            authorizeUser();
+            return trackingService.processAmazonFile(file);
+        }*/
     public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems, List<String> trackingNums) throws Exception {
         authorizeUser();
         return trackingService.createShipment(shipment, shipmentItems, trackingNums);
@@ -102,9 +111,10 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         authorizeUser();
         return trackingService.addTrackingMulti(trackingNums, shipmentStatus, trackingEvent, eventDate, details);
     }
+
     public void authorizeUser() throws IllegalAccessException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user.getAuthorities().stream().anyMatch(t->t.getAuthority().equals("ROLE_ADMIN")))
+        if (user.getAuthorities().stream().anyMatch(t -> t.getAuthority().equals("ROLE_ADMIN")))
             return;
         throw new IllegalAccessException("Not Authorized");
     }
@@ -120,14 +130,22 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         shipmentService.removeItem(shipmentItemId);
         return new Message("Success");
     }
+
     public Message unpackItem(Long shipmentItemId) throws IllegalAccessException {
         authorizeUser();
         shipmentService.unpackItem(shipmentItemId);
         return new Message("Success");
     }
+
     public Message updateFromDetrack(String id) throws IOException {
         shipmentService.updateFromDetrack(id);
         return new Message("Success");
     }
-}
 
+    public Message setEstimatedShipDate(Long id, Date date) {
+        //authorizeUser();
+        shipmentService.setEstimatedShipDate(id, date);
+        return new Message("Success");
+    }
+
+}

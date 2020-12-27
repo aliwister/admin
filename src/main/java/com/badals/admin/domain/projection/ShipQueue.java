@@ -10,4 +10,5 @@ public interface ShipQueue {
    BigDecimal getDone();
    BigDecimal getTodo();
    String getCarrier();
+   String getEstimatedShipDate();
 }

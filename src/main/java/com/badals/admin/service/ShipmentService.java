@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -424,7 +425,8 @@ public class ShipmentService {
     public String addItem(Long shipmentId, Long productId, Long purchaseItemId, String description, BigDecimal quantity) {
         // Shipment Item
         Shipment shipment = shipmentRepository.findById(shipmentId).get();
-        ShipmentItem shipmentItem = new ShipmentItem().shipment(shipment).sequence(shipment.getShipmentItems().size()+1).description(description).quantity(quantity);
+        Integer nextSeq = shipmentRepository.nextSeq(shipmentId);
+        ShipmentItem shipmentItem = new ShipmentItem().shipment(shipment).sequence(nextSeq).description(description).quantity(quantity);
         shipmentItem.setProductId(productId);
 
         // Purchase Shipment
@@ -515,6 +517,12 @@ public class ShipmentService {
 
      public List<ShipmentItemDetails> findItemsInPkgForShipmentDetails(Long id) {
         return shipmentRepository.findItemsInPkgForShipmentDetails(id);
+    }
+
+    public void setEstimatedShipDate(Long id, Date date) {
+        Shipment s = shipmentRepository.getOne(id);
+        s.setEstimatedShipDate(date);
+        shipmentRepository.save(s);
     }
 
     /**

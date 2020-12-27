@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ public class Shipment extends Auditable implements Serializable {
     private Long id;
 
     @Column(name = "estimated_ship_date")
-    private LocalDate estimatedShipDate;
+    private Date estimatedShipDate;
 
     public LocalDateTime getActualShipDate() {
         return actualShipDate;
@@ -173,16 +174,16 @@ public class Shipment extends Auditable implements Serializable {
         this.pkgs = pkgs;
     }
 
-    public LocalDate getEstimatedShipDate() {
+    public Date getEstimatedShipDate() {
         return estimatedShipDate;
     }
 
-    public Shipment estimatedShipDate(LocalDate estimatedShipDate) {
+    public Shipment estimatedShipDate(Date estimatedShipDate) {
         this.estimatedShipDate = estimatedShipDate;
         return this;
     }
 
-    public void setEstimatedShipDate(LocalDate estimatedShipDate) {
+    public void setEstimatedShipDate(Date estimatedShipDate) {
         this.estimatedShipDate = estimatedShipDate;
     }
 

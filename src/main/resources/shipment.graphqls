@@ -241,6 +241,7 @@ type ShipQueue {
    done: BigDecimal
    todo: BigDecimal
    carrier: String
+   estimatedShipDate: String
 }
 
 type ItemIssuance {
@@ -350,6 +351,7 @@ type Query {
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
+    setEstimatedShipDate(id: Long, date: Date): Message
     createShipment(shipment: ShipmentInput): Shipment
     acceptShipment(trackingNum: String, payment: PaymentInput, invoiceLink: String): Shipment
     saveShipment(shipment: ShipmentInput): Shipment
