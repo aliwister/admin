@@ -251,7 +251,7 @@ type ItemIssuance {
 type ShipmentItemSummary {
     id: Int
     trackingNum: String
-    total: Long
+    total: BigDecimal
     status: String
     processed: Long
     reference: String

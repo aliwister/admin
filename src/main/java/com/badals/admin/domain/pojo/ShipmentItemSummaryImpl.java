@@ -4,15 +4,17 @@ import com.badals.admin.domain.projection.ShipmentItemSummary;
 import io.netty.handler.codec.http.HttpResponse;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ShipmentItemSummaryImpl implements ShipmentItemSummary {
-    public ShipmentItemSummaryImpl(String trackingNum, Long total) {
+    public ShipmentItemSummaryImpl(String trackingNum, BigDecimal total) {
         this.trackingNum = trackingNum;
         this.total = total;
     }
     Integer id;
     String trackingNum;
-    Long total;
+    BigDecimal total;
     String status;
     Long processed;
     String reference;
@@ -22,7 +24,7 @@ public class ShipmentItemSummaryImpl implements ShipmentItemSummary {
         return this;
     }
 
-    public ShipmentItemSummaryImpl total(Long total) {
+    public ShipmentItemSummaryImpl total(BigDecimal total) {
         this.total = total;
         return this;
     }

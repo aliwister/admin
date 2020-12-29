@@ -369,7 +369,7 @@ public class TrackingService {
 
     public List<ShipmentItemSummaryImpl> findCountByTrackingNums(List<String> trackingNums) {
         List<ShipmentItemSummary> counts = shipmentRepository.findCountByTrackingNums(trackingNums);
-        List<ShipmentItemSummaryImpl> ret = trackingNums.stream().map(x -> new ShipmentItemSummaryImpl(x,0L)).collect(Collectors.toList());
+        List<ShipmentItemSummaryImpl> ret = trackingNums.stream().map(x -> new ShipmentItemSummaryImpl(x,BigDecimal.ZERO)).collect(Collectors.toList());
 
         for(ShipmentItemSummary x: counts) {
             ret.get(trackingNums.indexOf(x.getTrackingNum())).total(x.getTotal()).status(x.getStatus()).processed(x.getProcessed()).id(x.getId()).reference(x.getReference());
