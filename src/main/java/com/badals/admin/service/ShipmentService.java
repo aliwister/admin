@@ -104,7 +104,7 @@ public class ShipmentService {
         Shipment shipment = shipmentMapper.toEntity(shipmentDTO);
         shipment = shipmentRepository.save(shipment);
         ShipmentDTO result = shipmentMapper.toDto(shipment);
-        shipmentSearchRepository.save(result);
+        //shipmentSearchRepository.save(result);
         return result;
     }
 
@@ -236,7 +236,7 @@ public class ShipmentService {
         shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).shipmentEventId(3001).details(details).eventDate(LocalDateTime.now()));
 
         shipmentRepository.save(shipment);
-        shipmentSearchRepository.save(shipmentMapper.toDto(shipment));
+        //shipmentSearchRepository.save(shipmentMapper.toDto(shipment));
         shipmentItemRepository.save(shipmentItem);
         orderShipmentRepository.save(orderShipment);
         issuance = itemIssuanceRepository.save(issuance);
