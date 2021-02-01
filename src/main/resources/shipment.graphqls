@@ -118,6 +118,7 @@ type ShipmentReceipt {
 }
 
 input ShipmentInput {
+    id: ID
     reference: String
     trackingNum: String
     shipmentMethod: String
