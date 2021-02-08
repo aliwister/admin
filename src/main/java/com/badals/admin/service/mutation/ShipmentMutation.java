@@ -51,7 +51,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
 
     ShipmentDTO saveShipment(ShipmentDTO dto) throws IllegalAccessException {
         authorizeUser();
-        return shipmentService.save(dto);
+        return shipmentService.saveShallow(dto);
     }
 
     PkgDTO acceptPackage(PkgDTO dto) throws IllegalAccessException {

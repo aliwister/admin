@@ -104,9 +104,29 @@ public class ShipmentService {
         Shipment shipment = shipmentMapper.toEntity(shipmentDTO);
         shipment = shipmentRepository.save(shipment);
         ShipmentDTO result = shipmentMapper.toDto(shipment);
-        //shipmentSearchRepository.save(result);
+        shipmentSearchRepository.save(result);
         return result;
     }
+
+    public ShipmentDTO saveShallow(ShipmentDTO shipmentDTO) {
+        log.debug("Request to save Shipment : {}", shipmentDTO);
+        //Shipment shipment = shipmentMapper.toEntity(shipmentDTO);
+        //shipment = shipmentRepository.save(shipment);
+        //ShipmentDTO result = shipmentMapper.toDto(shipment);
+        //shipmentSearchRepository.save(result);
+
+        Shipment shipment = shipmentRepository.findById(shipmentDTO.getId()).get();
+        shipment.setTrackingNum(shipmentDTO.getTrackingNum());
+        shipment.setReference(shipmentDTO.getReference());
+        shipment.setShipmentMethod(shipmentDTO.getShipmentMethod());
+        shipment.setHandlingInstructions(shipmentDTO.getHandlingInstructions());
+        shipment.setMerchant(new Merchant(shipmentDTO.getMerchantId()));
+        shipmentRepository.save(shipment);
+
+        ShipmentDTO result = shipmentMapper.toDto(shipment);
+        return result;
+    }
+
 
     /**
      * Get all the shipments.
