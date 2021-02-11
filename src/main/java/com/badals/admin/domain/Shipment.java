@@ -130,6 +130,11 @@ public class Shipment extends Auditable implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("shipments")
+    @JoinColumn(name = "_to", referencedColumnName = "id")
+    private Party to;
+
+    @ManyToOne
+    @JsonIgnoreProperties("shipments")
     private Merchant merchant;
 
     @Type(type = "json")
@@ -398,6 +403,20 @@ public class Shipment extends Auditable implements Serializable {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+
+    public Party getTo() {
+        return to;
+    }
+
+    public Shipment to(Party to) {
+        this.to = to;
+        return this;
+    }
+
+    public void setTo(Party to) {
+        this.to = to;
     }
 
     public Merchant getMerchant() {
