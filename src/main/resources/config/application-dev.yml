@@ -141,8 +141,7 @@ jhipster:
       host: localhost
       port: 5000
       queue-size: 512
-  audit-events:
-    retention-period: 30 # Number of days before audit events are deleted.
+
 
 # ===================================================================
 # Application specific properties
@@ -163,3 +162,5 @@ graphql:
     # if you want to @ExceptionHandler annotation for custom GraphQLErrors
     exception-handlers-enabled: true
     contextSetting: PER_REQUEST_WITH_INSTRUMENTATION
+aws:
+  s3bucket: face-content-test

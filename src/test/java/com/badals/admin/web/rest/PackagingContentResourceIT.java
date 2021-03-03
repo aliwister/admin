@@ -1,6 +1,6 @@
 package com.badals.admin.web.rest;
 
-import com.badals.admin.AdminApp;
+import com.badals.admin.MainApp;
 import com.badals.admin.domain.PackagingContent;
 import com.badals.admin.repository.PackagingContentRepository;
 import com.badals.admin.service.PackagingContentService;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Integration tests for the {@link PackagingContentResource} REST controller.
  */
-@SpringBootTest(classes = AdminApp.class)
+@SpringBootTest(classes = MainApp.class)
 public class PackagingContentResourceIT {
 
     private static final BigDecimal DEFAULT_QUANTITY = new BigDecimal(1);

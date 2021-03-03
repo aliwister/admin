@@ -1,6 +1,6 @@
 package com.badals.admin.web.rest;
 
-import com.badals.admin.AdminApp;
+import com.badals.admin.MainApp;
 import com.badals.admin.domain.ShipmentDoc;
 import com.badals.admin.repository.ShipmentDocRepository;
 import com.badals.admin.service.ShipmentDocService;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Integration tests for the {@link ShipmentDocResource} REST controller.
  */
-@SpringBootTest(classes = AdminApp.class)
+@SpringBootTest(classes = MainApp.class)
 public class ShipmentDocResourceIT {
 
     private static final String DEFAULT_FILE_KEY = "AAAAAAAAAA";

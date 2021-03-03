@@ -1,6 +1,6 @@
 package com.badals.admin.config.timezone;
 
-import com.badals.admin.AdminApp;
+import com.badals.admin.MainApp;
 import com.badals.admin.repository.timezone.DateTimeWrapper;
 import com.badals.admin.repository.timezone.DateTimeWrapperRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Integration tests for the UTC Hibernate configuration.
  */
-@SpringBootTest(classes = AdminApp.class)
+@SpringBootTest(classes = MainApp.class)
 public class HibernateTimeZoneIT {
 
     @Autowired

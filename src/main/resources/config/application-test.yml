@@ -64,7 +64,7 @@ spring:
     jest:
       uri: https://search-face-elastic-f5y3tcdz6idtcrgutxug4y4il4.eu-central-1.es.amazonaws.com
       username:
-      password: 
+      password:
   # see https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-nosql.html#boot-features-connecting-to-elasticsearch-jest
   elasticsearch:
     rest:
@@ -156,8 +156,7 @@ jhipster:
       host: localhost
       port: 5000
       queue-size: 512
-  audit-events:
-    retention-period: 30 # Number of days before audit events are deleted.
+
 
 # ===================================================================
 # Application specific properties
@@ -169,3 +168,5 @@ jhipster:
 # ===================================================================
 
 # application:
+aws:
+  s3bucket: face-content-test

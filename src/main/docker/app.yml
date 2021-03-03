@@ -8,9 +8,7 @@ services:
       - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
       - SPRING_DATASOURCE_URL=jdbc:mysql://admin-mysql:3306/admin?useUnicode=true&characterEncoding=utf8&useSSL=false
       - JHIPSTER_SLEEP=30 # gives time for other services to boot before the application
-      - SPRING_DATA_JEST_URI=http://admin-elasticsearch:9200
-      - SPRING_ELASTICSEARCH_REST_URIS=http://admin-elasticsearch:9200
-  admin-mysql:
+  shop-mysql:
     extends:
       file: mysql.yml
       service: admin-mysql

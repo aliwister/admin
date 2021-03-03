@@ -3,15 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.badals.admin</groupId>
-    <artifactId>admin</artifactId>
+    <groupId>com.badals</groupId>
+    <artifactId>starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Admin</name>
+    <name>Starter</name>
 
-    <repositories>
-        <!-- jhipster-needle-maven-repository -->
-    </repositories>
 
     <pluginRepositories>
         <!-- jhipster-needle-maven-plugin-repository -->
@@ -21,8 +18,8 @@
 
     <properties>
         <!-- Build properties -->
-        <maven.version>3.3.9</maven.version>
-        <java.version>1.8</java.version>
+        <maven.version>3.0.0</maven.version>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
@@ -38,19 +35,19 @@
         <profile.tls />
 
         <!-- Dependency versions -->
-        <jhipster-dependencies.version>3.0.7</jhipster-dependencies.version>
+        <jhipster-dependencies.version>3.0.3</jhipster-dependencies.version>
         <!-- The spring-boot version should match the one managed by
         https://mvnrepository.com/artifact/io.github.jhipster/jhipster-dependencies/${jhipster-dependencies.version} -->
-        <spring-boot.version>2.1.10.RELEASE</spring-boot.version>
+        <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
         <!-- The spring framework version should match the one managed by
         https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/${spring-boot.version} -->
-        <spring.version>5.1.11.RELEASE</spring.version>
+        <spring.version>5.1.8.RELEASE</spring.version>
         <!-- The hibernate version should match the one managed by
         https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/${spring-boot.version} -->
         <hibernate.version>5.3.10.Final</hibernate.version>
         <!-- The javassist version should match the one managed by
         https://mvnrepository.com/artifact/org.hibernate/hibernate-core/${hibernate.version} -->
-        <javassist.version>3.23.2-GA</javassist.version>
+        <javassist.version>3.23.1-GA</javassist.version>
         <!-- The liquibase version should match the one managed by
         https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/${spring-boot.version} -->
         <liquibase.version>3.6.3</liquibase.version>
@@ -59,37 +56,33 @@
         <hibernate-core.version>5.3.8.Final</hibernate-core.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
         <jaxb-runtime.version>2.3.2</jaxb-runtime.version>
-        <archunit-junit5.version>0.12.0</archunit-junit5.version>
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
-        <mapstruct.version>1.4.0.Beta1</mapstruct.version>
+        <mapstruct.version>1.3.0.Final</mapstruct.version>
         <!-- Plugin versions -->
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
         <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
-        <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
+        <!-- We can't go to 3.0.0-M2 as it has a regression. See https://issues.apache.org/jira/browse/MENFORCER-306 -->
+        <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
         <maven-idea-plugin.version>2.2.1</maven-idea-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
-        <maven-checkstyle.version>3.1.0</maven-checkstyle.version>
-        <checkstyle.version>8.24</checkstyle.version>
-        <spring-nohttp-checkstyle.version>0.0.3.RELEASE</spring-nohttp-checkstyle.version>
-        <git-commit-id-plugin.version>3.0.1</git-commit-id-plugin.version>
-        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
-        <jib-maven-plugin.version>1.7.0</jib-maven-plugin.version>
+        <git-commit-id-plugin.version>2.2.6</git-commit-id-plugin.version>
+        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <jib-maven-plugin.version>1.3.0</jib-maven-plugin.version>
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
-        <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
-        <jacoco.utReportFolder>${project.build.directory}/jacoco/test</jacoco.utReportFolder>
-        <jacoco.utReportFile>${jacoco.utReportFolder}/test.exec</jacoco.utReportFile>
-        <jacoco.itReportFolder>${project.build.directory}/jacoco/integrationTest</jacoco.itReportFolder>
-        <jacoco.itReportFile>${jacoco.itReportFolder}/integrationTest.exec</jacoco.itReportFile>
+        <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
+        <jacoco.reportFolder>${project.build.directory}/jacoco</jacoco.reportFolder>
+        <jacoco.utReportFile>${jacoco.reportFolder}/test.exec</jacoco.utReportFile>
+        <jacoco.itReportFile>${jacoco.reportFolder}/integrationTest.exec</jacoco.itReportFile>
         <junit.utReportFolder>${project.testresult.directory}/test</junit.utReportFolder>
         <junit.itReportFolder>${project.testresult.directory}/integrationTest</junit.itReportFolder>
-        <!-- jhipster-needle-maven-property -->
         <graphql-kickstart.version>6.0.1</graphql-kickstart.version>
+        <!-- jhipster-needle-maven-property -->
         <kotlin.version>1.3.30</kotlin.version>
     </properties>
 
@@ -99,6 +92,20 @@
                 <groupId>io.github.jhipster</groupId>
                 <artifactId>jhipster-dependencies</artifactId>
                 <version>${jhipster-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.11.9</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.cloud</groupId>
+                <artifactId>libraries-bom</artifactId>
+                <version>10.1.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -132,31 +139,7 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-afterburner</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-envers</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-hppc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-afterburner</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -171,12 +154,6 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mapstruct</groupId>
-                    <artifactId>mapstruct</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
@@ -226,6 +203,10 @@
             <artifactId>hibernate-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
@@ -240,13 +221,16 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
-            <version>${mapstruct.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>2.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -268,6 +252,51 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -293,61 +322,6 @@
         </dependency>
         <!-- end of Spring Data Jest dependencies -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.tngtech.archunit</groupId>
-            <artifactId>archunit-junit5-api</artifactId>
-            <version>${archunit-junit5.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Adding the engine dependency to the surefire-plugin unfortunately does not work in the current version. -->
-        <!-- https://www.archunit.org/userguide/html/000_Index.html#_junit_5 -->
-        <dependency>
-            <groupId>com.tngtech.archunit</groupId>
-            <artifactId>archunit-junit5-engine</artifactId>
-            <version>${archunit-junit5.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.zalando</groupId>
             <artifactId>problem-spring-web</artifactId>
         </dependency>
@@ -367,29 +341,6 @@
         </dependency>
         <!-- Spring Cloud -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter</artifactId>
-        </dependency>
-<!--        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-            <exclusions>
-
-            </exclusions>
-        </dependency>-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.retry</groupId>
-            <artifactId>spring-retry</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cloud-connectors</artifactId>
         </dependency>
@@ -405,15 +356,8 @@
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-localconfig-connector</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-heroku-connector</artifactId>
-        </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -465,12 +409,6 @@
             <artifactId>graphiql-spring-boot-starter</artifactId>
             <version>${graphql-kickstart.version}</version>
             <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.graphql-java-kickstart</groupId>
-                    <artifactId>graphql-java-tools</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.zhokhov.graphql</groupId>
@@ -493,54 +431,151 @@
             <version>1.18.10</version>
         </dependency>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.9.2</version>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>2.9.9</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.univocity/univocity-parsers -->
+        <!-- REDIS -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>2.7.5</version>
+        </dependency>
         <dependency>
             <groupId>com.univocity</groupId>
             <artifactId>univocity-parsers</artifactId>
             <version>2.8.4</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>2.8</version>
+            <groupId>org.threeten</groupId>
+            <artifactId>threetenbp</artifactId>
+            <version>1.3.5</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-            <version>2.8</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-common -->
         <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-common</artifactId>
-            <version>2.8</version>
+            <groupId>io.gsonfire</groupId>
+            <artifactId>gson-fire</artifactId>
+            <version>1.8.0</version>
         </dependency>
-<!--        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-            <version>2.1</version>
-        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.tonicsoft.ebay/ebay-shopping-api -->
+        <dependency>
+            <groupId>org.tonicsoft.ebay</groupId>
+            <artifactId>ebay-shopping-api</artifactId>
+            <version>989.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>3.3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>3.3.5</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/sdk-core -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sdk-core</artifactId>
+            <version>2.11.9</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/core -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>core</artifactId>
+            <version>2.11.9</version>
+            <type>pom</type>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/regions -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>regions</artifactId>
+            <version>2.11.9</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/auth -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>auth</artifactId>
+            <version>2.11.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.11.9</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>protocol-core</artifactId>
+            <version>2.11.9</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/utils -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>utils</artifactId>
+            <version>2.11.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.imgscalr</groupId>
+            <artifactId>imgscalr-lib</artifactId>
+            <version>4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-translate</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
         <plugins>
             <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/test/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>9</source>
+                    <target>9</target>
                     <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-configuration-processor</artifactId>
-                            <version>${spring-boot.version}</version>
-                        </path>
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
@@ -557,6 +592,7 @@
                             <artifactId>hibernate-jpamodelgen</artifactId>
                             <version>${hibernate.version}</version>
                         </path>
+
                         <path>
                             <groupId>org.glassfish.jaxb</groupId>
                             <artifactId>jaxb-runtime</artifactId>
@@ -568,40 +604,10 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${checkstyle.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>io.spring.nohttp</groupId>
-                        <artifactId>nohttp-checkstyle</artifactId>
-                        <version>${spring-nohttp-checkstyle.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
-                    <includes>pom.xml,README.md</includes>
-                    <excludes>.git/**/*,target/**/*,node_modules/**/*,node/**/*</excludes>
-                    <sourceDirectories>./</sourceDirectories>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
+                    <source>8</source>
                 </configuration>
             </plugin>
             <plugin>
@@ -652,6 +658,8 @@
                 </executions>
                 <configuration>
                     <mainClass>${start-class}</mainClass>
+                    <executable>true</executable>
+                    <includeSystemScope>true</includeSystemScope>
                     <fork>true</fork>
                     <!--
                     Enable the line below to have remote debugging of your application on port 5005
@@ -703,7 +711,6 @@
                     </executions>
                     <configuration>
                         <failOnNoGitDirectory>false</failOnNoGitDirectory>
-                        <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
                         <generateGitPropertiesFile>true</generateGitPropertiesFile>
                         <includeOnlyProperties>
                             <includeOnlyProperty>^git.commit.id.abbrev$</includeOnlyProperty>
@@ -736,7 +743,7 @@
                             </goals>
                             <configuration>
                                 <dataFile>${jacoco.utReportFile}</dataFile>
-                                <outputDirectory>${jacoco.utReportFolder}</outputDirectory>
+                                <outputDirectory>${jacoco.reportFolder}</outputDirectory>
                             </configuration>
                         </execution>
                         <execution>
@@ -758,7 +765,7 @@
                             </goals>
                             <configuration>
                                 <dataFile>${jacoco.itReportFile}</dataFile>
-                                <outputDirectory>${jacoco.itReportFolder}</outputDirectory>
+                                <outputDirectory>${jacoco.reportFolder}</outputDirectory>
                             </configuration>
                         </execution>
                     </executions>
@@ -772,22 +779,22 @@
                             <image>adoptopenjdk:11-jre-hotspot</image>
                         </from>
                         <to>
-                            <image>admin:latest</image>
+                            <image>shop:latest</image>
                         </to>
                         <container>
                             <entrypoint>
-                                <shell>bash</shell>
+                                <shell>sh</shell>
                                 <option>-c</option>
                                 <arg>chmod +x /entrypoint.sh &amp;&amp; sync &amp;&amp; /entrypoint.sh</arg>
                             </entrypoint>
                             <ports>
-                                <port>8082</port>
+                                <port>8080</port>
                             </ports>
                             <environment>
                                 <SPRING_OUTPUT_ANSI_ENABLED>ALWAYS</SPRING_OUTPUT_ANSI_ENABLED>
                                 <JHIPSTER_SLEEP>0</JHIPSTER_SLEEP>
                             </environment>
-                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                            <useCurrentTimestamp>true</useCurrentTimestamp>
                         </container>
                     </configuration>
                 </plugin>
@@ -799,11 +806,11 @@
                         <changeLogFile>${project.basedir}/src/main/resources/config/liquibase/master.xml</changeLogFile>
                         <diffChangeLogFile>${project.basedir}/src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                         <driver>com.mysql.cj.jdbc.Driver</driver>
-                        <url>jdbc:mysql://localhost:3306/admin</url>
-                        <defaultSchemaName>admin</defaultSchemaName>
+                        <url>jdbc:mysql://localhost:3306/shop</url>
+                        <defaultSchemaName>shop</defaultSchemaName>
                         <username>root</username>
-                        <password></password>
-                        <referenceUrl>hibernate:spring:com.badals.admin.domain?dialect=org.hibernate.dialect.MySQL8Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
+                        <password>root!</password>
+                        <referenceUrl>hibernate:spring:com.badals.shop.domain?dialect=org.hibernate.dialect.MySQL5InnoDBDialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
                         <verbose>true</verbose>
                         <logging>debug</logging>
                         <contexts>!test</contexts>
@@ -895,20 +902,20 @@
                                 <version>[${maven.version},)</version>
                             </requireMavenVersion>
                             <requireJavaVersion>
-                                <message>You are running an incompatible version of Java. JHipster supports JDK 8 to 13.</message>
-                                <version>[1.8,14)</version>
+                                <message>You are running an incompatible version of Java. JHipster supports JDK 8 to 12.</message>
+                                <version>[1.8,13)</version>
                             </requireJavaVersion>
                         </rules>
                     </configuration>
                 </plugin>
-                <plugin>
+<!--                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-idea-plugin</artifactId>
                     <version>${maven-idea-plugin.version}</version>
                     <configuration>
                         <exclude>node_modules</exclude>
                     </configuration>
-                </plugin>
+                </plugin>-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
@@ -1001,7 +1008,6 @@
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring-boot.version}</version>
                 </plugin>
-                <!-- jhipster-needle-maven-add-plugin-management -->
             </plugins>
         </pluginManagement>
     </build>
@@ -1046,27 +1052,6 @@
             </properties>
         </profile>
         <profile>
-            <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-undertow</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-devtools</artifactId>
-                    <optional>true</optional>
-                </dependency>
-            </dependencies>
-            <properties>
-                <!-- default Spring profiles -->
-                <spring.profiles.active>test${profile.tls}${profile.no-liquibase}</spring.profiles.active>
-            </properties>
-        </profile>
-        <profile>
             <id>prod</id>
             <dependencies>
                 <dependency>
@@ -1091,6 +1076,7 @@
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
                             <mainClass>${start-class}</mainClass>
+                            <executable>true</executable>
                         </configuration>
                         <executions>
                             <execution>
@@ -1134,18 +1120,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <!--
-                Profile for tracing requests with Zipkin.
-            -->
-            <id>zipkin</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-starter-zipkin</artifactId>
-                </dependency>
-            </dependencies>
         </profile>
         <profile>
             <!--
@@ -1220,60 +1194,17 @@
                 </pluginManagement>
             </build>
         </profile>
-        <profile>
-            <id>heroku</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.liquibase</groupId>
-                        <artifactId>liquibase-maven-plugin</artifactId>
-                        <configuration combine.self="override">
-                            <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
-                            <diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
-                            <driver></driver>
-                            <url>${env.JDBC_DATABASE_URL}</url>
-                            <defaultSchemaName></defaultSchemaName>
-                            <username>${env.JDBC_DATABASE_USERNAME}</username>
-                            <password>${env.JDBC_DATABASE_PASSWORD}</password>
-                            <referenceUrl>hibernate:spring:com.badals.admin.domain?dialect=org.hibernate.dialect.MySQL8Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
-                            <verbose>true</verbose>
-                            <logging>debug</logging>
-                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-clean-plugin</artifactId>
-                        <version>${maven-clean-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>clean-artifacts</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>clean</goal>
-                                </goals>
-                                <configuration>
-                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                                    <filesets>
-                                        <fileset>
-                                            <directory>target</directory>
-                                            <excludes>
-                                                <exclude>*.jar</exclude>
-                                            </excludes>
-                                            <followSymlinks>false</followSymlinks>
-                                        </fileset>
-                                        <fileset>
-                                            <directory>node_modules</directory>
-                                            <followSymlinks>false</followSymlinks>
-                                        </fileset>
-                                    </filesets>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <!-- jhipster-needle-maven-add-profile -->
     </profiles>
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
+            <id>mymavenrepo</id>
+            <url>https://mymavenrepo.com/repo/UuYg0PAIB91fqre5B1Q3/</url>
+        </repository>
+    </repositories>
 
 </project>

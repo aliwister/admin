@@ -86,6 +86,7 @@ public class TokenProvider implements InitializingBean {
             .setSigningKey(key)
             .parseClaimsJws(token)
             .getBody();
+
         log.info(claims.toString());
         Collection<? extends GrantedAuthority> authorities =
             Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))

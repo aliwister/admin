@@ -1,6 +1,6 @@
 package com.badals.admin.web.rest;
 
-import com.badals.admin.AdminApp;
+import com.badals.admin.MainApp;
 import com.badals.admin.domain.Pkg;
 import com.badals.admin.repository.PkgRepository;
 import com.badals.admin.service.PkgService;
@@ -35,7 +35,7 @@ import com.badals.admin.domain.enumeration.PackageType;
 /**
  * Integration tests for the {@link PkgResource} REST controller.
  */
-@SpringBootTest(classes = AdminApp.class)
+@SpringBootTest(classes = MainApp.class)
 public class PkgResourceIT {
 
     private static final BigDecimal DEFAULT_LENGTH = new BigDecimal(1);

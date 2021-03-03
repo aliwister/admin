@@ -1,11 +1,9 @@
 package com.badals.admin.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * A Address.
@@ -20,6 +18,17 @@ public class Address implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_address")
     private Long id;
+
+    public Long getIdCountry() {
+        return idCountry;
+    }
+
+    public void setIdCountry(Long idCountry) {
+        this.idCountry = idCountry;
+    }
+
+    @Column(name = "id_country")
+    private Long idCountry;
 
     @Column(name = "firstname")
     private String firstName;
@@ -42,15 +51,22 @@ public class Address implements Serializable {
     @Column(name = "phone")
     private String mobile;
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    @Column(name = "alias")
+    private String alias;
+
     @Column(name = "active")
     private String active;
 
     @Column(name = "deleted")
     private String deleted;
-
-    @CreatedDate
-    @Column(name="date_add")
-    private Date createdDate;
 
     @ManyToOne
     @JoinColumn(name = "id_customer")
@@ -74,13 +90,7 @@ public class Address implements Serializable {
         this.deleted = deleted;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

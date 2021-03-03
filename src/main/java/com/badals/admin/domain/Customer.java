@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -25,6 +26,8 @@ public class Customer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_customer")
     private Long id;
+
+
 
     @Column(name = "company")
     private String company;
@@ -69,6 +72,8 @@ public class Customer implements Serializable {
     @Column
     private String mobile;
 
+
+
     public String getMobile() {
         return mobile;
     }
@@ -93,6 +98,7 @@ public class Customer implements Serializable {
         this.resetDate = resetDate;
     }
 
+
     @OneToMany(mappedBy = "customer")
     @JsonIgnoreProperties("customer")
     private List<Address> addresses;
@@ -112,17 +118,17 @@ public class Customer implements Serializable {
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id_customer")},
         inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
 
-//    @BatchSize(size = 20)
-//    private Set<Authority> authorities = new HashSet<>();
-//
-//
-//    public Set<Authority> getAuthorities() {
-//        return authorities;
-//    }
-//
-//    public void setAuthorities(Set<Authority> authorities) {
-//        this.authorities = authorities;
-//    }
+    @BatchSize(size = 20)
+    private Set<Authority> authorities = new HashSet<>();
+
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

@@ -1,15 +1,15 @@
 {
   "generator-jhipster": {
     "promptValues": {
-      "packageName": "com.badals.admin",
+      "packageName": "com.badals.shop",
       "nativeLanguage": "en"
     },
-    "jhipsterVersion": "6.5.1",
-    "applicationType": "microservice",
-    "baseName": "admin",
-    "packageName": "com.badals.admin",
-    "packageFolder": "com/badals/admin",
-    "serverPort": "8082",
+    "jhipsterVersion": "6.1.2",
+    "applicationType": "monolith",
+    "baseName": "shop",
+    "packageName": "com.badals.shop",
+    "packageFolder": "com/badals/shop",
+    "serverPort": "8080",
     "authenticationType": "jwt",
     "cacheProvider": "ehcache",
     "enableHibernateCache": false,
@@ -22,23 +22,20 @@
     "serviceDiscoveryType": false,
     "buildTool": "maven",
     "enableSwaggerCodegen": false,
-    "jwtSecretKey": "YzNiYTI2ZjRiYWI5NTEwOWU4ZTkyZTU2YTQ4MjFkNGMxYmUxOTg2M2I2MmE5MDRiZmYxOWQwZjg1ZmZmNGJiZTU0MTUyZWYyNzE3YTJkYzIzMTZmMjljMGQyYzBjMjYxOGJkOGIwNmU5M2NjMjI3MDVhNTI2ZWE2YjI2NGI0YTI=",
-    "embeddableLaunchScript": false,
+    "jwtSecretKey": "NzQwMjdjZTQyZTJkMWJlNTEzOTU4ZDFhZWU1OGNkZmI5YTg5ZGEzNjkzZjU0M2U5OWY3MWI2NGJjNTVkNzM5ZTBlYWYwMWZhZmUwMmE5MDNlZjJiN2E2MWNlMDg0YTU0MjRjNTkwOTVmZWE3NGI2NTRkZjE2NzllM2ZjOTMyYjM=",
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "skipClient": true,
     "testFrameworks": [],
     "jhiPrefix": "jhi",
     "entitySuffix": "",
     "dtoSuffix": "DTO",
     "otherModules": [],
     "enableTranslation": true,
-    "clientPackageManager": "npm",
     "nativeLanguage": "en",
     "languages": [
-      "en"
-    ],
-    "blueprints": [],
-    "skipClient": true,
-    "skipUserManagement": true,
-    "herokuAppName": "admin-boot",
-    "herokuDeployType": "jar"
+      "en",
+      "ar-ly"
+    ]
   }
 }

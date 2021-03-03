@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Xmx256m -jar target/*.jar --spring.profiles.active=test,heroku,no-liquibase --server.port=$PORT
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/*.jar

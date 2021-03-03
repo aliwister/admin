@@ -1,6 +1,6 @@
 package com.badals.admin.web.rest;
 
-import com.badals.admin.AdminApp;
+import com.badals.admin.MainApp;
 import com.badals.admin.domain.ShipmentReceipt;
 import com.badals.admin.repository.ShipmentReceiptRepository;
 import com.badals.admin.service.ShipmentReceiptService;
@@ -37,7 +37,7 @@ import com.badals.admin.domain.enumeration.RejectReason;
 /**
  * Integration tests for the {@link ShipmentReceiptResource} REST controller.
  */
-@SpringBootTest(classes = AdminApp.class)
+@SpringBootTest(classes = MainApp.class)
 public class ShipmentReceiptResourceIT {
 
     private static final Instant DEFAULT_RECEIVED_DATE = Instant.ofEpochMilli(0L);

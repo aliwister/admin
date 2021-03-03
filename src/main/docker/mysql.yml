@@ -1,9 +1,9 @@
 version: '2'
 services:
-  admin-mysql:
-    image: mysql:8.0.18
+  shop-mysql:
+    image: mysql:8.0.16
     # volumes:
-    #     - ~/volumes/jhipster/admin/mysql/:/var/lib/mysql/
+    #     - ~/volumes/jhipster/shop/mysql/:/var/lib/mysql/
     environment:
       - MYSQL_USER=root
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
