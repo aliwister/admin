@@ -331,6 +331,17 @@ input PaymentInput {
     userId: Long
 }
 
+type Progress {
+    id: ID
+    data: String
+    po: Long
+    ref: Long
+    transit: String
+    purchase: String
+    customer: String
+    recommendation: String
+}
+
 type Query {
     shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
     shipment(id: ID): Shipment
@@ -349,6 +360,7 @@ type Query {
     track(ref: String): [ShipmentTrackingMap]
     trackingEvents: [TrackingEvent]
     shipQueueByCustomerId(customerId: Long): [ShipQueue]
+    #advancedTracking: [Progress]
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message

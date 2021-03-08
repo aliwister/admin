@@ -43,5 +43,9 @@ public class TrackingQuery extends AdminQuery implements GraphQLQueryResolver {
             return;
         throw new IllegalAccessException("Not Authorized");
     }
+
+    public void advancedTracking() {
+
+    }
 }
 
