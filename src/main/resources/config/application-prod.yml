@@ -75,21 +75,16 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    host: localhost
-    port: 25
-    username:
-    password:
+    host: smtp-relay.sendinblue.com
+    port: 587
+    username: ali@badals.com
+    password: j2zZ5T0XAMr6KdHS
   thymeleaf:
     cache: true
-  sleuth:
-    sampler:
-      probability: 1 # report 100% of traces
-  zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
-    base-url: http://localhost:9411
-    enabled: false
-    locator:
-      discovery:
-        enabled: true
+  redis:
+    host: redis-19246.c15.us-east-1-4.ec2.cloud.redislabs.com
+    port: 19246
+    password: IFpOoXYxfcQtZx2edgtgRSkmcMKHiRFA
 
 # ===================================================================
 # To enable TLS in production, generate a certificate using:
@@ -131,6 +126,13 @@ jhipster:
     ehcache: # Ehcache configuration
       time-to-live-seconds: 3600 # By default objects stay 1 hour in the cache
       max-entries: 1000 # Number of objects in each cache entry
+  cors:
+    allowed-origins: 'https://www.badals.com,https://badals.com,https://partner.badals.com,https://face-admin.herokuapp.com,https://trust-admin001-212.badals.com'
+    allowed-methods: 'GET,PUT,POST,DELETE,OPTIONS'
+    allowed-headers: 'Authorization,Content-Type,x-requested-with,origin'
+    exposed-headers: 'Authorization,Link,X-Total-Count'
+    allow-credentials: true
+    max-age: 1800
   security:
     authentication:
       jwt:
@@ -144,7 +146,8 @@ jhipster:
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
   mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://my-server-url-to-change # Modify according to your server's URL
+    from: sales@badals.com
+    base-url: https://www.badals.com # Modify according to your server's URL
   metrics:
     logs: # Reports metrics in the logs
       enabled: false
@@ -170,3 +173,15 @@ jhipster:
 # application:
 aws:
   s3bucket: face-content
+
+graphiql:
+  mapping: /graphiql
+  endpoint:
+    graphql: /graphql
+    subscriptions: /subscriptions
+  subscriptions:
+    timeout: 30
+    reconnect: false
+  static:
+    basePath: /
+  enabled: false
