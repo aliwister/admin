@@ -212,7 +212,6 @@ public class TrackingService {
 
             shipment.getShipmentItems().clear();
             shipmentItems.forEach(x -> shipment.addShipmentItem(x));
-
             shipmentRepository.save(shipment);
         }
         return null;
@@ -228,23 +227,39 @@ public class TrackingService {
         if(shippingAddress.endsWith(", OM")) {
             shipment.setShipmentType(ShipmentType.PURCHASE);
             shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1101).eventDate(dateTime.atStartOfDay()).details("Sent to " + shippingAddress.substring(shippingAddress.length() - 10) + " via " + carrier));
+            shipment.setTo(Party.BADALS);
         }
         else {
             shipment.setShipmentType(ShipmentType.TRANSIT);
             shipment.addShipmentTracking(new ShipmentTracking().shipment(shipment).status(ShipmentStatus.IN_TRANSIT).shipmentEventId(1001).eventDate(dateTime.atStartOfDay()).details("Sent to " + shippingAddress.substring(shippingAddress.length() - 10) + " via " + carrier));
+
+            shipment.setTo(getParty(shippingAddress));
         }
 
-            shipment.setMerchant(new Merchant(1L));
+        shipment.setMerchant(new Merchant(1L));
         shipment.setReference(orderId);
         shipment.setTrackingNum(trackingNum);
         shipment.setShipmentMethod(carrier);
         shipment.setPkgCount(1);
 
-
         shipment.setActualShipDate(dateTime.atStartOfDay());
 
 
         return shipment;
+    }
+
+    private Party getParty(String shippingAddress) {
+        if(shippingAddress.contains("34249")) {
+            return Party.MYUS;
+        }
+        if(shippingAddress.contains("03063")) {
+            return Party.STACKRY;
+        }
+        if(shippingAddress.contains("97230")) {
+            return Party.AMFORWARD;
+        }
+
+        return null;
     }
 
     public synchronized Message processAmazonFile(MultipartFile file) throws IOException {
@@ -299,7 +314,7 @@ public class TrackingService {
                     continue;
                 }
 
-
+                shipment.setTo(getParty(item.getShippingAddress()));
                 shipmentItems = new HashSet();
                 //purchaseShipments = new ArrayList();
             }
@@ -441,6 +456,13 @@ public class TrackingService {
                 return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.FAILED.name());
         }
         return shipmentRepository.shipQByTypeAndStatus(ShipmentType.PURCHASE.name(), ShipmentStatus.ACCEPTED.name());
+    }
+
+    public List<ItemTrackingPojo> trackByItem(String ref, int showAll) {
+        List<ItemTracking> proj = shipmentRepository.trackByItem(ref, showAll);
+
+        List<ItemTrackingPojo> pojos = proj.stream().map(x -> new ItemTrackingPojo(x)).collect(Collectors.toList());
+        return pojos;
     }
 
 /*    public static void main(String args[] ) throws IOException {

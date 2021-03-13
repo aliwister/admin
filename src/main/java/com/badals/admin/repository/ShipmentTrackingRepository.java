@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface  ShipmentTrackingRepository extends JpaRepository<ShipmentTracking, Long> {
+public interface ShipmentTrackingRepository extends JpaRepository<ShipmentTracking, Long> {
 
 }

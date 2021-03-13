@@ -4,6 +4,7 @@ package com.badals.admin.service.query;
 import com.badals.admin.domain.enumeration.ShipmentListView;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
+import com.badals.admin.domain.pojo.ItemTrackingPojo;
 import com.badals.admin.domain.pojo.ShipmentItemSummaryImpl;
 import com.badals.admin.domain.pojo.ShipmentTrackingMap;
 import com.badals.admin.domain.pojo.TrackingEvent;
@@ -44,8 +45,8 @@ public class TrackingQuery extends AdminQuery implements GraphQLQueryResolver {
         throw new IllegalAccessException("Not Authorized");
     }
 
-    public void advancedTracking() {
-
+    public List<ItemTrackingPojo> advancedTracking(String ref, boolean showAll) {
+        return trackingService.trackByItem(ref, showAll?1:0);
     }
 }
 

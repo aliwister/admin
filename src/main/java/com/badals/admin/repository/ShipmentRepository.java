@@ -4,6 +4,7 @@ import com.badals.admin.domain.ShipmentItem;
 import com.badals.admin.domain.ShipmentTracking;
 import com.badals.admin.domain.enumeration.ShipmentStatus;
 import com.badals.admin.domain.enumeration.ShipmentType;
+import com.badals.admin.domain.pojo.ItemTrackingPojo;
 import com.badals.admin.domain.pojo.PaymentPojo;
 import com.badals.admin.domain.projection.*;
 import com.badals.admin.service.dto.ShipmentDTO;
@@ -178,4 +179,26 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
         "where pc.pkg_id = :id", nativeQuery = true)
     List<ShipmentItemDetails> findItemsInPkgForShipmentDetails(@Param("id") Long id);
 
+    
+    @Query (value="select oi.id, oi.product_name as description, oi.image, o.reference,  pui.purchase_id as po, o.created_date as orderDate, o.invoice_date as invoiceDate, p.created_date as purchaseDate, " +
+            "group_concat(concat(s1.id,':',s1.tracking_num,':',s1.shipment_method,':',s1.shipment_status)) as purchaseShipments, " +
+            "group_concat(concat(s2.id,':',s2.tracking_num,':',s2.shipment_method,':',s2.shipment_status)) as transitShipments, " +
+            "group_concat(concat(s3.id,':',s3.tracking_num,':',s3.shipment_method,':',s3.shipment_status)) as customerShipments, " +
+            "oi.quantity, ifnull(sum(si1.quantity)/count(s3.id),0) as delivered " +
+            "from shop.order_item oi " +
+            "left JOIN shop.jhi_order o ON oi.order_id = o.id   " +
+            "left JOIN shop.purchase_item_order_item pioi ON pioi.order_item_id = oi.id  " +
+            "left join shop.purchase_item pui on pui.id = pioi.purchase_item_id  " +
+            "left join shop.purchase p on p.id = pui.purchase_id  " +
+            "left JOIN purchase_shipment ps ON ps.purchase_item_id = pui.id " +
+            "left join order_shipment os on os.order_item_id = oi.id " +
+            "left join shipment_item si1 on si1.id = os.shipment_item_id  " +
+            "left JOIN shipment_item si ON si.id = ps.shipment_item_id  " +
+            "left JOIN shipment s1 on si.shipment_id  = s1.id and s1.shipment_type = 'TRANSIT' " +
+            "left JOIN shipment s2 on si.shipment_id  = s2.id and s2.shipment_type = 'PURCHASE' " +
+            "left JOIN shipment s3 on si1.shipment_id  = s3.id and s3.shipment_type = 'CUSTOMER'  " +
+            "where (:ref is null or o.reference = :ref) and oi.quantity > 0 and o.state <> 'CANCELED' and o.state <> 'CLOSED'  " +
+            "group by oi.id " +
+            "having :showall = 1 or delivered < quantity limit 500", nativeQuery = true)
+    List<ItemTracking> trackByItem(@Param("ref") String ref, @Param("showall") int showall);
 }
