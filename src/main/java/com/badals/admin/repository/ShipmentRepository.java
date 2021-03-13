@@ -197,7 +197,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
             "left JOIN shipment s1 on si.shipment_id  = s1.id and s1.shipment_type = 'TRANSIT' " +
             "left JOIN shipment s2 on si.shipment_id  = s2.id and s2.shipment_type = 'PURCHASE' " +
             "left JOIN shipment s3 on si1.shipment_id  = s3.id and s3.shipment_type = 'CUSTOMER'  " +
-            "where (:ref is null or o.reference = :ref) and oi.quantity > 0 and o.state <> 'CANCELED' and o.state <> 'CLOSED'  " +
+            "where (:ref is null or o.reference = :ref) and oi.quantity > 0 and (o.reference = :ref or (o.state in ('PAYMENT_ACCEPTED', 'DELIVERED') and o.created_date > '2020-11-01' and o.created_date < DATE_SUB(NOW(), INTERVAL 4 DAY) )) " +
             "group by oi.id " +
             "having :showall = 1 or delivered < quantity limit 500", nativeQuery = true)
     List<ItemTracking> trackByItem(@Param("ref") String ref, @Param("showall") int showall);
