@@ -20,5 +20,10 @@ public interface ItemTracking {
     String getTransitShipments();
     String getCustomerShipments();
 
+    String getMerchant();
+    Long getMerchantId();
+    String getSku();
+    String getUrl();
+
     BigDecimal getDelivered();
 }

@@ -341,6 +341,10 @@ type ItemTracking {
     orderDate: String
     invoiceDate: String
     purchaseDate: String
+    merchant: String
+    merchantId: Long
+    sku: String
+    url: String
     purchaseShipments: [ShipmentInfo]
     transitShipments: [ShipmentInfo]
     customerShipments: [ShipmentInfo]

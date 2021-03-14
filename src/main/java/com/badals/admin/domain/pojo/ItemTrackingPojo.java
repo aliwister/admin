@@ -23,6 +23,11 @@ public class ItemTrackingPojo {
     Date invoiceDate;
     Date purchaseDate;
 
+    String merchant;
+    Long merchantId;
+    String sku;
+    String url;
+
     List<ShipmentPojo> purchaseShipments;
     List<ShipmentPojo> transitShipments;
     List<ShipmentPojo> customerShipments;
@@ -30,7 +35,7 @@ public class ItemTrackingPojo {
     BigDecimal delivered;
 
     public ItemTrackingPojo(ItemTracking i) {
-        this(i.getId(), i.getDescription(), i.getImage(), i.getQuantity(), i.getReference(), i.getPo(), i.getOrderDate(), i.getInvoiceDate(), i.getPurchaseDate(), i.getDelivered());
+        this(i.getId(), i.getDescription(), i.getImage(), i.getQuantity(), i.getReference(), i.getPo(), i.getOrderDate(), i.getInvoiceDate(), i.getPurchaseDate(), i.getMerchant(), i.getMerchantId(), i.getSku(), i.getUrl(), i.getDelivered());
         if (i.getPurchaseShipments() != null) {
             purchaseShipments = new ArrayList<>();
             initializeShipment(purchaseShipments, i.getPurchaseShipments());
@@ -69,6 +74,23 @@ public class ItemTrackingPojo {
         this.orderDate = orderDate;
         this.invoiceDate = invoiceDate;
         this.purchaseDate = purchaseDate;
+        this.delivered = delivered;
+    }
+
+    public ItemTrackingPojo(Long id, String description, String image, BigDecimal quantity, Long reference, Long po, Date orderDate, Date invoiceDate, Date purchaseDate, String merchant, Long merchantId, String sku, String url, BigDecimal delivered) {
+        this.id = id;
+        this.description = description;
+        this.image = image;
+        this.quantity = quantity;
+        this.reference = reference;
+        this.po = po;
+        this.orderDate = orderDate;
+        this.invoiceDate = invoiceDate;
+        this.purchaseDate = purchaseDate;
+        this.merchant = merchant;
+        this.merchantId = merchantId;
+        this.sku = sku;
+        this.url = url;
         this.delivered = delivered;
     }
 }
