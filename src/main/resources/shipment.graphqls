@@ -352,6 +352,7 @@ type ShipmentInfo {
     shipmentMethod: String
     trackingNum: String
     status: String
+    to: String
 }
 
 type Query {

@@ -52,6 +52,10 @@ public class ItemTrackingPojo {
             if(s2.length == 4) {
                 target.add(new ShipmentPojo(s2[0],s2[1],s2[2],s2[3]));
             }
+            else if(s2.length == 5) {
+                target.add(new ShipmentPojo(s2[0],s2[1],s2[2],s2[3],s2[4]));
+            }
+
         }
     }
 
