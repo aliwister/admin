@@ -1,8 +1,11 @@
 package com.badals.admin.service.mapper;
 
 import com.badals.admin.domain.*;
+import com.badals.admin.domain.enumeration.ShipmentType;
+import com.badals.admin.service.dto.OrderDTO;
 import com.badals.admin.service.dto.ShipmentDTO;
 
+import org.hibernate.annotations.Source;
 import org.mapstruct.*;
 
 /**
@@ -17,7 +20,6 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(source = "customer.lastname", target = "customerLastName")
     @Mapping(source = "merchant.name", target = "merchantName")
     @Mapping(source = "merchant.id", target = "merchantId")
-    @Mapping(source = "to.id", target = "partyId")
     @Mapping(source = "to.name", target = "partyName")
     /*@Mapping(source = "shipmentProgress.total", target = "progressTotal")
     @Mapping(source = "shipmentProgress.done", target = "progressDone")
@@ -31,7 +33,6 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(source = "customer.lastname", target = "customerLastName")
     @Mapping(source = "merchant.name", target = "merchantName")
     @Mapping(source = "merchant.id", target = "merchantId")
-    @Mapping(source = "to.id", target = "partyId")
     @Mapping(source = "to.name", target = "partyName")
     @Mapping(target = "pkgs", ignore = true)
     @Mapping(target = "shipmentItems", ignore = true)
@@ -49,7 +50,6 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(source = "merchant.name", target = "merchantName")
     @Mapping(source = "merchant.id", target = "merchantId")
     @Mapping(target = "shipmentItems", ignore = true)
-    @Mapping(source = "to.id", target = "partyId")
     @Mapping(source = "to.name", target = "partyName")
     /*@Mapping(source = "shipmentProgress.total", target = "progressTotal")
     @Mapping(source = "shipmentProgress.done", target = "progressDone")
@@ -62,8 +62,35 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(target = "removeShipmentItem", ignore = true)
     @Mapping(source = "customerId", target = "customer")
     @Mapping(source = "merchantId", target = "merchant")
-    @Mapping(source = "partyId", target = "to")
     Shipment toEntity(ShipmentDTO shipmentDTO);
+
+    @AfterMapping
+    default void afterMapping(@MappingTarget Shipment target, ShipmentDTO source) {
+        if(source.getPartyId() == null || source.getPartyId() <= 0L)
+            return;
+        String append = null;
+        switch(target.getShipmentType()) {
+            case PURCHASE:
+                append = "m";
+                break;
+            case TRANSIT:
+                append = "m";
+                break;
+            case CUSTOMER:
+                append = "c";
+                break;
+        }
+        if (append != null)
+            target.setTo(new Party(append + source.getPartyId()));
+    }
+
+    @AfterMapping
+    default void afterMapping(@MappingTarget ShipmentDTO target, Shipment source) {
+        if(source.getTo() != null)
+            target.setPartyId(Long.parseLong(source.getTo().getId().substring(1)));
+    }
+
+
 
     default Shipment fromId(Long id) {
         if (id == null) {
