@@ -25,6 +25,8 @@ public class TrackingQuery extends AdminQuery implements GraphQLQueryResolver {
     private final ShipmentService shipmentService;
     private final TrackingService trackingService;
 
+
+
     public TrackingQuery(ShipmentService shipmentService, TrackingService trackingService) {
         this.shipmentService = shipmentService;
         this.trackingService = trackingService;
@@ -45,8 +47,19 @@ public class TrackingQuery extends AdminQuery implements GraphQLQueryResolver {
         throw new IllegalAccessException("Not Authorized");
     }
 
-    public List<ItemTrackingPojo> advancedTracking(String ref, boolean showAll) {
-        return trackingService.trackByItem(ref, showAll?1:0);
+    public List<ItemTrackingPojo> advancedTracking(String ref, boolean showAll, String queueName) {
+        if(queueName != null)
+            switch (queueName) {
+                case "NO_PO":
+                    return trackingService.trackByItem(ref, showAll?1:0,1,0,0, 0);
+                case "PO_NO_TRANSIT":
+                        return trackingService.trackByItem(ref, showAll?1:0,0,1,0, 0);
+                case "LONG_TRANSIT":
+                        return trackingService.trackByItem(ref, showAll?1:0,0,0,1, 0);
+                case "LOST":
+                        return trackingService.trackByItem(ref, showAll?1:0,0,0,0,1);
+            }
+        return trackingService.trackByItem(ref, showAll?1:0,0,0,0,0);
     }
 }
 

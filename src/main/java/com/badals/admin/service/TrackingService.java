@@ -458,9 +458,8 @@ public class TrackingService {
         return shipmentRepository.shipQByTypeAndStatus(ShipmentType.PURCHASE.name(), ShipmentStatus.ACCEPTED.name());
     }
 
-    public List<ItemTrackingPojo> trackByItem(String ref, int showAll) {
-        List<ItemTracking> proj = shipmentRepository.trackByItem(ref, showAll);
-
+    public List<ItemTrackingPojo> trackByItem(String ref, int showAll, int noPo, int poNoTransit, int longTransit, int lost) {
+        List<ItemTracking> proj = shipmentRepository.trackByItem(ref, showAll, noPo, poNoTransit, longTransit, lost);
         List<ItemTrackingPojo> pojos = proj.stream().map(x -> new ItemTrackingPojo(x)).collect(Collectors.toList());
         return pojos;
     }

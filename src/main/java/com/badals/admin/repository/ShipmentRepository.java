@@ -193,7 +193,16 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
             "left join shop.purchase p on p.id = pui.purchase_id " +
             "left join shop.merchant m2 on m2.id = p.merchant_id " +
             "left join shop.product pr on pr.`ref` = oi.product_id " +
-            "where (:ref is null or o.reference = :ref) and oi.quantity > 0 and (o.reference = :ref or (o.state in ('PAYMENT_ACCEPTED', 'DELIVERED') and o.created_date > '2020-11-01' and o.created_date < DATE_SUB(NOW(), INTERVAL 4 DAY) ))  " +
-            "having :showall = 1 or delivered < quantity limit 500 ", nativeQuery = true)
-    List<ItemTracking> trackByItem(@Param("ref") String ref, @Param("showall") int showall);
+            "where " +
+            "(:noPo = 0 || pui.purchase_id is null) " +
+            "and (:ref is null or o.reference = :ref) " +
+            "and oi.quantity > 0 " +
+            "and (o.reference = :ref or (o.state in ('PAYMENT_ACCEPTED', 'DELIVERED') and o.created_date > '2020-11-01' and o.created_date < DATE_SUB(NOW(), INTERVAL 4 DAY) )) " +
+            "group by oi.id having " +
+            "(:showall = 1 or delivered < quantity) " +
+            "and (:poNoTransit = 0 or (po > 0 and transitShipments is null and purchaseShipments is null)) " +
+            "and (:longTransit = 0 or (po > 0 and transitShipments is not null and purchaseShipments is null and orderDate >  DATE_SUB(NOW(), INTERVAL 7 DAY) )) " +
+            "and (:lost = 0 or (po > 0 and transitShipments is not null and purchaseShipments is not null and (instr(purchaseShipments,'ACCEPTED') or  instr(purchaseShipments,'CLOSED')) and customerShipments is null )) \n" +
+            "limit 500 ", nativeQuery = true)
+    List<ItemTracking> trackByItem(@Param("ref") String ref, @Param("showall") int showall, @Param("noPo") int noPo,  @Param("poNoTransit") int poNoTransit, @Param("longTransit") int longTransit, @Param("lost") int lost);
 }

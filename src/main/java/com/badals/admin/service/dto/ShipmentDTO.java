@@ -55,6 +55,8 @@ public class ShipmentDTO implements Serializable {
     private String customerCity;
     private String merchantName;
     private Long merchantId;
+    private Long partyId;
+    private String partyName;
 
     private Set<PkgDTO> pkgs;
     private Set<ShipmentItemDTO> shipmentItems;

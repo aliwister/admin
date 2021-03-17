@@ -106,6 +106,8 @@ type Shipment {
     customerFirstName: String
     customerLastName: String
     merchantName: String
+    partyId: Long
+    partyName: String
 }
 
 type ShipmentReceipt {
@@ -127,6 +129,7 @@ input ShipmentInput {
     merchantId: Long
     pkgCount: Int
     handlingInstructions: String
+    partyId: Long
 }
 
 input ShipmentItemInput {
@@ -377,7 +380,7 @@ type Query {
     track(ref: String): [ShipmentTrackingMap]
     trackingEvents: [TrackingEvent]
     shipQueueByCustomerId(customerId: Long): [ShipQueue]
-    advancedTracking(ref: String, showAll: Boolean = false): [ItemTracking]
+    advancedTracking(ref: String, showAll: Boolean = false, queueName: String): [ItemTracking]
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message

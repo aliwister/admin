@@ -8,7 +8,7 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Shipment} and its DTO {@link ShipmentDTO}.
  */
-@Mapper(componentModel = "spring", uses = {AddressMapper.class, CustomerMapper.class, MerchantMapper.class, PkgMapper.class, ShipmentItemMapper.class})
+@Mapper(componentModel = "spring", uses = {AddressMapper.class, CustomerMapper.class, MerchantMapper.class, PkgMapper.class, ShipmentItemMapper.class, PartyMapper.class})
 public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
 
     //@Mapping(source = "address.id", target = "addressId")
@@ -17,6 +17,8 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(source = "customer.lastname", target = "customerLastName")
     @Mapping(source = "merchant.name", target = "merchantName")
     @Mapping(source = "merchant.id", target = "merchantId")
+    @Mapping(source = "to.id", target = "partyId")
+    @Mapping(source = "to.name", target = "partyName")
     /*@Mapping(source = "shipmentProgress.total", target = "progressTotal")
     @Mapping(source = "shipmentProgress.done", target = "progressDone")
     @Mapping(source = "shipmentProgress.todo", target = "progressTodo")*/
@@ -29,6 +31,8 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(source = "customer.lastname", target = "customerLastName")
     @Mapping(source = "merchant.name", target = "merchantName")
     @Mapping(source = "merchant.id", target = "merchantId")
+    @Mapping(source = "to.id", target = "partyId")
+    @Mapping(source = "to.name", target = "partyName")
     @Mapping(target = "pkgs", ignore = true)
     @Mapping(target = "shipmentItems", ignore = true)
     /*@Mapping(source = "shipmentProgress.total", target = "progressTotal")
@@ -45,6 +49,8 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(source = "merchant.name", target = "merchantName")
     @Mapping(source = "merchant.id", target = "merchantId")
     @Mapping(target = "shipmentItems", ignore = true)
+    @Mapping(source = "to.id", target = "partyId")
+    @Mapping(source = "to.name", target = "partyName")
     /*@Mapping(source = "shipmentProgress.total", target = "progressTotal")
     @Mapping(source = "shipmentProgress.done", target = "progressDone")
     @Mapping(source = "shipmentProgress.todo", target = "progressTodo")*/
@@ -56,6 +62,7 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     @Mapping(target = "removeShipmentItem", ignore = true)
     @Mapping(source = "customerId", target = "customer")
     @Mapping(source = "merchantId", target = "merchant")
+    @Mapping(source = "partyId", target = "to")
     Shipment toEntity(ShipmentDTO shipmentDTO);
 
     default Shipment fromId(Long id) {
