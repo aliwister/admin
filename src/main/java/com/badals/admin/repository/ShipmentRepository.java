@@ -180,8 +180,8 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     List<ShipmentItemDetails> findItemsInPkgForShipmentDetails(@Param("id") Long id);
 
     
-    @Query (value="select oi.id, oi.product_name as description, oi.image, o.reference,  pui.purchase_id as po, o.created_date as orderDate, o.invoice_date as invoiceDate, p.created_date as purchaseDate,  " +
-            "pr.url, pr.sku, m2.name as merchant, p.merchant_id as merchantId, " +
+    @Query (value="select oi.id, oi.product_name as description, oi.image, o.reference,  pui.id as pid, pui.purchase_id as po, o.created_date as orderDate, o.invoice_date as invoiceDate, p.created_date as purchaseDate,  " +
+            "pr.url, pr.sku, m2.name as merchant, p.merchant_id as merchantId, pui.product_id as productId, pui.price, " +
             "(select group_concat(concat(s2.id,':',s2.tracking_num,':',s2.shipment_method,':',s2.shipment_status,':',ifnull(m.name,''))) from purchase_shipment ps left join shipment_item si ON si.id = ps.shipment_item_id left JOIN shipment s2 on si.shipment_id  = s2.id and s2.shipment_type = 'TRANSIT' left join shop.merchant m on CONCAT('m', m.id) = s2.`_to`   where ps.purchase_item_id = pui.id group by pui.id ) as transitShipments,  " +
             "(select group_concat(concat(s2.id,':',s2.tracking_num,':',s2.shipment_method,':',s2.shipment_status,':',ifnull(m.name,'Badals'))) from purchase_shipment ps left join shipment_item si ON si.id = ps.shipment_item_id left JOIN shipment s2 on si.shipment_id  = s2.id and s2.shipment_type = 'PURCHASE'  left join shop.merchant m on CONCAT('m', m.id) = s2.`_to`   where ps.purchase_item_id = pui.id group by pui.id ) as purchaseShipments,  " +
             "(select group_concat(concat(ifnull(s3.id,'0'),':',s3.tracking_num,':',ifnull(s3.shipment_method,'BADALS'),':',s3.shipment_status)) from order_shipment os left join shipment_item si1 on si1.id = os.shipment_item_id left join shipment s3 on si1.shipment_id  = s3.id and s3.shipment_type = 'CUSTOMER' where os.order_item_id = oi.id group by oi.id) as customerShipments, " +
@@ -201,7 +201,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
             "group by oi.id having " +
             "(:showall = 1 or delivered < quantity) " +
             "and (:poNoTransit = 0 or (po > 0 and transitShipments is null and purchaseShipments is null)) " +
-            "and (:longTransit = 0 or (po > 0 and transitShipments is not null and purchaseShipments is null and orderDate >  DATE_SUB(NOW(), INTERVAL 7 DAY) )) " +
+            "and (:longTransit = 0 or (po > 0 and transitShipments is not null and purchaseShipments is null and orderDate <  DATE_SUB(NOW(), INTERVAL 7 DAY) )) " +
             "and (:lost = 0 or (po > 0 and transitShipments is not null and purchaseShipments is not null and (instr(purchaseShipments,'ACCEPTED') or  instr(purchaseShipments,'CLOSED')) and customerShipments is null )) \n" +
             "limit 500 ", nativeQuery = true)
     List<ItemTracking> trackByItem(@Param("ref") String ref, @Param("showall") int showall, @Param("noPo") int noPo,  @Param("poNoTransit") int poNoTransit, @Param("longTransit") int longTransit, @Param("lost") int lost);

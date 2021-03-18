@@ -13,6 +13,9 @@ import java.util.List;
 @Data
 public class ItemTrackingPojo {
     Long id;
+    Long pid;
+    Long productId;
+    BigDecimal price;
     String description;
     String image;
     BigDecimal quantity;
@@ -35,7 +38,7 @@ public class ItemTrackingPojo {
     BigDecimal delivered;
 
     public ItemTrackingPojo(ItemTracking i) {
-        this(i.getId(), i.getDescription(), i.getImage(), i.getQuantity(), i.getReference(), i.getPo(), i.getOrderDate(), i.getInvoiceDate(), i.getPurchaseDate(), i.getMerchant(), i.getMerchantId(), i.getSku(), i.getUrl(), i.getDelivered());
+        this(i.getId(), i.getPid(), i.getProductId(), i.getPrice(), i.getDescription(), i.getImage(), i.getQuantity(), i.getReference(), i.getPo(), i.getOrderDate(), i.getInvoiceDate(), i.getPurchaseDate(), i.getMerchant(), i.getMerchantId(), i.getSku(), i.getUrl(), i.getDelivered());
         if (i.getPurchaseShipments() != null) {
             purchaseShipments = new ArrayList<>();
             initializeShipment(purchaseShipments, i.getPurchaseShipments());
@@ -64,8 +67,11 @@ public class ItemTrackingPojo {
         }
     }
 
-    public ItemTrackingPojo(Long id, String description, String image, BigDecimal quantity, Long reference, Long po, Date orderDate, Date invoiceDate, Date purchaseDate, BigDecimal delivered) {
+    public ItemTrackingPojo(Long id, Long pid, Long productId, BigDecimal price, String description, String image, BigDecimal quantity, Long reference, Long po, Date orderDate, Date invoiceDate, Date purchaseDate, BigDecimal delivered) {
         this.id = id;
+        this.pid = pid;
+        this.productId = productId;
+        this.price = price;
         this.description = description;
         this.image = image;
         this.quantity = quantity;
@@ -77,8 +83,11 @@ public class ItemTrackingPojo {
         this.delivered = delivered;
     }
 
-    public ItemTrackingPojo(Long id, String description, String image, BigDecimal quantity, Long reference, Long po, Date orderDate, Date invoiceDate, Date purchaseDate, String merchant, Long merchantId, String sku, String url, BigDecimal delivered) {
+    public ItemTrackingPojo(Long id, Long pid, Long productId, BigDecimal price, String description, String image, BigDecimal quantity, Long reference, Long po, Date orderDate, Date invoiceDate, Date purchaseDate, String merchant, Long merchantId, String sku, String url, BigDecimal delivered) {
         this.id = id;
+        this.pid = pid;
+        this.productId = productId;
+        this.price = price;
         this.description = description;
         this.image = image;
         this.quantity = quantity;

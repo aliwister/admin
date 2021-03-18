@@ -50,13 +50,6 @@ type PurchaseShipment {
     quantity: BigDecimal
 }
 
-input PurchaseShipmentInput {
-    shipmentItemId: Int
-    purchaseItemId: Int
-    quantity: BigDecimal
-    purchaseId: Long
-    __typename: String
-}
 
 type Merchant {
     id: ID
@@ -132,15 +125,23 @@ input ShipmentInput {
     partyId: Long
 }
 
+input PurchaseShipmentInput {
+    shipmentItemId: Int
+    purchaseItemId: Int
+    quantity: BigDecimal
+    purchaseId: Int
+    __typename: String
+}
+
 input ShipmentItemInput {
     sequence: Int
     quantity: BigDecimal
     description: String
     shipmentId: Long
-    productId: Long
+    productId: String
     image: String
     purchaseShipments: [PurchaseShipmentInput]
-    from: Long
+    from: Int
     price: BigDecimal
 }
 
@@ -336,16 +337,19 @@ input PaymentInput {
 
 type ItemTracking {
     id: ID
+    pid: Int
+    productId: String
+    price: BigDecimal
     description: String
     image: String
-    quantity: String
+    quantity: BigDecimal
     reference: String
     po: String
     orderDate: String
     invoiceDate: String
     purchaseDate: String
     merchant: String
-    merchantId: Long
+    merchantId: Int
     sku: String
     url: String
     purchaseShipments: [ShipmentInfo]

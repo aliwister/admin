@@ -363,13 +363,17 @@ public class TrackingService {
 
     public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems, List<String> trackingNums) throws Exception {
         Shipment s = shipmentMapper.toEntity(shipment);
+        int seq = 1;
         if (shipmentItems != null)
             for (ShipmentItemDTO shipmentItem : shipmentItems) {
-                ShipmentItem from = shipmentItemRepository.getOne(shipmentItem.getFrom());
-                if (from == null) {
-                    throw new Exception ("From shouldn't be null");
+                if(shipmentItem.getFrom() != null){
+                    ShipmentItem from = shipmentItemRepository.getOne(shipmentItem.getFrom());
+                    if (from == null) {
+                        throw new Exception ("From shouldn't be null");
+                    }
                 }
                 ShipmentItem si = shipmentItemMapper.toEntity(shipmentItem);
+                si.setSequence(seq++);
                 for (PurchaseShipmentDTO purchaseShipment: shipmentItem.getPurchaseShipments()) {
                     PurchaseShipment ps = purchaseShipmentMapper.toEntity(purchaseShipment);
                     si.addPurchaseShipment(ps);

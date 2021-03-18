@@ -6,6 +6,9 @@ import java.util.Date;
 
 public interface ItemTracking {
     Long getId();
+    Long getPid();
+    Long getProductId();
+    BigDecimal getPrice();
     String getDescription();
     String getImage();
     BigDecimal getQuantity();
