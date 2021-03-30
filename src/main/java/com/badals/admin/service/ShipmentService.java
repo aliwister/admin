@@ -15,6 +15,7 @@ import com.badals.admin.service.dto.*;
 import com.badals.admin.service.errors.ShipmentNotReadyException;
 import com.badals.admin.service.mapper.ItemIssuanceMapper;
 import com.badals.admin.service.mapper.OrderMapper;
+import com.badals.admin.service.mapper.ShipmentDocMapper;
 import com.badals.admin.service.mapper.ShipmentMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +34,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,6 +54,7 @@ public class ShipmentService {
     private final ShipmentDocRepository shipmentDocRepository;
 
     private final ShipmentMapper shipmentMapper;
+    private final ShipmentDocMapper shipmentDocMapper;
 
     private final PurchaseItemRepository purchaseItemRepository;
 
@@ -73,11 +74,12 @@ public class ShipmentService {
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentDocRepository shipmentDocRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, OrderService orderService) {
+    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentDocRepository shipmentDocRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentDocMapper shipmentDocMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, OrderService orderService) {
         this.shipmentRepository = shipmentRepository;
         this.shipmentSearchRepository = shipmentSearchRepository;
         this.shipmentDocRepository = shipmentDocRepository;
         this.shipmentMapper = shipmentMapper;
+        this.shipmentDocMapper = shipmentDocMapper;
         //this.shipmentSearchRepository = shipmentSearchRepository;
         this.purchaseItemRepository = purchaseItemRepository;
         this.pkgRepository = pkgRepository;
@@ -543,6 +545,18 @@ public class ShipmentService {
         Shipment s = shipmentRepository.getOne(id);
         s.setEstimatedShipDate(date);
         shipmentRepository.save(s);
+    }
+
+    public void addShipmentDoc(Long id, String filename) {
+        Shipment s = shipmentRepository.getOne(id);
+        ShipmentDoc doc = new ShipmentDoc();
+        doc.setFileKey(filename);
+        doc.setShipment(s);
+        shipmentDocRepository.save(doc);
+    }
+
+    public List<ShipmentDocDTO> shipmentDocs(Long id) {
+        return shipmentDocRepository.findByShipment(new Shipment(id)).stream().map(shipmentDocMapper::toDto).collect(Collectors.toList());
     }
 
     /**

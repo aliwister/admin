@@ -14,6 +14,7 @@ import com.badals.admin.service.TrackingService;
 import com.badals.admin.service.dto.ShipmentDTO;
 import com.badals.admin.service.dto.ShipmentItemDTO;
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
@@ -36,17 +37,10 @@ public class TrackingQuery extends AdminQuery implements GraphQLQueryResolver {
     }
 
     public List<ShipmentList> shipmentList(ShipmentListView listName) throws IllegalAccessException {
-        authorizeUser();
         return trackingService.shipmentList(listName);
     }
 
-    public void authorizeUser() throws IllegalAccessException {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user.getAuthorities().stream().anyMatch(t->t.getAuthority().equals("ROLE_ADMIN")))
-            return;
-        throw new IllegalAccessException("Not Authorized");
-    }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<ItemTrackingPojo> advancedTracking(String ref, boolean showAll, String queueName) {
         if(queueName != null)
             switch (queueName) {

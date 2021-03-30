@@ -385,6 +385,7 @@ type Query {
     trackingEvents: [TrackingEvent]
     shipQueueByCustomerId(customerId: Long): [ShipQueue]
     advancedTracking(ref: String, showAll: Boolean = false, queueName: String): [ItemTracking]
+    shipmentDocs(id: ID) : [ShipmentDoc]
 }
 type Mutation {
     sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
@@ -410,4 +411,5 @@ type Mutation {
     addTrackingEvent(trackingNums: [String], shipmentStatus: ShipmentStatus,  trackingEvent: Int, eventDate: LocalDateTime, details: String): Message
     setShipmentStatus(id: Long, status:ShipmentStatus): Message
     updateFromDetrack(id: String): Message
+    addShipmentDoc(id: Long, filename: String): Message
 }

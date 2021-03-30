@@ -31,6 +31,13 @@ public class Shipment extends Auditable implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public Shipment() {
+    }
+
+    public Shipment(Long id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Keyword)
