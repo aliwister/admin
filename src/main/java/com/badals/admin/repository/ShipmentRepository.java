@@ -159,8 +159,10 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
         "          si.description, " +
         "          si.shipment_id as shipmentId, " +
         "          si.product_id as productId, " +
-        "          p.image as image " +
-        "from shipment_item si left join shop.product p on p.ref = si.product_id  " +
+        "          p.image as image , pi2.purchase_id as po " +
+        "from shipment_item si left join shop.product p on p.ref = si.product_id " +
+        "left join purchase_shipment ps ON ps.shipment_item_id = si.id " +
+        "left join shop.purchase_item pi2 on pi2.id = ps.purchase_item_id  " +
         "where si.shipment_id = :id", nativeQuery = true)
     List<ShipmentItemDetails> findItemsForShipmentDetails(@Param("id") Long id);
 

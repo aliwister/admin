@@ -322,6 +322,7 @@ type ShipmentItemDetails {
     shipmentId: Long
     productId: Long
     image: String
+    po: Long
 }
 
 input PriceInput {

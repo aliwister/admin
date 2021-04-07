@@ -8,4 +8,5 @@ public interface ShipmentItemDetails {
     String getShipmentId();
     String getProductId();
     String getImage();
+    Long getPo();
 }
