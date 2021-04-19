@@ -5,9 +5,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-/**
- * A DTO for the {@link com.badals.shop.domain.Address} entity.
- */
 @Data
 public class AddressDTO implements Serializable {
 
@@ -35,7 +32,7 @@ public class AddressDTO implements Serializable {
     public AddressDTO() {
     }
 
-    public AddressDTO(String firstName, String lastName, String line1, String line2, String city, String mobile) {
+    public AddressDTO(String firstName, String lastName, String line1, String line2, String city, String mobile, String lat, String lng) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.line1 = line1;
@@ -43,6 +40,8 @@ public class AddressDTO implements Serializable {
         this.city = city;
 
         this.mobile = mobile;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     @Override
@@ -63,6 +62,6 @@ public class AddressDTO implements Serializable {
     public static AddressDTO fromAddressPojo(AddressPojo pojo) {
         if(pojo == null)
             return null;
-        return new AddressDTO(pojo.getFirstName(),pojo.getLastName(),pojo.getLine1(),pojo.getLine2(),pojo.getCity(), pojo.getMobile());
+        return new AddressDTO(pojo.getFirstName(),pojo.getLastName(),pojo.getLine1(),pojo.getLine2(),pojo.getCity(), pojo.getMobile(), pojo.getLat(), pojo.getLng());
     }
 }
