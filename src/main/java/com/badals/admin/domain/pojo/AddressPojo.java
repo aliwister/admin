@@ -18,4 +18,7 @@ public class AddressPojo implements Serializable {
     String mobile;
     Boolean save;
     String alias;
+    String plusCode;
+    String lat;
+    String lng;
 }

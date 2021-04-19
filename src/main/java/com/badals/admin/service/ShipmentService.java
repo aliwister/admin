@@ -343,9 +343,15 @@ public class ShipmentService {
         delivery.setPhone (mobile);
         delivery.setInstructions (instructions);
         delivery.set_do (shipmentId +"-"+orderRef);
-        delivery.setAddress(address.getLine1() + " " + address.getLine2() + " " + address.getCity());
+        delivery.setAddress(address.getLine1() + " " + address.getLine2());
+        if(address.getCity() != null) delivery.setCity(address.getCity());
         delivery.setDeliver_to (address.getFirstName() + " " + address.getLastName());
         delivery.setDelivery_time (time);
+
+        if(address.getLat() != null) {
+            delivery.setAddress_lat(address.getLat());
+            delivery.setAddress_lng(address.getLng());
+        }
 
         //delivery.setAssign_to (assignTo); //Disable assign to
 
