@@ -58,8 +58,8 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     List<ShipQueue> getShipQueueByCustomerId(@Param(value = "cutomerId") Long cutomerId);
 
     @Query(value="SELECT si.id, si.sequence, si.quantity, si.description, si.shipment_id as shipmentId, si.product_id as productId, si.quantity - ifnull(sum(pc.quantity),0) as unpacked, ifnull(p.image,'') as image " +
-        ",  (SELECT o.id from  shop.order_item o join shop.purchase_item_order_item pioi on o.id = pioi.order_item_id where pioi.purchase_item_id = ps.purchase_item_Id) AS orderItemId " +
-        ",  (SELECT o.order_id from  shop.order_item o join shop.purchase_item_order_item pioi on o.id = pioi.order_item_id where pioi.purchase_item_id = ps.purchase_item_Id) AS orderId " +
+        ",  (SELECT o.id from  shop.order_item o join shop.purchase_item_order_item pioi on o.id = pioi.order_item_id where pioi.purchase_item_id = ps.purchase_item_Id limit 1) AS orderItemId " +
+        ",  (SELECT o.order_id from  shop.order_item o join shop.purchase_item_order_item pioi on o.id = pioi.order_item_id where pioi.purchase_item_id = ps.purchase_item_Id limit 1) AS orderId " +
         "FROM shipment_item si " +
         "LEFT JOIN packaging_content pc ON si.id = pc.shipment_item_id " +
         "LEFT JOIN shop.product p ON si.product_id = p.ref " +
