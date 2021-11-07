@@ -45,7 +45,7 @@ public class TrackingService {
 
     private final ShipmentRepository shipmentRepository;
     private final ShipmentSearchRepository shipmentSearchRepository;
-    private final ShipmentTrackingRepository shipmentTrackingRepository;
+    private final ProductRepository productRepository;
     private final ShipmentEventRepository shipmentEventRepository;
 
     private final ShipmentMapper shipmentMapper;
@@ -69,13 +69,14 @@ public class TrackingService {
     private final OrderRepository orderRepository;
     private final ShipmentDocRepository shipmentDocRepository;
     private final ShipmentDocMapper shipmentDocMapper;
+    private final ShipmentTrackingRepository shipmentTrackingRepository;
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public TrackingService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentTrackingRepository shipmentTrackingRepository, ShipmentEventRepository shipmentEventRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentItemMapper shipmentItemMapper, PurchaseShipmentMapper purchaseShipmentMapper, ShipmentTrackingMapper shipmentTrackingMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, ShipmentDocRepository shipmentDocRepository, ShipmentDocMapper shipmentDocMapper) {
+    public TrackingService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ProductRepository productRepository, ShipmentEventRepository shipmentEventRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentItemMapper shipmentItemMapper, PurchaseShipmentMapper purchaseShipmentMapper, ShipmentTrackingMapper shipmentTrackingMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, ShipmentDocRepository shipmentDocRepository, ShipmentDocMapper shipmentDocMapper, ShipmentTrackingRepository shipmentTrackingRepository) {
         this.shipmentRepository = shipmentRepository;
         this.shipmentSearchRepository = shipmentSearchRepository;
-        this.shipmentTrackingRepository = shipmentTrackingRepository;
+        this.productRepository = productRepository;
         this.shipmentEventRepository = shipmentEventRepository;
         this.shipmentMapper = shipmentMapper;
         this.shipmentItemMapper = shipmentItemMapper;
@@ -95,6 +96,7 @@ public class TrackingService {
         this.orderRepository = orderRepository;
         this.shipmentDocRepository = shipmentDocRepository;
         this.shipmentDocMapper = shipmentDocMapper;
+        this.shipmentTrackingRepository = shipmentTrackingRepository;
     }
 
     /**
@@ -328,7 +330,7 @@ public class TrackingService {
             Double itemQty = Double.parseDouble(item.getQuantity());
             CRC32 checksum = new CRC32();
             checksum.update(key.getBytes(),0,key.getBytes().length);
-            long ref = checksum.getValue();
+            Long ref = productRepository.getRefByKey(key).orElse(checksum.getValue());
 
             ShipmentItem shipmentItem = new ShipmentItem().sequence(shipmentItems.size()+1).description(item.getTitle().substring(0,Math.min(255,item.getTitle().length()))).quantity(BigDecimal.valueOf(itemQty));
             shipmentItem.setProductId(ref);
