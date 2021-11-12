@@ -9,4 +9,5 @@ public interface ShipmentList {
     Integer getPkgCount();
     Integer getArrivedPkgs();
     String getSender();
+    String getReceiver();
 }

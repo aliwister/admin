@@ -312,6 +312,7 @@ type ShipmentList {
     arrivedPkgs: Int
     status: String
     sender: String
+    receiver: String
 }
 
 type ShipmentItemDetails {

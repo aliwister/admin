@@ -139,10 +139,10 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
         "group by s.id having  s.pkg_count > arrivedPkgs OR sent != received order by id desc", nativeQuery = true)
     List<ShipmentList> incomingShipments();
 
-    @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s where s.shipment_type = :shipmentType AND s.shipment_status <> :shipmentStatus", nativeQuery = true)
+    @Query(value="select m.name as receiver, s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s left join shop.merchant m on concat('m',m.id)  = s._to where s.shipment_type = :shipmentType AND s.shipment_status <> :shipmentStatus", nativeQuery = true)
     List<ShipmentList> shipQByTypeAndStatusNot(@Param("shipmentType") String shipmentType, @Param("shipmentStatus") String shipmentStatus);
 
-    @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s where s.shipment_type = :shipmentType AND s.shipment_status = :shipmentStatus", nativeQuery = true)
+    @Query(value="select m.name as receiver, s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum, s.shipment_status AS status from shipment s left join shop.merchant m on concat('m',m.id)  = s._to where s.shipment_type = :shipmentType AND s.shipment_status = :shipmentStatus", nativeQuery = true)
     List<ShipmentList> shipQByTypeAndStatus(@Param("shipmentType") String shipmentType, @Param("shipmentStatus") String shipmentStatus);
 
     @Query(value="select * from unshipped_queue ", nativeQuery=true)

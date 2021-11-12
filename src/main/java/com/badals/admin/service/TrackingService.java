@@ -445,23 +445,26 @@ public class TrackingService {
     }
 
     public List<ShipmentList> shipmentList(ShipmentListView listName) {
+        List<ShipmentList> shipmentList = null;
         switch(listName) {
             case INCOMING:
-                return shipmentRepository.incomingShipments();
+                shipmentList = shipmentRepository.incomingShipments();
             case ALL_PURCHASE:
-                return shipmentRepository.unclosedPurchase();
+                shipmentList = shipmentRepository.unclosedPurchase();
             case UNCLOSED_TRANSIT:
-                return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT.name(), ShipmentStatus.CLOSED.name());
+                shipmentList = shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT.name(), ShipmentStatus.CLOSED.name());
             case CANCELLED_TRANSIT:
-                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.TRANSIT.name(), ShipmentStatus.CANCELED.name());
+                shipmentList = shipmentRepository.shipQByTypeAndStatus(ShipmentType.TRANSIT.name(), ShipmentStatus.CANCELED.name());
             case ALL_TRANSIT:
-                return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT.name(), ShipmentStatus.CANCELED.name());
+                shipmentList = shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT.name(), ShipmentStatus.CANCELED.name());
             case CUSTOMER_SCHEDULED:
-                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.SCHEDULED.name());
+                shipmentList = shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.SCHEDULED.name());
             case CUSTOMER_FAILED:
-                return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.FAILED.name());
+                shipmentList = shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.FAILED.name());
+            default:
+                shipmentList = shipmentRepository.shipQByTypeAndStatus(ShipmentType.PURCHASE.name(), ShipmentStatus.ACCEPTED.name());
         }
-        return shipmentRepository.shipQByTypeAndStatus(ShipmentType.PURCHASE.name(), ShipmentStatus.ACCEPTED.name());
+        return shipmentList;
     }
 
     public List<ItemTrackingPojo> trackByItem(String ref, int showAll, int noPo, int poNoTransit, int longTransit, int lost) {
