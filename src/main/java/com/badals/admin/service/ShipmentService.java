@@ -453,6 +453,8 @@ public class ShipmentService {
     public String addItem(Long shipmentId, Long productId, Long purchaseItemId, String description, BigDecimal quantity) {
         // Shipment Item
         Shipment shipment = shipmentRepository.findById(shipmentId).get();
+        if (shipment.getShipmentStatus().equals(ShipmentStatus.CLOSED))
+            return "Cannot Edit a closed shipment";
         Integer nextSeq = shipmentRepository.nextSeq(shipmentId);
         ShipmentItem shipmentItem = new ShipmentItem().shipment(shipment).sequence(nextSeq).description(description).quantity(quantity);
         shipmentItem.setProductId(productId);
@@ -468,6 +470,8 @@ public class ShipmentService {
 
     public void removeItem(Long shipmentItemId) {
         ShipmentItem shipmentItem= shipmentItemRepository.findById(shipmentItemId).get();
+        if (shipmentItem.getShipment().getShipmentStatus().equals(ShipmentStatus.CLOSED))
+            return;
 
         packagingContentRepository.deleteByShipmentItem(shipmentItem);
         orderShipmentRepository.deleteByShipmentItem(shipmentItem);
