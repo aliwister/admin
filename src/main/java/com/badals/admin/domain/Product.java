@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * A Product.
  */
 @Entity
-@Table(name = "product", catalog = "shop")
+@Table(name = "product", catalog = "profileshop")
 @SelectBeforeUpdate(false)
 public class Product implements Serializable {
 

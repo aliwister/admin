@@ -14,7 +14,7 @@ import java.util.Set;
  * A Purchase.
  */
 @Entity
-@Table(name = "purchase", catalog = "shop")
+@Table(name = "purchase", catalog = "profileshop")
 public class Purchase extends Auditable implements Serializable {
 
     private static final long serialVersionUID = 1L;

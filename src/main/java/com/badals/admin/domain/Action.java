@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "action", catalog = "shop")
+@Table(name = "action", catalog = "profileshop")
 @EntityListeners(AuditingEntityListener.class)
 public class Action implements Serializable {
 

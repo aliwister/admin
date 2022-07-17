@@ -8,7 +8,7 @@ import java.time.Instant;
  * A Merchant.
  */
 @Entity
-@Table(name = "merchant", catalog = "shop")
+@Table(name = "merchant", catalog = "profileshop")
 public class Merchant implements Serializable {
 
     private static final long serialVersionUID = 1L;

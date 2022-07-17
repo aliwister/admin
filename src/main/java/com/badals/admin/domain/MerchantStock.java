@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  * A MerchantStock.
  */
 @Entity
-@Table(name = "merchant_stock", catalog = "shop")
+@Table(name = "merchant_stock", catalog = "profileshop")
 @SelectBeforeUpdate(false)
 public class MerchantStock implements Serializable {
 

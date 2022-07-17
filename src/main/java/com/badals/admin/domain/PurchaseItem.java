@@ -12,7 +12,7 @@ import java.time.LocalDate;
  * A PurchaseItem.
  */
 @Entity
-@Table(name = "purchase_item", catalog = "shop")
+@Table(name = "purchase_item", catalog = "profileshop")
 public class PurchaseItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class PurchaseItem implements Serializable {
     private Purchase purchase;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(catalog = "shop", name = "purchase_item_order_item",
+    @JoinTable(catalog = "profileshop", name = "purchase_item_order_item",
                joinColumns = @JoinColumn(name = "purchase_item_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "order_item_id", referencedColumnName = "id"))
     private OrderItem orderItem;

@@ -29,7 +29,7 @@ import java.util.Set;
     @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Entity
-@Table(name = "jhi_order", catalog = "shop")
+@Table(name = "jhi_order", catalog = "profileshop")
 public class Order implements Serializable {
 
     private static final long serialVersionUID = 1L;

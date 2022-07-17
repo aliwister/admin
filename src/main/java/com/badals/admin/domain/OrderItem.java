@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * A OrderItem.
  */
 @Entity
-@Table(name = "order_item", catalog = "shop")
+@Table(name = "order_item", catalog = "profileshop")
 public class OrderItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
