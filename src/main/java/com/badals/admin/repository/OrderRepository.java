@@ -24,7 +24,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByReference(String reference);
 
     @Query(value = "SELECT ((o.total - SUM(p.amount))) AS balance " +
-        "FROM shop.jhi_order o LEFT JOIN shop.payment p ON o.id = p.order_id " +
+        "FROM profileshop.jhi_order o LEFT JOIN profileshop.payment p ON o.id = p.order_id " +
         "WHERE o.reference = :ref " +
         "GROUP BY o.reference", nativeQuery = true)
     BigDecimal getBalance(@Param("ref") String orderRef);

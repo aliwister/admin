@@ -6,6 +6,9 @@ import com.badals.admin.domain.pojo.Attribute;
 import com.badals.admin.domain.pojo.Gallery;
 import com.badals.admin.domain.pojo.Variation;
 import com.badals.admin.domain.pojo.VariationOption;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.SelectBeforeUpdate;
 import org.hibernate.annotations.Type;
@@ -16,9 +19,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
 @Table(name = "product", catalog = "profileshop")
 @SelectBeforeUpdate(false)
 public class Product implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -36,30 +36,16 @@ public class Product implements Serializable {
     private Long id;
 
     @NaturalId
-    private Long ref;
+    @Getter
+    @Setter
+    @Column(name = "ref")
+    public String ref;
 
+    @Getter @Setter
     private String slug;
 
-    //private
-
-    //@OneToMany(fetch = FetchType.LAZY)
-    //@JoinColumn(
-    //    name = "ref",
-    //    referencedColumnName = "parent"
-    //)
-    //List<Product> children = new ArrayList<Product>();
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
-
     @Column(name = "parent_id")
-    private Long parentId;
-
-
+    private String parentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parent_id", referencedColumnName = "ref", insertable = false, updatable = false)
@@ -67,11 +53,7 @@ public class Product implements Serializable {
 
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "parent_id",referencedColumnName = "ref")
-    private Set<Product> children;
-
-
-
-
+    private Set<Product> children = new HashSet<>();;
 
     @NotNull
     @Column(name = "sku", nullable = false, unique = true)
@@ -80,9 +62,21 @@ public class Product implements Serializable {
     @Column(name = "upc")
     private String upc;
 
+    @Column(name = "api")
+    private String api;
+
+    @Column(name = "pricing_api")
+    private String pricingApi;
+
+    @Column(name = "unit")
+    private String unit;
+
     @Column(name = "image")
     private String image;
 
+    @Type(type = "json")
+    @Column(name = "images", columnDefinition = "string")
+    List<Gallery> gallery;
 
     @Column(name = "release_date")
     private LocalDate releaseDate;
@@ -91,8 +85,38 @@ public class Product implements Serializable {
     @Column(name = "active", nullable = false)
     private Boolean active;
 
-    @Column(name = "url")
-    private String url;
+    @NotNull
+    private Boolean oversize= false;
+
+    @Column(name = "stub", nullable = false)
+    private Boolean stub;
+
+    public Boolean getInStock() {
+        return inStock;
+    }
+
+    public void setInStock(Boolean inStock) {
+        this.inStock = inStock;
+    }
+
+    @Column(name = "in_stock", nullable = false)
+    private Boolean inStock;
+
+    public Product stub(boolean b) {
+        stub = b;
+        return this;
+    }
+
+    public Product inStock(Boolean b) {
+        inStock = b;
+        return this;
+    }
+
+
+
+    @Type(type = "json")
+    @Column(name = "hashtags", columnDefinition = "string")
+    private List<String> hashtags;
 
     @NotNull
     @Column(name = "title", nullable = false)
@@ -101,9 +125,10 @@ public class Product implements Serializable {
     @Column(name = "brand")
     private String brand;
 
-/*    @Type(type = "json")
-    @Column(name = "images", columnDefinition = "string")
-    List<Gallery> gallery;*/
+    @Column(name = "url")
+    private String url;
+
+
 
     //@NotNull
     @Column(name = "last_modified_date", nullable = false, updatable=false, insertable=false)
@@ -132,23 +157,16 @@ public class Product implements Serializable {
 
     @Column(name = "volume_weight", precision = 21, scale = 2)
     private BigDecimal volumeWeight;
-
+/*
     @OneToMany(mappedBy = "product", cascade=CascadeType.ALL, orphanRemoval = true)
-    private Set<ProductLang> productLangs = new HashSet<>();
+    private Set<ProductLang> productLangs = new HashSet<>();*/
 
-    public Set<MerchantStock> getMerchantStock() {
-        return merchantStock;
-    }
 
-    public void setMerchantStock(Set<MerchantStock> merchantStock) {
-        this.merchantStock = merchantStock;
-    }
-
-    @OneToMany(mappedBy = "product", cascade=CascadeType.ALL, orphanRemoval = true)
-    private Set<MerchantStock> merchantStock = new HashSet<>();
+    @Column(name = "expires")
+    private Instant expires;
 
     // Variations
-/*    @Type(type = "json")
+    @Type(type = "json")
     @Column(name = "variation_dimensions", columnDefinition = "string")
     List<String> variationDimensions;
 
@@ -162,94 +180,66 @@ public class Product implements Serializable {
 
     @Type(type = "json")
     @Column(name = "variation_attributes", columnDefinition = "string")
-    List<Attribute> variationAttributes;*/
+    List<Attribute> variationAttributes;
 
+    @Type(type = "json")
+    @Getter @Setter @Column(name = "description", columnDefinition = "string")
+    List<ProductLang> langs = new ArrayList<>();
+
+
+
+    @Type(type = "json")
+    @Getter @Setter @Column(name = "delivery_profiles", columnDefinition = "string")
+    List<Attribute> deliveryProfiles;
+
+    @Type(type = "json")
+    @Column(name = "list_price")
+    PriceMap listPrice;
+
+    @Type(type = "json")
     @Column(name = "price")
-    BigDecimal price;
+    PriceMap price;
 
-    @Column
-    String currency;
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+    @Column @Getter @Setter
+    String rating;
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
 
-    public String getCurrency() {
-        return currency;
-    }
+/*    @ManyToOne
+    @JoinColumn(name="merchant_id", insertable = false, updatable = false)
+    Merchant merchant;*/
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+    @Getter @Setter @Column(name = "merchant_id")
+    private Long merchantId;
+
+/*    @ManyToOne
+    @JoinColumn(name="tenant_id", referencedColumnName = "name", insertable = false, updatable = false)
+    Tenant tenant;*/
+
+    @Getter @Setter @Column(name = "tenant_id")
+    private String tenantId;
+
+    @Column(name = "deleted")
+    private Boolean deleted;
 
 /*
-    public List<String> getVariationDimensions() {
-        return variationDimensions;
+
+    public Merchant getMerchant() {
+        return merchant;
     }
 
-    public void setVariationDimensions(List<String> variationDimensions) {
-        this.variationDimensions = variationDimensions;
-    }
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
+    }*/
 
-    public List<VariationOption> getVariationOptions() {
-        return variationOptions;
-    }
-
-    public void setVariationOptions(List<VariationOption> variationOptions) {
-        this.variationOptions = variationOptions;
-    }
-
-    public List<Variation> getVariations() {
-        return variations;
-    }
-
-    public void setVariations(List<Variation> variations) {
-        this.variations = variations;
-    }
-
-    public List<Attribute> getVariationAttributes() {
-        return variationAttributes;
-    }
-
-    public void setVariationAttributes(List<Attribute> variationAttributes) {
-        this.variationAttributes = variationAttributes;
-    }
-*/
-
-
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getRef() {
-        return ref;
-    }
-
-    public Product ref(Long ref) {
-        this.ref = ref;
+    public Product merchantId(Long l) {
+        this.merchantId = l;
         return this;
     }
 
-    public void setRef(Long ref) {
+    public Product ref(String ref) {
         this.ref = ref;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
+        return this;
     }
 
     public Product slug(String slug) {
@@ -257,21 +247,9 @@ public class Product implements Serializable {
         return this;
     }
 
-    public String getSku() {
-        return sku;
-    }
-
     public Product sku(String sku) {
         this.sku = sku;
         return this;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
-    public String getUpc() {
-        return upc;
     }
 
     public Product upc(String upc) {
@@ -279,25 +257,9 @@ public class Product implements Serializable {
         return this;
     }
 
-    public void setUpc(String upc) {
-        this.upc = upc;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
     public Product image(String image) {
         this.image = image;
         return this;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-/*    public List<Gallery> getGallery() {
-        return gallery;
     }
 
     public Product gallery(List<Gallery> gallery) {
@@ -305,25 +267,9 @@ public class Product implements Serializable {
         return this;
     }
 
-    public void setGallery(List<Gallery> images) {
-        this.gallery = images;
-    }*/
-
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-
     public Product releaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
         return this;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public Boolean isActive() {
-        return active;
     }
 
     public Product active(Boolean active) {
@@ -331,39 +277,11 @@ public class Product implements Serializable {
         return this;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Product url(String url) {
-        this.url = url;
-        return this;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getTitle() {
-        return title;
-    }
 
     public Product title(String title) {
         this.title = title;
         return this;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBrand() {
-        return brand;
     }
 
     public Product brand(String brand) {
@@ -371,26 +289,11 @@ public class Product implements Serializable {
         return this;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
 
-
-    public Instant getUpdated() {
-        return updated;
-    }
 
     public Product updated(Instant updated) {
         this.updated = updated;
         return this;
-    }
-
-    public void setUpdated(Instant updated) {
-        this.updated = updated;
-    }
-
-    public Instant getCreated() {
-        return created;
     }
 
     public Product created(Instant created) {
@@ -398,29 +301,9 @@ public class Product implements Serializable {
         return this;
     }
 
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
-
-    public Condition getCondition() {
-        return condition;
-    }
-
     public Product condition(Condition condition) {
         this.condition = condition;
         return this;
-    }
-
-    public void setCondition(Condition condition) {
-        this.condition = condition;
-    }
-
-    public VariationType getVariationType() {
-        return variationType;
-    }
-
-    public void setVariationType(VariationType variationType) {
-        this.variationType = variationType;
     }
 
     public Product variationType(VariationType variationType) {
@@ -428,21 +311,9 @@ public class Product implements Serializable {
         return this;
     }
 
-    public Boolean isIsUsed() {
-        return isUsed;
-    }
-
     public Product isUsed(Boolean isUsed) {
         this.isUsed = isUsed;
         return this;
-    }
-
-    public void setIsUsed(Boolean isUsed) {
-        this.isUsed = isUsed;
-    }
-
-    public Boolean isAvailableForOrder() {
-        return availableForOrder;
     }
 
     public Product availableForOrder(Boolean availableForOrder) {
@@ -450,25 +321,9 @@ public class Product implements Serializable {
         return this;
     }
 
-    public void setAvailableForOrder(Boolean availableForOrder) {
-        this.availableForOrder = availableForOrder;
-    }
-
-    public BigDecimal getWeight() {
-        return weight;
-    }
-
     public Product weight(BigDecimal weight) {
         this.weight = weight;
         return this;
-    }
-
-    public void setWeight(BigDecimal weight) {
-        this.weight = weight;
-    }
-
-    public BigDecimal getVolumeWeight() {
-        return volumeWeight;
     }
 
     public Product volumeWeight(BigDecimal volumeWeight) {
@@ -476,51 +331,19 @@ public class Product implements Serializable {
         return this;
     }
 
-
-    public void setVolumeWeight(BigDecimal volumeWeight) {
-        this.volumeWeight = volumeWeight;
-    }
-
-    public Set<ProductLang> getProductLangs() {
+/*    public Set<ProductLang> getProductLangs() {
         return productLangs;
     }
 
-    public Product productLangs(Set<ProductLang> productLangs) {
+    public ProfileProduct productLangs(Set<ProductLang> productLangs) {
         this.productLangs = productLangs;
         return this;
-    }
+    }*/
 
-    public Product addProductLang(ProductLang productLang) {
-        this.productLangs.add(productLang);
-        productLang.setProduct(this);
+
+    public Product parent(Product master) {
+        this.parent = master;
         return this;
-    }
-
-    public Product removeProductLang(ProductLang productLang) {
-        this.productLangs.remove(productLang);
-        productLang.setProduct(null);
-        return this;
-    }
-
-    public Product addMerchantStock(MerchantStock merchantStock) {
-        this.merchantStock.add(merchantStock);
-        merchantStock.setProduct(this);
-        return this;
-    }
-
-
-    public void setProductLangs(Set<ProductLang> productLangs) {
-        this.productLangs = productLangs.stream().map(a -> (ProductLang) a).collect(Collectors.toSet());
-    }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
-
-
-    public Product getParent() {
-        return parent;
-    }
-
-    public void setParent(Product parent) {
-        this.parent = parent;
     }
 
     public Set<Product> getChildren() {
@@ -530,6 +353,8 @@ public class Product implements Serializable {
     public void setChildren(Set<Product> children) {
         this.children = children;
     }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -550,27 +375,44 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "Product{" +
-            "id=" + getId() +
-            ", ref=" + getRef() +
-            ", parent=" + getParent() +
-            ", sku='" + getSku() + "'" +
-            ", upc=" + getUpc() +
-            ", price=" + getPrice() +
-            ", image='" + getImage() + "'" +
-        //    ", images='" + getGallery() + "'" +
-            ", releaseDate='" + getReleaseDate() + "'" +
-            ", active='" + isActive() + "'" +
-            ", url='" + getUrl() + "'" +
-            ", title='" + getTitle() + "'" +
-            ", brand='" + getBrand() + "'" +
-           // ", group='" + getGroup() + "'" +
-           // ", updated='" + getUpdated() + "'" +
-            //", created='" + getCreated() + "'" +
-            ", condition='" + getCondition() + "'" +
-            ", isUsed='" + isIsUsed() + "'" +
-            ", availableForOrder='" + isAvailableForOrder() + "'" +
-            ", weight=" + getWeight() +
-            ", volumeWeight=" + getVolumeWeight() +
-            "}";
+                "id=" + id +
+                ", ref=" + ref +
+                ", slug='" + slug + '\'' +
+                ", parentId=" + parentId +
+                '}';
+    }
+
+
+
+    public void removeChild(Product child) {
+        this.children.remove(child);
+    }
+
+    public BigDecimal getComputedWeight() {
+        if(volumeWeight != null && volumeWeight.compareTo(weight) == 1) {
+            return volumeWeight;
+        }
+        return weight;
+    }
+}
+
+@Data
+class PriceMap implements Serializable {
+    private Map<String, String> prices = new HashMap<>();
+    private String base;
+
+    public String getPriceForCurrency(String code) {
+        return prices.get(code);
+    }
+
+    public void push(String currency, BigDecimal amount) {
+        prices.put(currency, amount.toPlainString());
+    }
+
+    public PriceMap(String base) {
+        this.base = base;
+    }
+
+    public PriceMap() {
     }
 }

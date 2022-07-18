@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-   @Query(value="select p.`ref` from shop.product p where sku = :asin", nativeQuery=true)
+   @Query(value="select p.`ref` from profileshop.product p where sku = :asin", nativeQuery=true)
    Optional<Long> getRefByKey(@Param(value = "asin") String asin);
 
 }
