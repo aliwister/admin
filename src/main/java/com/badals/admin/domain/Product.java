@@ -2,10 +2,7 @@ package com.badals.admin.domain;
 
 import com.badals.admin.domain.enumeration.Condition;
 import com.badals.admin.domain.enumeration.VariationType;
-import com.badals.admin.domain.pojo.Attribute;
-import com.badals.admin.domain.pojo.Gallery;
-import com.badals.admin.domain.pojo.Variation;
-import com.badals.admin.domain.pojo.VariationOption;
+import com.badals.admin.domain.pojo.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +23,7 @@ import java.util.stream.Collectors;
  * A Product.
  */
 @Entity
+@Data
 @Table(name = "product", catalog = "profileshop")
 @SelectBeforeUpdate(false)
 public class Product implements Serializable {
@@ -396,23 +394,3 @@ public class Product implements Serializable {
     }
 }
 
-@Data
-class PriceMap implements Serializable {
-    private Map<String, String> prices = new HashMap<>();
-    private String base;
-
-    public String getPriceForCurrency(String code) {
-        return prices.get(code);
-    }
-
-    public void push(String currency, BigDecimal amount) {
-        prices.put(currency, amount.toPlainString());
-    }
-
-    public PriceMap(String base) {
-        this.base = base;
-    }
-
-    public PriceMap() {
-    }
-}
