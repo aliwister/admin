@@ -126,8 +126,8 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query(value="select * from incoming_shipment_queue", nativeQuery = true)
     List<ShipmentList> unclosedPurchase();
 
-    @Modifying @Query(value="insert into profileshop.payment(payment_method, amount, customer_id, ref, invoice_num , account) values ('CASH', :amount, :user_id, :ref, :invoiceNum, :account) ON DUPLICATE KEY UPDATE amount = :amount", nativeQuery = true)
-    void addPayment(@Param("user_id") Long userId, @Param("ref") String ref, @Param("invoiceNum") String invoiceNum, @Param("account") String account, @Param("amount") BigDecimal amount);
+    @Modifying @Query(value="insert into profileshop.payment(payment_method, amount, customer_id, ref, invoice_num , account, currency) values ('CASH', :amount, :user_id, :ref, :invoiceNum, :account, :currency) ON DUPLICATE KEY UPDATE amount = :amount", nativeQuery = true)
+    void addPayment(@Param("user_id") Long userId, @Param("ref") String ref, @Param("invoiceNum") String invoiceNum, @Param("account") String account, @Param("amount") BigDecimal amount, @Param("currency") String currency);
 
     @Query(value="select s.id AS id,s.created_date AS createdDate,s.shipment_method AS shipmentMethod,s.tracking_num AS trackingNum,s.pkg_count AS pkgCount,count(p.id) AS arrivedPkgs,s.shipment_status AS STATUS, " +
         "(SELECT sum(si.quantity) from shipment_item si where s.id = si.shipment_id) AS sent, " +

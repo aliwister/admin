@@ -357,7 +357,7 @@ public class ShipmentService {
 
 
         delivery.setSales_person ("Ali");
-        delivery.setNotify_url("https://api.badals.com/detrack");
+        delivery.setNotify_url("https://api.profile.shop/detrack");
         delivery.setAtt_1("https://wa.me/"+mobile);
         delivery.setPay_amt(balance.setScale(2, RoundingMode.HALF_UP).toString());
         //if(balance != null)
@@ -438,7 +438,7 @@ public class ShipmentService {
         }
         if(payment.getPrice() != null) {
             shipment.setDutiesTotal(payment.getPrice());
-            shipmentRepository.addPayment(payment.getUserId(), trackingNum, shipment.getShipmentMethod()+"-"+payment.getInvoiceNum(), XeroAccount.CUSTOMS, payment.getPrice().getAmount());
+            shipmentRepository.addPayment(payment.getUserId(), trackingNum, shipment.getShipmentMethod()+"-"+payment.getInvoiceNum(), XeroAccount.CUSTOMS, payment.getPrice().getAmount(), "OMR");
         }
         if(invoiceLink != null) {
             ShipmentDoc doc = new ShipmentDoc();

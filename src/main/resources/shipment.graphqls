@@ -2,6 +2,54 @@ scalar Date
 scalar LocalDate
 scalar LocalDateTime
 scalar BigDecimal
+
+type Query {
+    shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
+    shipment(id: ID): Shipment
+    shipmentItemDetails(id: ID): [ShipmentItemDetails]
+    pkgItemDetails(id: ID): [ShipmentItemDetails]
+    shipmentsByRef(ref: String): [Shipment]
+    sortQueue(keyword: String): [SortQueue]
+    outstandingQueue(keyword: String): [OutstandingQueue]
+    unshippedQueue: [UnshippedQueue]
+    inventory: [Inventory]
+    shipQueue: [ShipQueue]
+    shipmentList(viewName: ShipmentListView): [ShipmentList]
+    prepQueue(shipmentId: Long, keyword: String = ""): [PrepQueue]
+    shipmentItemsByTrackingNums(trackingNums: [String], showClosed: Boolean): [ShipmentItem]
+    shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]
+    track(ref: String): [ShipmentTrackingMap]
+    trackingEvents: [TrackingEvent]
+    shipQueueByCustomerId(customerId: Long): [ShipQueue]
+    advancedTracking(ref: String, showAll: Boolean = false, queueName: String): [ItemTracking]
+    shipmentDocs(id: ID) : [ShipmentDoc]
+}
+type Mutation {
+    sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
+    setEstimatedShipDate(id: Long, date: Date): Message
+    createShipment(shipment: ShipmentInput): Shipment
+    acceptShipment(trackingNum: String, payment: PaymentInput, invoiceLink: String): Shipment
+    saveShipment(shipment: ShipmentInput): Shipment
+    acceptPackage(pkg : PackageInput): Pkg
+    #acceptItem(shipmentId: Long,  pkgId: Long,  purchaseItemId: Long,  productId: Long,  merchantId: Long,  description: String,  quantity: BigDecimal,  accepted: BigDecimal,  rejected: BigDecimal): Message
+    acceptItem (shipmentItemId: Long,  packageId: Long, accepted: BigDecimal, rejected: BigDecimal): Message
+    issueItem(orderItemId : Long, productId : Long, description : String, quantity : BigDecimal): ItemIssuance
+    prepItem(dto: PackagingContentInput): Message
+    #processAmazonShipments: Message
+    #printCode(shipmentId: Long): Message
+    #savePackage(pkgId: Long, shipmentItems: [Long]): Pkg
+    #scheduleShipment(id: Long, deliveryDate: LocalDate, comments: String, assignTo: String): Message
+    #unAccept(shipmentAcceptanceId: Long): Message
+    #unIssue(itemIssuanceId: Long) : Message
+    createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput], trackingNums: [String] = []): Shipment
+    addItem(shipmentId: Long,  productId: Long, purchaseItemId: Long, description: String, quantity: BigDecimal): Message
+    removeItem(shipmentId: ID, shipmentItemId: Long, description: String, quantity: BigDecimal): Message
+    unpackItem(shipmentId: ID, shipmentItemId: Long, description: String, quantity: BigDecimal): Message
+    addTrackingEvent(trackingNums: [String], shipmentStatus: ShipmentStatus,  trackingEvent: Int, eventDate: LocalDateTime, details: String): Message
+    setShipmentStatus(id: Long, status:ShipmentStatus): Message
+    updateFromDetrack(id: String): Message
+    addShipmentDoc(id: Long, filename: String): Message
+}
 type Message {
     value: String
 }
@@ -366,52 +414,4 @@ type ShipmentInfo {
     trackingNum: String
     status: String
     to: String
-}
-
-type Query {
-    shipments(status: [ShipmentStatus], type: ShipmentType): [Shipment]
-    shipment(id: ID): Shipment
-    shipmentItemDetails(id: ID): [ShipmentItemDetails]
-    pkgItemDetails(id: ID): [ShipmentItemDetails]
-    shipmentsByRef(ref: String): [Shipment]
-    sortQueue(keyword: String): [SortQueue]
-    outstandingQueue(keyword: String): [OutstandingQueue]
-    unshippedQueue: [UnshippedQueue]
-    inventory: [Inventory]
-    shipQueue: [ShipQueue]
-    shipmentList(viewName: ShipmentListView): [ShipmentList]
-    prepQueue(shipmentId: Long, keyword: String = ""): [PrepQueue]
-    shipmentItemsByTrackingNums(trackingNums: [String], showClosed: Boolean): [ShipmentItem]
-    shipmentItemsCountByTrackingNums(trackingNums: [String]): [ShipmentItemSummary]
-    track(ref: String): [ShipmentTrackingMap]
-    trackingEvents: [TrackingEvent]
-    shipQueueByCustomerId(customerId: Long): [ShipQueue]
-    advancedTracking(ref: String, showAll: Boolean = false, queueName: String): [ItemTracking]
-    shipmentDocs(id: ID) : [ShipmentDoc]
-}
-type Mutation {
-    sendToDetrack(shipmentId: Long, orderId: Long, name: String, instructions: String, date: String, time: String, assignTo: String): Message
-    setEstimatedShipDate(id: Long, date: Date): Message
-    createShipment(shipment: ShipmentInput): Shipment
-    acceptShipment(trackingNum: String, payment: PaymentInput, invoiceLink: String): Shipment
-    saveShipment(shipment: ShipmentInput): Shipment
-    acceptPackage(pkg : PackageInput): Pkg
-    #acceptItem(shipmentId: Long,  pkgId: Long,  purchaseItemId: Long,  productId: Long,  merchantId: Long,  description: String,  quantity: BigDecimal,  accepted: BigDecimal,  rejected: BigDecimal): Message
-    acceptItem (shipmentItemId: Long,  packageId: Long, accepted: BigDecimal, rejected: BigDecimal): Message
-    issueItem(orderItemId : Long, productId : Long, description : String, quantity : BigDecimal): ItemIssuance
-    prepItem(dto: PackagingContentInput): Message
-    #processAmazonShipments: Message
-    #printCode(shipmentId: Long): Message
-    #savePackage(pkgId: Long, shipmentItems: [Long]): Pkg
-    #scheduleShipment(id: Long, deliveryDate: LocalDate, comments: String, assignTo: String): Message
-    #unAccept(shipmentAcceptanceId: Long): Message
-    #unIssue(itemIssuanceId: Long) : Message
-    createShipment(shipment: ShipmentInput, shipmentItems: [ShipmentItemInput], trackingNums: [String] = []): Shipment
-    addItem(shipmentId: Long,  productId: Long, purchaseItemId: Long, description: String, quantity: BigDecimal): Message
-    removeItem(shipmentId: ID, shipmentItemId: Long, description: String, quantity: BigDecimal): Message
-    unpackItem(shipmentId: ID, shipmentItemId: Long, description: String, quantity: BigDecimal): Message
-    addTrackingEvent(trackingNums: [String], shipmentStatus: ShipmentStatus,  trackingEvent: Int, eventDate: LocalDateTime, details: String): Message
-    setShipmentStatus(id: Long, status:ShipmentStatus): Message
-    updateFromDetrack(id: String): Message
-    addShipmentDoc(id: Long, filename: String): Message
 }
