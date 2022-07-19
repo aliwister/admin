@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A Product.
@@ -34,9 +33,7 @@ public class Product implements Serializable {
     private Long id;
 
     @NaturalId
-    @Getter
-    @Setter
-    @Column(name = "ref")
+    @Getter @Setter @Column(name = "ref")
     public String ref;
 
     @Getter @Setter
@@ -110,8 +107,6 @@ public class Product implements Serializable {
         return this;
     }
 
-
-
     @Type(type = "json")
     @Column(name = "hashtags", columnDefinition = "string")
     private List<String> hashtags;
@@ -125,8 +120,6 @@ public class Product implements Serializable {
 
     @Column(name = "url")
     private String url;
-
-
 
     //@NotNull
     @Column(name = "last_modified_date", nullable = false, updatable=false, insertable=false)
@@ -160,6 +153,7 @@ public class Product implements Serializable {
     private Set<ProductLang> productLangs = new HashSet<>();*/
 
 
+
     @Column(name = "expires")
     private Instant expires;
 
@@ -183,8 +177,6 @@ public class Product implements Serializable {
     @Type(type = "json")
     @Getter @Setter @Column(name = "description", columnDefinition = "string")
     List<ProductLang> langs = new ArrayList<>();
-
-
 
     @Type(type = "json")
     @Getter @Setter @Column(name = "delivery_profiles", columnDefinition = "string")
@@ -275,8 +267,6 @@ public class Product implements Serializable {
         return this;
     }
 
-
-
     public Product title(String title) {
         this.title = title;
         return this;
@@ -338,7 +328,6 @@ public class Product implements Serializable {
         return this;
     }*/
 
-
     public Product parent(Product master) {
         this.parent = master;
         return this;
@@ -352,7 +341,12 @@ public class Product implements Serializable {
         this.children = children;
     }
 
-
+    public void addChild(Product child) {
+        child.setVariationType(VariationType.CHILD);
+        child.setMerchantId(this.merchantId);
+        this.children.add(child);
+        child.setParentId(this.ref);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -381,6 +375,10 @@ public class Product implements Serializable {
     }
 
 
+    public Product variationAttributes(List<Attribute> value) {
+        this.setVariationAttributes(value);
+        return this;
+    }
 
     public void removeChild(Product child) {
         this.children.remove(child);
