@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
-    @Query("from OrderItem oi join fetch oi.order o join fetch o.customer where oi.id = ?1")
+    @Query("from OrderItem oi join fetch oi.order o left join fetch o.customer where oi.id = ?1")
     public OrderItem findForSorting(Long id);
 
     @Query(value="SELECT (ifnull(SUM(os.quantity),0) + :quantity) > ifnull(oi.quantity,0) " +
