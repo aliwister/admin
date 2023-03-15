@@ -43,8 +43,4 @@ workflows:
           context: aws-creds
           application-name: admin
           environment-name: Admin-env
-          filters:
-            branches:
-              only:
-                - main
           label: version-<<pipeline.number>>
