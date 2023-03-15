@@ -2,7 +2,7 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 orbs:
-  eb: circleci/aws-elastic-beanstalk@1.0.0
+  eb: circleci/aws-elastic-beanstalk@2.0.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -25,9 +25,14 @@ jobs:
           command: mvn package -Pprod -DskipTests=true
       # Then run your tests!
       - run: |
+          ls
+          pwd
+          cd ./
+          mvn package -Pprod -DskipTests=true
           rm -r ./.ebextensions
           rm -r ./.platform
           mv ./Procfile-aws ./Procfile
+          pwd
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -40,7 +45,8 @@ workflows:
     jobs:
       - eb/deploy:
           context: aws-creds
-          environment-name: my-app
+          application-name: admin
+          environment-name: Admin-env
           filters:
             branches:
               only:
