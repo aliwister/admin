@@ -29,8 +29,6 @@ jobs:
           pwd
           cd ./
           mvn package -Pprod -DskipTests=true
-          rm -r ./.ebextensions
-          rm -r ./.platform
           mv ./Procfile-aws ./Procfile
           pwd
 
