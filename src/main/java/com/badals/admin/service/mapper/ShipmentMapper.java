@@ -88,6 +88,8 @@ public interface ShipmentMapper extends EntityMapper<ShipmentDTO, Shipment> {
     default void afterMapping(@MappingTarget ShipmentDTO target, Shipment source) {
         if(source.getTo() != null)
             target.setPartyId(Long.parseLong(source.getTo().getId().substring(1)));
+
+
     }
 
 

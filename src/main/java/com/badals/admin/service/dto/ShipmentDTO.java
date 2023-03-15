@@ -13,7 +13,7 @@ import lombok.Data;
  * A DTO for the {@link com.badals.admin.domain.Shipment} entity.
  */
 @Data
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "shipment")
+//@org.springframework.data.elasticsearch.annotations.Document(indexName = "shipment")
 public class ShipmentDTO implements Serializable {
 
     private Long id;

@@ -10,7 +10,7 @@ import com.badals.admin.domain.pojo.*;
 import com.badals.admin.domain.projection.*;
 
 import com.badals.admin.repository.*;
-import com.badals.admin.repository.search.ShipmentSearchRepository;
+//import com.badals.admin.repository.search.ShipmentSearchRepository;
 import com.badals.admin.service.dto.*;
 import com.badals.admin.service.mapper.*;
 
@@ -44,7 +44,7 @@ public class TrackingService {
     private final Logger log = LoggerFactory.getLogger(TrackingService.class);
 
     private final ShipmentRepository shipmentRepository;
-    private final ShipmentSearchRepository shipmentSearchRepository;
+    //private final ShipmentSearchRepository shipmentSearchRepository;
     private final ProductRepository productRepository;
     private final ShipmentEventRepository shipmentEventRepository;
 
@@ -73,9 +73,9 @@ public class TrackingService {
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public TrackingService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ProductRepository productRepository, ShipmentEventRepository shipmentEventRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentItemMapper shipmentItemMapper, PurchaseShipmentMapper purchaseShipmentMapper, ShipmentTrackingMapper shipmentTrackingMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, ShipmentDocRepository shipmentDocRepository, ShipmentDocMapper shipmentDocMapper, ShipmentTrackingRepository shipmentTrackingRepository) {
+    public TrackingService(ShipmentRepository shipmentRepository, /*ShipmentSearchRepository shipmentSearchRepository,*/ ProductRepository productRepository, ShipmentEventRepository shipmentEventRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentItemMapper shipmentItemMapper, PurchaseShipmentMapper purchaseShipmentMapper, ShipmentTrackingMapper shipmentTrackingMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, ShipmentDocRepository shipmentDocRepository, ShipmentDocMapper shipmentDocMapper, ShipmentTrackingRepository shipmentTrackingRepository) {
         this.shipmentRepository = shipmentRepository;
-        this.shipmentSearchRepository = shipmentSearchRepository;
+        //this.shipmentSearchRepository = shipmentSearchRepository;
         this.productRepository = productRepository;
         this.shipmentEventRepository = shipmentEventRepository;
         this.shipmentMapper = shipmentMapper;
@@ -454,9 +454,9 @@ public class TrackingService {
                 return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT.name(), ShipmentStatus.CLOSED.name());
             case CANCELLED_TRANSIT:
                 return shipmentRepository.shipQByTypeAndStatus(ShipmentType.TRANSIT.name(), ShipmentStatus.CANCELED.name());
-            case ALL_TRANSIT:
+ /*           case ALL_TRANSIT:
                 return shipmentRepository.shipQByTypeAndStatusNot(ShipmentType.TRANSIT.name(), ShipmentStatus.CANCELED.name());
-            case CUSTOMER_SCHEDULED:
+*/            case CUSTOMER_SCHEDULED:
                 return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.SCHEDULED.name());
             case CUSTOMER_FAILED:
                 return shipmentRepository.shipQByTypeAndStatus(ShipmentType.CUSTOMER.name(), ShipmentStatus.FAILED.name());

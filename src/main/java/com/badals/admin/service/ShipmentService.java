@@ -10,7 +10,7 @@ import com.badals.admin.domain.pojo.DetrackSearch;
 import com.badals.admin.domain.pojo.PaymentPojo;
 import com.badals.admin.domain.projection.*;
 import com.badals.admin.repository.*;
-import com.badals.admin.repository.search.ShipmentSearchRepository;
+//import com.badals.admin.repository.search.ShipmentSearchRepository;
 import com.badals.admin.service.dto.*;
 import com.badals.admin.service.errors.ShipmentNotReadyException;
 import com.badals.admin.service.mapper.ItemIssuanceMapper;
@@ -50,7 +50,7 @@ public class ShipmentService {
     private final Logger log = LoggerFactory.getLogger(ShipmentService.class);
 
     private final ShipmentRepository shipmentRepository;
-    private final ShipmentSearchRepository shipmentSearchRepository;
+    //private final ShipmentSearchRepository shipmentSearchRepository;
     private final ShipmentDocRepository shipmentDocRepository;
 
     private final ShipmentMapper shipmentMapper;
@@ -74,9 +74,9 @@ public class ShipmentService {
 
     //private final ShiSmentSearchRepository shipmentSearchRepository;
 
-    public ShipmentService(ShipmentRepository shipmentRepository, ShipmentSearchRepository shipmentSearchRepository, ShipmentDocRepository shipmentDocRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentDocMapper shipmentDocMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, OrderService orderService) {
+    public ShipmentService(ShipmentRepository shipmentRepository/*, ShipmentSearchRepository shipmentSearchRepository*/, ShipmentDocRepository shipmentDocRepository, ShipmentMapper shipmentMapper,/*, ShipmentSearchRepository shipmentSearchRepository*/ShipmentDocMapper shipmentDocMapper, PurchaseItemRepository purchaseItemRepository, PkgRepository pkgRepository, ShipmentItemRepository shipmentItemRepository, PurchaseShipmentRepository purchaseShipmentRepository, PackagingContentRepository packagingContentRepository, ShipmentReceiptRepository shipmentReceiptRepository, OrderItemRepository orderItemRepository, OrderShipmentRepository orderShipmentRepository, ItemIssuanceRepository itemIssuanceRepository, ItemIssuanceMapper itemIssuanceMapper, OrderRepository orderRepository, OrderService orderService) {
         this.shipmentRepository = shipmentRepository;
-        this.shipmentSearchRepository = shipmentSearchRepository;
+        //this.shipmentSearchRepository = shipmentSearchRepository;
         this.shipmentDocRepository = shipmentDocRepository;
         this.shipmentMapper = shipmentMapper;
         this.shipmentDocMapper = shipmentDocMapper;
@@ -106,7 +106,7 @@ public class ShipmentService {
         Shipment shipment = shipmentMapper.toEntity(shipmentDTO);
         shipment = shipmentRepository.save(shipment);
         ShipmentDTO result = shipmentMapper.toDto(shipment);
-        shipmentSearchRepository.save(result);
+        //shipmentSearchRepository.save(result);
         return result;
     }
 

@@ -57,7 +57,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/authenticate").permitAll()
             //.antMatchers("/import/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/**").hasAuthority(AuthoritiesConstants.ADMIN)
-            .antMatchers("/management/health").permitAll()
+                .antMatchers("/amazon/adfadf32423423423/**").permitAll()
+
+                .antMatchers("/management/health").permitAll()
             .antMatchers("/management/info").permitAll()
             .antMatchers("/management/prometheus").permitAll()
             .antMatchers("/graphql").permitAll()
