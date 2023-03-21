@@ -1,0 +1,10 @@
+branch-defaults:
+  master:
+    environment: Admin-dev
+  develop:
+    environment: Admin-dev
+global:
+  application_name: admin
+  default_platform: 64bit Amazon Linux 2/3.4.16
+  default_region: us-east-1
+  sc: git
