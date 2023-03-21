@@ -28,7 +28,7 @@ jobs:
       - eb/setup
       - run:
           command: |
-            eb init
+            eb create Admin-env
             eb deploy Admin-env
             eb status
           name: You may now use the EB CLI within this job
