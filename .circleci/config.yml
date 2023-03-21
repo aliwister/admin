@@ -32,7 +32,11 @@ jobs:
           mv ./Procfile-aws ./Procfile
           pwd
           ls
-      - eb/setup
+      - eb/setup:
+          context: aws-creds
+          application-name: admin
+          environment-name: Admin-env
+          label: admin-version-<<pipeline.number>>
       - run:
           command: |
             eb deploy Admin-env
