@@ -32,9 +32,9 @@ jobs:
           mv ./Procfile-aws ./Procfile
           pwd
           ls
+      - eb/setup
       - run:
           command: |
-            eb create Admin-env
             eb deploy Admin-env
             eb status
 # Invoke jobs via workflows
