@@ -32,7 +32,6 @@ jobs:
           mv ./Procfile-aws ./Procfile
           pwd
           ls
-          ls target
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -41,3 +40,8 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
+      - eb/deploy:
+          context: aws-creds
+          application-name: admin
+          environment-name: Admin-env
+          label: admin-version-<<pipeline.number>>
