@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  eb: circleci/aws-elastic-beanstalk@2.0.1
+
 jobs:
   build:
     docker:
@@ -20,37 +23,15 @@ jobs:
           root: .
           paths:
             - target/*.jar
-
-  deploy:
-    docker:
-      - image: circleci/python:3.7
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y python3-pip
-            sudo pip3 install awscli
-      - run:
-          name: Deploy to AWS Elastic Beanstalk
-          command: |
-            JAR_FILE=$(ls /tmp/workspace/target/*.jar)
-            aws s3 cp $JAR_FILE s3://face-deployments/admin${CIRCLE_BUILD_NUM}.jar
-            aws elasticbeanstalk create-application-version --application-name admin --version-label v${CIRCLE_BUILD_NUM} --source-bundle S3Bucket="face-deployments",S3Key="admin${CIRCLE_BUILD_NUM}.jar" --region us-east-1
-            aws elasticbeanstalk update-environment --environment-name Admin-env --version-label v${CIRCLE_BUILD_NUM} --region us-east-1
-
 workflows:
   version: 2
   build-deploy:
     jobs:
       - build
-      - deploy:
+      - eb/deploy:
           context: aws-creds
+          application-name: admin
+          environment-name: Admin-env
+          label: version-<<pipeline.number>>
           requires:
             - build
-          filters:
-            branches:
-              only:
-                - master
