@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/*.jar -Xms512M -Xmx1024M --spring.profiles.active=test,no-liquibase
+web: java -Dserver.port=$PORT -jar *.jar -Xms512M -Xmx1024M --spring.profiles.active=test,no-liquibase
