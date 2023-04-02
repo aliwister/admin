@@ -31,14 +31,14 @@ jobs:
           name: Install AWS CLI
           command: |
             sudo apt-get update
-            sudo apt-get install -y python3-pip
+            sudo apt-get install -y python3-pip zip
             sudo pip3 install awscli
       - run:
           name: Create ZIP and Deploy to AWS Elastic Beanstalk
           command: |
             JAR_FILE=$(ls /tmp/workspace/target/*.jar)
             PROC_FILE=/tmp/workspace/Procfile
-            cd /tmp/workspace/target
+            cd /tmp/workspace
             zip -r app${CIRCLE_BUILD_NUM}.zip target/$(basename $JAR_FILE) Procfile
             aws s3 cp app${CIRCLE_BUILD_NUM}.zip s3://face-deployments/admin${CIRCLE_BUILD_NUM}.zip
             aws elasticbeanstalk create-application-version --application-name admin --version-label v${CIRCLE_BUILD_NUM} --source-bundle S3Bucket="face-deployments",S3Key="admin${CIRCLE_BUILD_NUM}.zip" --region us-east-1
