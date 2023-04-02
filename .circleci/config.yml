@@ -20,7 +20,7 @@ jobs:
           root: .
           paths:
             - target/*.jar
-            - Procfile
+            - Procfile-aws
   deploy:
     docker:
       - image: circleci/python:3.7
@@ -37,7 +37,7 @@ jobs:
           name: Create ZIP and Deploy to AWS Elastic Beanstalk
           command: |
             JAR_FILE=$(ls /tmp/workspace/target/*.jar)
-            PROC_FILE=/tmp/workspace/Procfile
+            mv /tmp/workspace/Procfile-aws /tmp/workspace/Procfile
             cd /tmp/workspace
             zip -r app${CIRCLE_BUILD_NUM}.zip target/$(basename $JAR_FILE) Procfile
             aws s3 cp app${CIRCLE_BUILD_NUM}.zip s3://face-deployments/admin${CIRCLE_BUILD_NUM}.zip
