@@ -22,13 +22,14 @@ jobs:
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
-          command: mvn package -Pprod -DskipTests=true
+          command: mvn clean install -Pprod -DskipTests=true
       # Then run your tests!
       - run: |
           ls
           pwd
           cd ./
-          mvn package -Pprod -DskipTests=true
+          rm -r ./.ebextensions
+          rm -r ./.platform
           mv ./Procfile-aws ./Procfile
           pwd
 
