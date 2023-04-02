@@ -21,8 +21,6 @@ jobs:
           paths:
             - target/*.jar
             - Procfile
-
-
   deploy:
     docker:
       - image: circleci/python:3.7
