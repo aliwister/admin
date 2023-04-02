@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-elasticbeanstalk: circleci/aws-elasticbeanstalk@2.0.1
+  aws-elasticbeanstalk: circleci/aws-elastic-beanstalk@2.0.1
 
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - aws-elasticbeanstalk/deploy:
+      - eb/deploy:
           app_name: admin
           env_name: Admin-env
           version_label: v${CIRCLE_BUILD_NUM}
