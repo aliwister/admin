@@ -1,42 +1,37 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
+
 orbs:
   eb: circleci/aws-elastic-beanstalk@2.0.1
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+
 jobs:
-  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  deploy-me:
+  build:
     docker:
-      - image: cimg/openjdk:11.0
+      - image: circleci/openjdk:11-jdk
     steps:
-      # Checkout the code as the first step.
       - checkout
-      # Use mvn clean and package as the standard maven build phase
-      - run:
-          name: Build
-          command: mvn package -Pprod -DskipTests=true
-      # Then run your tests!
-      - run: |
-          ls
-          pwd
-          cd ./
-          mv ./Procfile-aws ./Procfile
-          pwd
-          ls
-      - eb/setup
-      - run:
-          command: |
-            eb create Admin-env
-            eb deploy Admin-env
-            eb status
-          name: You may now use the EB CLI within this job
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - run: mvn package
+      - persist_to_workspace:
+          root: .
+          paths:
+            - target/*.jar
 workflows:
-  elastic-beanstalk-workflow: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  version: 2
+  build-deploy:
     jobs:
-      - deploy-me:
+      - build
+      - eb/deploy:
           context: aws-creds
+          application-name: admin
+          environment-name: Admin-env
+          label: version-<<pipeline.number>>
+          requires:
+            - build
