@@ -1,13 +1,17 @@
 package com.badals.admin.domain;
+import com.badals.admin.aop.tenant.TenantSupport;
 import com.badals.admin.domain.pojo.PaymentPojo;
 import com.badals.admin.domain.pojo.Price;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-import org.hibernate.annotations.Type;
+import lombok.Data;
+import org.hibernate.annotations.*;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,8 +30,10 @@ import com.badals.admin.domain.enumeration.ShipmentStatus;
  */
 @Entity
 @Table(name = "shipment")
+@FilterDef(name = "tenantFilter", parameters = {@ParamDef(name = "tenantId", type = "string")})
+@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 //@org.springframework.data.elasticsearch.annotations.Document(indexName = "shipment")
-public class Shipment extends Auditable implements Serializable {
+public class Shipment extends Auditable implements Serializable , TenantSupport {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,6 +48,9 @@ public class Shipment extends Auditable implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Keyword)
     private Long id;
+
+    @Column(name="tenant_id")
+    private String tenantId;
 
     @Column(name = "estimated_ship_date")
     private Date estimatedShipDate;
@@ -176,6 +185,14 @@ public class Shipment extends Auditable implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
     }
 
     public Set<Pkg> getPkgs() {

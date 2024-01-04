@@ -1,4 +1,5 @@
 package com.badals.admin.domain;
+import com.badals.admin.aop.tenant.TenantSupport;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -8,19 +9,27 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 import com.badals.admin.domain.enumeration.RejectReason;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 /**
  * A ShipmentReceipt.
  */
 @Entity
 @Table(name = "shipment_receipt")
-public class ShipmentReceipt extends Auditable implements Serializable {
+@FilterDef(name = "tenantFilter", parameters = {@ParamDef(name = "tenantId", type = "string")})
+@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
+public class ShipmentReceipt extends Auditable implements Serializable, TenantSupport {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name="tenant_id")
+    private String tenantId;
 
     @Column(name = "received_date")
     private Instant receivedDate;
@@ -69,6 +78,14 @@ public class ShipmentReceipt extends Auditable implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
     }
 
     public Instant getReceivedDate() {

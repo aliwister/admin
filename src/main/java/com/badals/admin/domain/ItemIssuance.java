@@ -1,8 +1,12 @@
 package com.badals.admin.domain;
+import com.badals.admin.aop.tenant.TenantSupport;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,8 +16,10 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "item_issuance")
+@FilterDef(name = "tenantFilter", parameters = {@ParamDef(name = "tenantId", type = "string")})
+@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 //@org.springframework.data.elasticsearch.annotations.Document(indexName = "itemissuance")
-public class ItemIssuance extends Auditable implements Serializable {
+public class ItemIssuance extends Auditable implements Serializable, TenantSupport {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,6 +27,9 @@ public class ItemIssuance extends Auditable implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Keyword)
     private Long id;
+
+    @Column(name="tenant_id")
+    private String tenantId;
 
     @Column(name = "quantity", precision = 21, scale = 2)
     private BigDecimal quantity;
@@ -58,6 +67,14 @@ public class ItemIssuance extends Auditable implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
     }
 
     public BigDecimal getQuantity() {
