@@ -2,6 +2,7 @@ package com.badals.admin.aop.tenant;
 
 import com.badals.admin.aop.logging.TenantContext;
 
+import com.badals.admin.security.jwt.ProfileUser;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -39,15 +40,16 @@ public class TenantAdminAspect {
    @Around(value = "execution(* com.badals.admin.service.ShipmentReceiptService.*(..)) " +
        "|| execution(* com.badals.admin.service.ShipmentItemService.*(..)) " +
        "|| execution(* com.badals.admin.service.ShipmentService.*(..)) " +
-       "|| execution(* com.badals.admin.service.ItemIssuanceService.*(..))")
+       "|| execution(* com.badals.admin.service.ItemIssuanceService.*(..)) " +
+       "|| execution(* com.badals.admin.service.TrackingService.*(..))")
    public Object assignForController(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-//      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//      ProfileUser userObj =  (ProfileUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//      if (userObj == null|| userObj.equals("anonymousUser")) {
-//         throw new IllegalAccessException("Not Authorized");
-//      }
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      ProfileUser userObj =  (ProfileUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      if (userObj == null|| userObj.equals("anonymousUser")) {
+         throw new IllegalAccessException("Not Authorized");
+      }
       // Get the tenant the user is logged in for (done using select-store)
-      String tenant = "badals";
+      String tenant = userObj.getTenantId();
 
       if (tenant != null) {
          Filter filter = entityManager.unwrap(Session.class).enableFilter("tenantFilter");
