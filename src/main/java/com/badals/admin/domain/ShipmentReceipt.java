@@ -54,6 +54,7 @@ public class ShipmentReceipt extends Auditable implements Serializable, TenantSu
 
     @ManyToOne
     @JsonIgnoreProperties("shipmentReceipts")
+    @JoinColumn(name="shipment_item_id")
     private ShipmentItem shipmentItem;
 
  /*   @ManyToOne
