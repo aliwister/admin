@@ -69,7 +69,7 @@ public class AuditingAspect {
                 action.setState(value);*/
          if (key.equalsIgnoreCase("comment"))
             action.setComment(value);
-         if (action.getObjectId() == null && (key.toLowerCase().endsWith("id") || key.toLowerCase().endsWith("key") || key.toLowerCase().endsWith("slug") || key.toLowerCase().endsWith("sku") || key.toLowerCase().endsWith("dial")) )
+         if ((key.toLowerCase().endsWith("id") || key.toLowerCase().endsWith("key") || key.toLowerCase().endsWith("slug") || key.toLowerCase().endsWith("sku") || key.toLowerCase().endsWith("dial")) )
             action.setObjectId(value);
          else
             state += " "+key+ "="+value;
@@ -81,6 +81,9 @@ public class AuditingAspect {
 
    private String getObject(String className) {
 
-      return "shipment";
+       if(className.toLowerCase().endsWith("mutation"))
+           return className.substring(31, className.length() - 8);
+
+       return "shipment";
    }
 }
