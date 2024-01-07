@@ -385,6 +385,14 @@ public class TrackingService {
         if(trackingNums != null && trackingNums.size() > 0)
             shipmentRepository.setStatusMulti(ShipmentStatus.CLOSED, trackingNums);
         s = shipmentRepository.save(s);
+
+        for (ShipmentItem si : s.getShipmentItems()) {
+            ShipmentReceipt sr = new ShipmentReceipt();
+            sr.shipmentItem(si);
+            sr.setProductId(si.getProductId());
+            shipmentReceiptRepository.save(sr);
+        }
+
         return shipmentMapper.toDto(s);
     }
 
