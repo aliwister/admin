@@ -9,7 +9,6 @@
     <packaging>jar</packaging>
     <name>Admin</name>
 
-
     <pluginRepositories>
         <!-- jhipster-needle-maven-plugin-repository -->
     </pluginRepositories>
