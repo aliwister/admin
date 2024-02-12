@@ -43,6 +43,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         this.pkgService = pkgService;
         this.packagingContentService = packagingContentService;
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ShipmentDTO createShipment(ShipmentDTO dto) throws IllegalAccessException {
         return shipmentService.save(dto);
@@ -63,7 +64,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         shipmentService.acceptItem(shipmentItemId, packageId, accepted, rejected);
         return new Message("Done");
     }
-    
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ItemIssuanceDTO issueItem(Long orderItemId, Long productId, String description, BigDecimal quantity) throws Exception {
         return shipmentService.issueItem(orderItemId, productId, description, quantity);
