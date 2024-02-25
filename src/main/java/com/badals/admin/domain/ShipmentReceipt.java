@@ -32,13 +32,14 @@ public class ShipmentReceipt extends Auditable implements Serializable, TenantSu
     private String tenantId;
 
     @Column(name = "received_date")
-    private Instant receivedDate;
+    private Instant receivedDate = Instant.now();
 
+    // todo why big decimal?
     @Column(name = "accepted", precision = 21, scale = 2)
-    private BigDecimal accepted;
+    private BigDecimal accepted = new BigDecimal(0);
 
     @Column(name = "rejected", precision = 21, scale = 2)
-    private BigDecimal rejected;
+    private BigDecimal rejected = new BigDecimal(0);
 
     @Column
     private String sku;
