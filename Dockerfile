@@ -4,7 +4,7 @@ FROM maven:3.8.4-openjdk-11 AS build
 # Copy the Maven project and build it
 COPY . /usr/src/app
 WORKDIR /usr/src/app
-RUN mvn clean package -DskipTests -Pno-liquibase
+RUN mvn clean package -D skipTests -P no-liquibase
 
 # Use a base image with Java to run the application
 FROM eclipse-temurin:11-jdk-alpine
