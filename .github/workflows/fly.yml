@@ -1,0 +1,16 @@
+name: Fly Deploy
+on:
+  push:
+    branches:
+      - develop    # change to main if needed
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    concurrency: deploy-group    # optional: ensure only one action runs at a time
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: FlyV1 fm2_lJPECAAAAAAAAdBKxBAwjpCSwTXePDq+M0pVNECEwrVodHRwczovL2FwaS5mbHkuaW8vdjGWAJLOAAV/Xh8Lk7lodHRwczovL2FwaS5mbHkuaW8vYWFhL3YxxDxM1chD505GAq0D6MPWKI52pyXT3zIGceYsaCJdJmPuaujGe4kc8DOMU7bX+3Fifp/wtoCUb0qStBqLLu/ETs6uAPaP2vMNEPUu9x5Kvu7hj4Mhy4OgmHv1QnZM2QE1IgFVKVoJXOJE3K3EcZXZocqD9LGOxIEeeeJHj2oerTD2JqCTdKwaDYK7HV9zLw2SlAORgc4ANN2jHwWRgqdidWlsZGVyH6J3Zx8BxCAEvmRjs5O6N0OLFD+A7peFpbm63zd+Ckq8SjzmfIGXVQ==,fm2_lJPETs6uAPaP2vMNEPUu9x5Kvu7hj4Mhy4OgmHv1QnZM2QE1IgFVKVoJXOJE3K3EcZXZocqD9LGOxIEeeeJHj2oerTD2JqCTdKwaDYK7HV9zL8QQMODq1EX9hs2IZYYpMMY1B8O5aHR0cHM6Ly9hcGkuZmx5LmlvL2FhYS92MZYEks5mO8vKzwAAAAE8z2HYCpHOAAUamAzEED81MH6mq+oSXVlx/SQKUAzEIKb4o1v1bCvnKZ0/Af8vODq2V0NCQIReyvymxjT7iHS9
