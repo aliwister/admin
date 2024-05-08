@@ -93,7 +93,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return new Message(m);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public ShipmentDTO createShipment(ShipmentDTO shipment, List<ShipmentItemDTO> shipmentItems, List<String> trackingNums) throws Exception {
         return trackingService.createShipment(shipment, shipmentItems, trackingNums);
     }
@@ -139,7 +139,7 @@ public class ShipmentMutation implements GraphQLMutationResolver {
         return new Message("Success");
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public Message addShipmentDoc(Long id, String filename) {
         shipmentService.addShipmentDoc(id, filename);
         return new Message("Success");

@@ -49,7 +49,7 @@ public class TenantAdminAspect {
          throw new IllegalAccessException("Not Authorized");
       }
       // Get the tenant the user is logged in for (done using select-store)
-      String tenant = userObj.getTenantId();
+      String tenant = userObj.getTenantId() == null ? userObj.getProfile() : userObj.getTenantId();
 
       if (tenant != null) {
          Filter filter = entityManager.unwrap(Session.class).enableFilter("tenantFilter");
