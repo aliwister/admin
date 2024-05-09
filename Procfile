@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/*.jar -Xms512M -Xmx1024M --spring.profiles.active=test,no-liquibase
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/shop-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod,no-liquibase
